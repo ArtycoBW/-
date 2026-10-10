@@ -1,0 +1,61 @@
+{
+  "seed": 20261010,
+  "dataset": "synthetic-v1",
+  "split_unit": "Непересекающиеся потребности и кандидаты",
+  "train_pairs": 5120,
+  "validation_pairs": 1280,
+  "test_pairs": 1920,
+  "test_queries": 60,
+  "model_sha256": "5a55a8f04531d7b4aec5809fb9ac37502910479a00e1c6eff233a7775bd8212b",
+  "model": "LogisticRegression(C=1.0), 6 признаков, CPU",
+  "validation_auc": 0.8156,
+  "test_auc": 0.8248,
+  "test_brier": 0.1698,
+  "baseline": {
+    "ndcg_at_5": 0.9774,
+    "precision_at_5": 0.9633,
+    "queries": 60
+  },
+  "learned": {
+    "ndcg_at_5": 0.9914,
+    "precision_at_5": 0.9833,
+    "queries": 60
+  },
+  "hybrid": {
+    "ndcg_at_5": 0.9904,
+    "precision_at_5": 0.9867,
+    "queries": 60
+  },
+  "without_fsp": {
+    "ndcg_at_5": 0.9891,
+    "precision_at_5": 0.9833,
+    "queries": 60
+  },
+  "assessment": {
+    "source": "Симуляция IRT, не эмпирическая психометрическая валидация",
+    "virtual_participants": 1200,
+    "forms_generated": 600,
+    "unique_forms": 600,
+    "equal_blueprints": 600,
+    "test_retest_spearman": 0.8541,
+    "pass_agreement": 0.8608,
+    "pass_kappa": 0.7171,
+    "item_total_correlations": [
+      0.5857,
+      0.6425,
+      0.6336,
+      0.6143,
+      0.5723,
+      0.621,
+      0.6162,
+      0.5983
+    ],
+    "mean_absolute_retest_difference_points": 12.84,
+    "limitation": "Короткий тест чувствителен к случайной ошибке. Порог 70% — продуктовая гипотеза; требуется пилот, экспертная разметка и калибровка по каждому грейду."
+  },
+  "limitations": [
+    "Метки созданы программным генератором, не работодателями.",
+    "Валидация подтверждает воспроизводимость и соответствие синтетическому сценарию, не эффективность реального найма.",
+    "Защищённые признаки и контакты не поступают в модель; отсутствие признаков само по себе не доказывает отсутствие смещения."
+  ]
+}
