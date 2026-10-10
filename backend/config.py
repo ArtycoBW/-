@@ -13,3 +13,8 @@ SMTP_USERNAME = os.getenv("SMTP_USERNAME", "")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
 MAIL_DIR = os.getenv("MAIL_DIR", ".local/mail")
 MODEL_PATH = os.getenv("MODEL_PATH", "ml/model.json")
+EMAIL_VERIFICATION_REQUIRED = os.getenv("EMAIL_VERIFICATION_REQUIRED", "false").lower() == "true"
+PASSWORD_RECOVERY_ENABLED = os.getenv("PASSWORD_RECOVERY_ENABLED", "false").lower() == "true"
+# Only local automated tests may expose mail links; never enable on a public demo.
+EXPOSE_DEMO_MAIL = os.getenv("EXPOSE_DEMO_MAIL", "false").lower() == "true"
+TRUST_CLOUDFLARE = os.getenv("TRUST_CLOUDFLARE", "false").lower() == "true"

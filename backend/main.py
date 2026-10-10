@@ -1,4 +1,5 @@
 import io
+import ipaddress
 import json
 import secrets
 import time
@@ -9,8 +10,8 @@ from types import SimpleNamespace
 from fastapi import Depends, FastAPI, File, HTTPException, Query, Request, Response, UploadFile
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from sqlalchemy import delete, select
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy import delete, select, text
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import Session as DBSession
 from backend import config, models as m, schemas as s
 from backend.assessment import evaluate, generate_questions, public_questions
@@ -41,13 +42,27 @@ async def safeguards(request: Request, call_next):
         if content_length > 6 * 1024 * 1024:
             return JSONResponse({"detail": "Размер запроса превышает 6 МБ"}, status_code=413)
         if "/auth/" in request.url.path:
-            key = (request.client.host if request.client else "local", request.url.path)
-            bucket = rate_buckets[key]
+            address = request.client.host if request.client else "local"
+            if config.TRUST_CLOUDFLARE:
+                try:
+                    address = str(ipaddress.ip_address(request.headers.get("cf-connecting-ip", address)))
+                except ValueError:
+                    pass
+            # Only a bounded set of route keys, including requests to unknown auth paths.
+            route = request.url.path.split("/")[4] if len(request.url.path.split("/")) > 4 else "unknown"
+            route = route if route in {"login", "register", "verify", "recover", "reset", "resend", "demo", "logout"} else "unknown"
+            key = (address, route)
             now = time.time()
+            if key not in rate_buckets and len(rate_buckets) >= 4096:
+                for expired in [k for k, v in rate_buckets.items() if not v or v[-1] < now - 60]:
+                    del rate_buckets[expired]
+                if len(rate_buckets) >= 4096:
+                    return JSONResponse({"detail": "Сервис занят. Повторите через минуту"}, status_code=429, headers={"Retry-After": "60"})
+            bucket = rate_buckets[key]
             while bucket and bucket[0] < now - 60:
                 bucket.popleft()
             if len(bucket) >= 30:
-                return JSONResponse({"detail": "Слишком много попыток. Повторите через минуту"}, status_code=429)
+                return JSONResponse({"detail": "Слишком много попыток. Повторите через минуту"}, status_code=429, headers={"Retry-After": "60"})
             bucket.append(now)
     response = await call_next(request)
     response.headers["X-Content-Type-Options"] = "nosniff"
@@ -82,14 +97,22 @@ def grant(db, company_id, candidate_id, reason):
 
 @app.get(P + "/health", tags=["Система"])
 def health():
-    return {"status": "ok", "version": "1.0.0", "demo": config.DEMO_MODE}
+    return {"status": "ok", "version": "1.1.0", "demo": config.DEMO_MODE, "email_verification": config.EMAIL_VERIFICATION_REQUIRED, "password_recovery": config.PASSWORD_RECOVERY_ENABLED}
 
 @app.get(P + "/catalog", tags=["Справочники"])
 def catalog():
     return {"specializations": [{"id": "backend", "name": "Бэкенд-разработка"}, {"id": "frontend", "name": "Фронтенд-разработка"}], "grades": [{"id": "junior", "name": "Начальный"}, {"id": "middle", "name": "Средний"}, {"id": "senior", "name": "Старший"}], "demo": config.DEMO_MODE}
 
+@app.get(P + "/ready", tags=["Система"])
+def ready(db: DBSession = Depends(get_db)):
+    try:
+        db.execute(text("SELECT 1"))
+    except SQLAlchemyError:
+        raise HTTPException(503, "Хранилище временно недоступно") from None
+    return {"status": "ready", "database": "ok"}
+
 @app.post(P + "/auth/register", status_code=201, tags=["Авторизация"])
-def register(data: s.Register, db: DBSession = Depends(get_db)):
+def register(data: s.Register, response: Response, db: DBSession = Depends(get_db)):
     if not data.consent:
         raise HTTPException(422, "Необходимо согласие на обработку данных")
     email = str(data.email).lower()
@@ -103,12 +126,17 @@ def register(data: s.Register, db: DBSession = Depends(get_db)):
     else:
         db.add(m.Company(id=user.id, name=data.name, contact=email))
     audit(db, user.id, "consent.processing", user.id, {"version": "1.0", "value": True})
-    link = send_token(db, user, "verify")
-    db.commit()
-    return {"message": "Подтвердите адрес по ссылке из письма", "demo_link": link}
+    if config.EMAIL_VERIFICATION_REQUIRED:
+        link = send_token(db, user, "verify")
+        db.commit()
+        return {"message": "Подтвердите адрес по ссылке из письма", "demo_link": link, "authenticated": False}
+    create_session(db, user, response)
+    return {"message": "Аккаунт создан", "authenticated": True, "user": user_dto(user)}
 
 @app.post(P + "/auth/verify", tags=["Авторизация"])
 def verify(data: s.TokenInput, response: Response, db: DBSession = Depends(get_db)):
+    if not config.EMAIL_VERIFICATION_REQUIRED:
+        raise HTTPException(404, "Подтверждение почты отключено")
     user = consume_token(db, data.token, "verify")
     user.verified = True
     create_session(db, user, response)
@@ -120,7 +148,7 @@ def login(data: s.Login, response: Response, db: DBSession = Depends(get_db)):
     valid = password_hasher.verify(data.password, user.password_hash if user else DUMMY_HASH)
     if not user or not valid:
         raise HTTPException(401, "Неверная почта или пароль")
-    if not user.verified:
+    if config.EMAIL_VERIFICATION_REQUIRED and not user.verified:
         raise HTTPException(403, "Подтвердите адрес электронной почты")
     create_session(db, user, response)
     return user_dto(user)
@@ -138,6 +166,8 @@ def me(user=Depends(current_user)):
 
 @app.post(P + "/auth/recover", tags=["Авторизация"])
 def recover(data: s.EmailInput, db: DBSession = Depends(get_db)):
+    if not config.PASSWORD_RECOVERY_ENABLED:
+        raise HTTPException(404, "Восстановление по почте недоступно на этом стенде")
     user = db.scalar(select(m.User).where(m.User.email == str(data.email).lower()))
     link = send_token(db, user, "reset") if user else None
     db.commit()
@@ -145,6 +175,8 @@ def recover(data: s.EmailInput, db: DBSession = Depends(get_db)):
 
 @app.post(P + "/auth/resend", tags=["Авторизация"])
 def resend(data: s.EmailInput, db: DBSession = Depends(get_db)):
+    if not config.EMAIL_VERIFICATION_REQUIRED:
+        raise HTTPException(404, "Подтверждение почты отключено")
     user = db.scalar(select(m.User).where(m.User.email == str(data.email).lower()))
     link = send_token(db, user, "verify") if user and not user.verified else None
     db.commit()
@@ -152,6 +184,8 @@ def resend(data: s.EmailInput, db: DBSession = Depends(get_db)):
 
 @app.post(P + "/auth/reset", tags=["Авторизация"])
 def reset(data: s.ResetPassword, db: DBSession = Depends(get_db)):
+    if not config.PASSWORD_RECOVERY_ENABLED:
+        raise HTTPException(404, "Восстановление по почте недоступно на этом стенде")
     user = consume_token(db, data.token, "reset")
     user.password_hash = password_hasher.hash(data.password)
     db.execute(delete(m.Session).where(m.Session.user_id == user.id))
@@ -171,6 +205,18 @@ def demo(role: str, response: Response, db: DBSession = Depends(get_db)):
 @app.get(P + "/profile", tags=["Кандидат"])
 def profile(user=Depends(candidate_user), db: DBSession = Depends(get_db)):
     return candidate_dto(db, require_row(db, m.Candidate, user.id), user)
+
+@app.get(P + "/profile/contact-grants", tags=["Кандидат"])
+def contact_grants(user=Depends(candidate_user), db: DBSession = Depends(get_db)):
+    rows = db.execute(select(m.ContactGrant, m.Company.name).join(m.Company, m.Company.id == m.ContactGrant.company_id).where(m.ContactGrant.candidate_id == user.id).order_by(m.ContactGrant.created_at.desc())).all()
+    return [{"company_id": row.company_id, "company_name": name, "reason": row.reason, "created_at": row.created_at} for row, name in rows]
+
+@app.delete(P + "/profile/contact-grants/{company_id}", tags=["Кандидат"])
+def revoke_contact_grant(company_id: str, user=Depends(candidate_user), db: DBSession = Depends(get_db)):
+    db.execute(delete(m.ContactGrant).where(m.ContactGrant.company_id == company_id, m.ContactGrant.candidate_id == user.id))
+    audit(db, user.id, "consent.contact.revoked", company_id)
+    db.commit()
+    return {"message": "Доступ к контактам отозван"}
 
 @app.put(P + "/profile", tags=["Кандидат"])
 def update_profile(data: s.ProfileInput, user=Depends(candidate_user), db: DBSession = Depends(get_db)):

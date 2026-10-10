@@ -42,7 +42,7 @@ def current_user(request: Request, db: DBSession = Depends(get_db)):
 
 def role_required(role):
     def dependency(user=Depends(current_user)):
-        if not user.verified:
+        if config.EMAIL_VERIFICATION_REQUIRED and not user.verified:
             raise HTTPException(403, "Сначала подтвердите адрес электронной почты")
         if user.role != role:
             raise HTTPException(403, "Действие недоступно для вашей роли")
@@ -79,7 +79,7 @@ def send_token(db, user, kind):
         (directory / f"{user.id}-{kind}.txt").write_text(body, encoding="utf-8")
     else:
         raise HTTPException(503, "Почтовая доставка не настроена")
-    return link if config.DEMO_MODE else None
+    return link if config.DEMO_MODE and config.EXPOSE_DEMO_MAIL else None
 
 def consume_token(db, raw, kind):
     token = db.scalar(select(Token).where(Token.token_hash == digest(raw), Token.kind == kind).with_for_update())

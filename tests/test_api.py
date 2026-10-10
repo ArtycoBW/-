@@ -14,6 +14,7 @@ from backend.security import password_hasher
 
 @pytest.fixture(autouse=True)
 def setup_db():
+    assert str(engine.url).replace("\\", "/").endswith("/.local/test.db"), "Tests must never reset an application database"
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
     rate_buckets.clear()
@@ -38,7 +39,10 @@ def offer(candidate_id):
 def vacancy_data():
     return {"title":"Разработчик Python","description":"Работа над надёжным продуктом","specialization":"backend","grade":"middle","skills":["Python"],"work_format":"remote","salary_min":150000,"salary_max":220000}
 
-def test_registration_and_one_time_verification():
+def test_registration_and_one_time_verification(monkeypatch):
+    from backend import config
+    monkeypatch.setattr(config, "EMAIL_VERIFICATION_REQUIRED", True)
+    monkeypatch.setattr(config, "EXPOSE_DEMO_MAIL", True)
     c=TestClient(app)
     response=c.post("/api/v1/auth/register",json={"email":"new@example.org","password":"TestPassword2026!","role":"candidate","name":"Новый кандидат","consent":True})
     assert response.status_code==201
@@ -126,7 +130,10 @@ def test_application_disclosure_archive_and_ownership():
     e.patch(f"/api/v1/vacancies/{v['id']}",json={"status":"archived"})
     assert c.post(f"/api/v1/vacancies/{v['id']}/applications",json={"share_contacts":True}).status_code==409
 
-def test_origin_logout_and_password_reset():
+def test_origin_logout_and_password_reset(monkeypatch):
+    from backend import config
+    monkeypatch.setattr(config, "PASSWORD_RECOVERY_ENABLED", True)
+    monkeypatch.setattr(config, "EXPOSE_DEMO_MAIL", True)
     c,_=account("candidate")
     assert c.post("/api/v1/auth/logout",headers={"origin":"https://evil.example"}).status_code==403
     link=c.post("/api/v1/auth/recover",json={"email":"candidate1@example.org"}).json()["demo_link"]
