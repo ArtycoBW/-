@@ -1,0 +1,72 @@
+{
+  "model_sha256": "5a55a8f04531d7b4aec5809fb9ac37502910479a00e1c6eff233a7775bd8212b",
+  "protocol": "5 unseen seeds, 400 query groups, 12800 synthetic pairs; paired bootstrap over queries, 2000 resamples",
+  "datasets": [
+    {
+      "seed": 91823,
+      "queries": 80,
+      "ndcg_at_5": {
+        "formula": 0.98265,
+        "hybrid": 0.99121,
+        "random": 0.613
+      },
+      "brier_on_synthetic_labels": 0.17369,
+      "without_fsp_ndcg_at_5": 0.98793
+    },
+    {
+      "seed": 61743,
+      "queries": 80,
+      "ndcg_at_5": {
+        "formula": 0.97778,
+        "hybrid": 0.99335,
+        "random": 0.60036
+      },
+      "brier_on_synthetic_labels": 0.17602,
+      "without_fsp_ndcg_at_5": 0.99041
+    },
+    {
+      "seed": 41071,
+      "queries": 80,
+      "ndcg_at_5": {
+        "formula": 0.97756,
+        "hybrid": 0.99205,
+        "random": 0.62375
+      },
+      "brier_on_synthetic_labels": 0.17183,
+      "without_fsp_ndcg_at_5": 0.99202
+    },
+    {
+      "seed": 31337,
+      "queries": 80,
+      "ndcg_at_5": {
+        "formula": 0.98719,
+        "hybrid": 0.99511,
+        "random": 0.60463
+      },
+      "brier_on_synthetic_labels": 0.17262,
+      "without_fsp_ndcg_at_5": 0.9911
+    },
+    {
+      "seed": 78031,
+      "queries": 80,
+      "ndcg_at_5": {
+        "formula": 0.9788,
+        "hybrid": 0.99022,
+        "random": 0.61913
+      },
+      "brier_on_synthetic_labels": 0.17017,
+      "without_fsp_ndcg_at_5": 0.98574
+    }
+  ],
+  "hybrid_minus_formula_ndcg": 0.01159,
+  "difference_95pct_interval": [
+    0.00932,
+    0.014
+  ],
+  "nonnegative_coefficients": true,
+  "limits": [
+    "Independent seeds reuse the same synthetic generator: this is not external validation.",
+    "The generator and formula share feature assumptions; high NDCG is expected and must not be presented as hiring accuracy.",
+    "No claims about real-world fairness, calibration or employment outcomes."
+  ]
+}
