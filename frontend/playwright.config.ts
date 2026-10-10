@@ -1,0 +1,2 @@
+import { defineConfig } from "@playwright/test";
+export default defineConfig({testDir:"./e2e",fullyParallel:false,workers:1,timeout:90000,expect:{timeout:12000},reporter:[["list"],["json",{outputFile:"../.local/e2e-results.json"}]],use:{baseURL:"http://localhost:3000",channel:"chrome",viewport:{width:1440,height:1000},reducedMotion:"reduce",screenshot:"only-on-failure",trace:"retain-on-failure"}});

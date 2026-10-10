@@ -1,0 +1,35 @@
+/* preloader tokens — same three tiers as src/app/globals.css.
+   The plate grows out of the Relay logo tile (the Statement mark). */
+
+/* TIER 1 — primitives */
+:root {
+  --raw-preloader-size-mark: 4.75rem; /* 76 — the Statement mark tile */
+}
+
+/* TIER 2 — semantic */
+:root {
+  --preloader-mark-size: var(--raw-preloader-size-mark);
+}
+
+/* TIER 3 — Tailwind theme */
+@theme inline {
+  --spacing-preloader-mark: var(--preloader-mark-size);
+}
+
+/* Set by the inline head script before first paint (home only, motion
+   allowed): the overlay shows from the server HTML and the page does not
+   scroll. The page paints once at rest under the opaque stage (so its
+   backdrop is the LCP at first paint, not at the fold), then waits
+   off-screen (`data-preload-away`, set after that paint is reported or at
+   hydration) so no entrance plays before the lime folds back to reveal it. */
+html[data-preload],
+html[data-preload-closing] {
+  /* held through the fold too, so the fold always uncovers the hero */
+  overflow: hidden;
+}
+html[data-preload][data-preload-away] main {
+  transform: translateY(200vh);
+}
+html[data-preload] [data-preloader] {
+  display: block;
+}

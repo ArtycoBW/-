@@ -1,0 +1,39 @@
+{
+  "project": "Разряд",
+  "target": "next",
+  "style": null,
+  "scenes": [
+    {
+      "slot": "whole page — fixed viewport canvas under every section",
+      "kind": "original (Scene Lab)",
+      "references": [
+        "sea-sparkle",
+        "crimson-contour",
+        "rift-stone"
+      ],
+      "brief": "S-curve ribbon of glowing filaments + sparks + DOF bokeh, bloom, lime instead of cyan (user reference image)",
+      "source": "src/views/home/stream/stream-scene.ts",
+      "tint": "colour roles from --stream-* tokens (main=--accent, alt=sky #52c8ff, core=--accent-soft)",
+      "path": "src/views/home/stream/stream-path.ts — wide hero swing → S through the Integrations tile gap → few wide bends past the column edges → exit left above the footer",
+      "tuning": "none on site — values baked into CONFIG (panel removed)",
+      "config": {
+        "bloomStr": 0.68,
+        "bloomRadius": 0.57,
+        "bloomThresh": 0.07,
+        "size": 2.1,
+        "brightness": 0.79
+      }
+    }
+  ],
+  "surfaces": {
+    "hero window + cards": "frosted glass",
+    "Product → Proof": "one full-bleed frosted slab (--glass-slab)"
+  },
+  "styleId": "relay-style",
+  "palette": [
+    "#402FFF",
+    "#EC1D35",
+    "#EDEDED",
+    "#1B1C21"
+  ]
+}
