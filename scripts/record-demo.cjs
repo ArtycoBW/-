@@ -4,13 +4,14 @@ const { execFileSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
+const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000';
 
 (async () => {
   const browser = await chromium.launch({ channel: 'chrome', headless: true, slowMo: 220 });
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'reduce', recordVideo: { dir: path.join(root, '.local/video'), size: { width: 1440, height: 1000 } } });
   const page = await context.newPage();
   const video = page.video();
-  const visit = url => page.goto('http://localhost:3000' + url);
+  const visit = url => page.goto(baseURL + url);
   const pause = () => page.waitForTimeout(2200);
   const key = `demo${Date.now()}`, email = `${key}@example.org`, password = 'DemoRecord2026!';
   const errors = [];
@@ -23,8 +24,6 @@ const root = path.resolve(__dirname, '..');
     await page.getByLabel('Пароль', { exact: true }).fill(password);
     await page.getByRole('checkbox').check();
     await page.getByRole('button', { name: 'Создать аккаунт →', exact: true }).click();
-    await page.getByRole('link', { name: 'открыть одноразовую ссылку' }).click();
-    await page.getByRole('button', { name: 'Подтвердить и войти →' }).click();
     await page.waitForURL('**/app'); await pause();
     await page.getByRole('link', { name: 'Мой профиль', exact: true }).click();
     await page.getByLabel('Навыки через запятую').fill(`Python, SQL, ${key}`);
@@ -38,11 +37,12 @@ const root = path.resolve(__dirname, '..');
     await expect(page.getByLabel('Ответ на вопрос 1', { exact: true })).toBeVisible(); await pause();
     // Доверенная фикстура проверяет интеграцию. Правильные ответы не доступны пользователю API.
     const questions = JSON.parse(execFileSync('docker', ['compose', 'exec', '-T', 'api', 'python', '-c', 'import json,sys; from sqlalchemy import select; from backend.db import SessionLocal; from backend.models import Attempt,User; db=SessionLocal(); q=db.scalar(select(Attempt.questions).join(User,User.id==Attempt.candidate_id).where(User.email==sys.argv[1]).order_by(Attempt.started_at.desc())); print(json.dumps(q,ensure_ascii=False))', email], { cwd: root, encoding: 'utf8' }));
-    const attempts = await (await page.request.get('http://localhost:3000/api/v1/assessments')).json();
+    const attempts = await (await page.request.get(baseURL + '/api/v1/assessments')).json();
     for (let i = 0; i < attempts[0].questions.length; i++) {
       await page.getByLabel(`Ответ на вопрос ${i + 1}`, { exact: true }).fill(questions.find(q => q.id === attempts[0].questions[i].id).answer);
     }
     await page.getByRole('button', { name: 'Сохранить черновик' }).click();
+    await expect(page.getByText('Черновик сохранён', { exact: true })).toBeVisible();
     await page.reload();
     await expect(page.getByLabel('Ответ на вопрос 1', { exact: true })).not.toHaveValue('');
     await page.getByRole('button', { name: 'Завершить и проверить' }).click();
@@ -67,7 +67,8 @@ const root = path.resolve(__dirname, '..');
     await page.getByRole('button', { name: 'Войти →', exact: true }).click();
     await page.waitForURL('**/app');
     await page.getByRole('link', { name: 'Приглашения', exact: true }).first().click(); await pause();
-    await page.getByRole('button', { name: /Принять/ }).click(); await pause();
+    await page.getByRole('button', { name: /Принять/ }).click();
+    await expect(page.getByText('Предложение принято. Только эта компания получила доступ к вашим контактам.', { exact: true })).toBeVisible(); await pause();
     await visit('/auth');
     await page.getByRole('button', { name: 'Кабинет работодателя', exact: true }).click();
     await page.waitForURL('**/app');

@@ -67,7 +67,7 @@ class Documentation(BaseDocTemplate):
         canvas.drawString(48, A4[1]-29, "РАЗРЯД / ЛЦТ 2026")
         canvas.setFont("Body", 8)
         canvas.setFillColor(colors.HexColor("#686675"))
-        canvas.drawRightString(A4[0]-48, A4[1]-29, "ТЕХНИЧЕСКАЯ ДОКУМЕНТАЦИЯ · 1.0")
+        canvas.drawRightString(A4[0]-48, A4[1]-29, "ТЕХНИЧЕСКАЯ ДОКУМЕНТАЦИЯ · 1.1")
         canvas.drawString(48, 27, "Демонстрационные данные. Фактические границы описаны в методике.")
         canvas.drawRightString(A4[0]-48, 27, str(doc.page))
         canvas.restoreState()
@@ -107,6 +107,8 @@ def markdown(source):
                 i += 1
             count = max(map(len, rows))
             ratios = {2: [0.34, 0.66], 3: [0.23, 0.43, 0.34], 4: [0.15, 0.31, 0.28, 0.26]}.get(count, [1/count]*count)
+            if rows[0] == ["Аккаунт", "Назначение", "Пароль"]:
+                ratios = [0.31, 0.44, 0.25]
             data = [[Paragraph(inline(cell), styles["CellHead" if r == 0 else "Cell"]) for cell in row] for r, row in enumerate(rows)]
             table = Table(data, colWidths=[(A4[0]-96)*v for v in ratios], repeatRows=1, hAlign="LEFT")
             table.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, 0), purple), ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.HexColor("#F5F3FB"), colors.white]), ("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 8), ("RIGHTPADDING", (0, 0), (-1, -1), 8), ("TOPPADDING", (0, 0), (-1, -1), 7), ("BOTTOMPADDING", (0, 0), (-1, -1), 7), ("LINEBELOW", (0, -1), (-1, -1), .5, colors.HexColor("#D9D5EA"))]))
@@ -128,12 +130,12 @@ def main():
             Paragraph("Навыки говорят за вас", styles["CoverTitle"]),
             Paragraph("Цифровая платформа прямого найма с подтверждённой категорией специалиста и профилем достижений ФСП", styles["BodyText"]),
             Spacer(1, 45), Paragraph("Техническое задание · Архитектура · API<br/>Тестирование · Машинное обучение · Эксплуатация", styles["Heading3"]),
-            Spacer(1, 65), Paragraph("Специальный трек Федерации спортивного программирования<br/>Лидеры цифровой трансформации 2026<br/>Версия 1.0 / 10 октября 2026", styles["Small"]),
+            Spacer(1, 65), Paragraph("Специальный трек Федерации спортивного программирования<br/>Лидеры цифровой трансформации 2026<br/>Версия 1.1 / 10 октября 2026", styles["Small"]),
             PageBreak(), Paragraph("Содержание", styles["Heading1"])]
     toc = TableOfContents()
     toc.levelStyles = [ParagraphStyle("TOC0", fontName="BodyBold", fontSize=10, leading=14, spaceBefore=6, textColor=purple), ParagraphStyle("TOC1", fontName="Body", fontSize=9, leading=12, leftIndent=14, textColor=ink)]
     flow.extend([toc, PageBreak()])
-    docs = ["01-Техническое-задание.md", "02-Реализация.md", "03-Методика-и-проверка.md", "04-Сдача.md"]
+    docs = ["01-Техническое-задание.md", "02-Реализация.md", "03-Методика-и-проверка.md", "04-Сдача.md", "05-Проверка-стенда.md", "06-Готовность-и-эксплуатация.md"]
     for n, filename in enumerate(docs):
         if n:
             flow.append(PageBreak())
