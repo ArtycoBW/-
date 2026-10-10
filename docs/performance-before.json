@@ -1,0 +1,22 @@
+{
+  "measured_at_utc": "2026-10-10T17:08:45.784331+00:00",
+  "environment": "Локальный Docker Desktop: Next.js production → FastAPI → PostgreSQL 17",
+  "client_os": "Windows",
+  "cpu": "AMD Ryzen 5 2600X, 6 ядер",
+  "host_ram_gib": 31.93,
+  "endpoint": "GET /api/v1/candidates?limit=12",
+  "profiles": 37,
+  "requests": 100,
+  "concurrency": 10,
+  "warmup_requests": 1,
+  "successes": 100,
+  "statuses": [
+    200
+  ],
+  "p50_ms": 2046.32,
+  "p95_ms": 2512.14,
+  "max_ms": 2669.19,
+  "elapsed_seconds": 20.59,
+  "requests_per_second": 4.86,
+  "limitation": "Синтетический малый банк и локальная сеть. Не подтверждает SLA, безопасность или масштабирование на большой объём."
+}
