@@ -4,6 +4,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Brand, Field, Notice } from "@/components/product/ui";
 import { api, post, User } from "@/lib/api";
+import { SignalField } from "@/components/product/signal-field";
+import { ArrowUpRight, Eye, EyeSlash, ArrowLeft, Fingerprint, Code, Buildings } from "@phosphor-icons/react";
 
 export function AuthView() {
   const params = useSearchParams();
@@ -22,9 +24,12 @@ export function AuthView() {
   const [demoLink, setDemoLink] = useState("");
   const [busy, setBusy] = useState(false);
   const [isDemo, setIsDemo] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [emailVerification, setEmailVerification] = useState(false);
+  const [recovery, setRecovery] = useState(false);
   useEffect(() => {
-    api<{ demo: boolean }>("/health")
-      .then((x) => setIsDemo(x.demo))
+    api<{ demo: boolean; email_verification: boolean; password_recovery: boolean }>("/health")
+      .then((x) => { setIsDemo(x.demo); setEmailVerification(x.email_verification); setRecovery(x.password_recovery); })
       .catch(() => {});
   }, []);
   async function demo(which: string) {
@@ -59,7 +64,7 @@ export function AuthView() {
         await post<User>("/auth/login", { email, password });
         router.push("/app");
       } else {
-        const r = await post<{ message: string; demo_link?: string }>(
+        const r = await post<{ message: string; demo_link?: string; authenticated?: boolean }>(
           `/auth/${mode}`,
           mode === "register"
             ? { email, password, name, role, consent }
@@ -67,6 +72,7 @@ export function AuthView() {
         );
         setMessage(r.message);
         setDemoLink(r.demo_link || "");
+        if (r.authenticated) router.push("/app");
       }
     } catch (e) {
       setError((e as Error).message);
@@ -78,7 +84,7 @@ export function AuthView() {
     (
       {
         login: "С возвращением",
-        register: "Ваш следующий уровень",
+        register: "Создать аккаунт",
         verify: "Подтвердите почту",
         recover: "Восстановить доступ",
         resend: "Подтверждение почты",
@@ -88,37 +94,38 @@ export function AuthView() {
   return (
     <div className="rz-auth">
       <div className="rz-auth-story">
+        <SignalField />
         <Brand />
-        <div>
-          <p className="rz-eyebrow">НАВЫКИ ГОВОРЯТ ЗА ВАС</p>
+        <div className="rz-auth-narrative">
+          <p className="rz-auth-kicker"><Fingerprint size={22} /> Карьера с подтверждением</p>
           <h1>
-            Меньше поиска.
+            Ваш опыт.
             <br />
-            Больше <em>возможностей.</em>
+            <em>Новый разряд.</em>
           </h1>
           <p>
-            Подтвердите свой уровень. Получайте предложения от команд, которым
-            нужны именно ваши навыки.
+            Навыки становятся доказательствами.
+            А доказательства открывают новые возможности.
           </p>
           <div className="rz-auth-proof">
-            <span>01 / Подтверждённый грейд</span>
-            <span>02 / Зарплата до знакомства</span>
-            <span>03 / Контакты под вашим контролем</span>
+            <span><b>01</b> Подтвердите уровень</span>
+            <span><b>02</b> Получите предложение</span>
+            <span><b>03</b> Выберите свою команду</span>
           </div>
         </div>
-        <small>Специальный трек ФСП · ЛЦТ 2026</small>
+        <small>Спортивное программирование. Профессиональный рост.<span>ФСП × ЛЦТ 2026</span></small>
       </div>
       <main className="rz-auth-main">
         <Link href="/" className="rz-back">
-          ← На главную
+          <ArrowLeft size={16} /> На главную
         </Link>
         <div className="rz-auth-card">
-          <p className="rz-eyebrow">РАЗРЯД / ЛИЧНЫЙ КАБИНЕТ</p>
+          <div className="rz-auth-form-brand"><Brand /></div>
           <h2>{title}</h2>
           <p className="rz-muted">
             {mode === "register"
-              ? "Начните с профиля — достижения не останутся незамеченными."
-              : "Войдите, чтобы продолжить свой карьерный путь."}
+              ? "Выберите роль и начните с короткого знакомства."
+              : "Ваш профиль, результаты и предложения уже здесь."}
           </p>
           {error && <Notice error>{error}</Notice>}
           {message && <Notice>{message}</Notice>}
@@ -180,8 +187,8 @@ export function AuthView() {
                 label="Пароль"
                 hint={mode !== "login" ? "Не менее 10 символов" : ""}
               >
-                <input
-                  type="password"
+                <span className="rz-password"><input
+                  type={showPassword ? "text" : "password"}
                   required
                   minLength={mode === "login" ? 1 : 10}
                   maxLength={128}
@@ -190,7 +197,7 @@ export function AuthView() {
                   autoComplete={
                     mode === "login" ? "current-password" : "new-password"
                   }
-                />
+                /><button type="button" aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"} onClick={() => setShowPassword(!showPassword)}>{showPassword ? <EyeSlash size={20} /> : <Eye size={20} />}</button></span>
               </Field>
             )}
             {mode === "register" && (
@@ -230,10 +237,10 @@ export function AuthView() {
                 <button onClick={() => setMode("register")}>
                   Создать аккаунт
                 </button>
-                <button onClick={() => setMode("recover")}>
+                {recovery && <button onClick={() => setMode("recover")}>
                   Забыли пароль?
-                </button>
-                <button onClick={() => setMode("resend")}>Нет письма?</button>
+                </button>}
+                {emailVerification && <button onClick={() => setMode("resend")}>Нет письма?</button>}
               </>
             ) : (
               <button
@@ -248,21 +255,23 @@ export function AuthView() {
           </div>
           {isDemo && (
             <div className="rz-demo">
-              <span>ПОСМОТРЕТЬ БЕЗ РЕГИСТРАЦИИ</span>
+              <span>Или познакомьтесь с платформой</span>
               <div>
                 <button
                   className="rz-button"
                   disabled={busy}
                   onClick={() => demo("candidate")}
+                  aria-label="Кабинет специалиста"
                 >
-                  Кабинет специалиста
+                  <Code size={21} /><span>Специалист<small>Навыки и предложения</small></span><ArrowUpRight size={16} />
                 </button>
                 <button
                   className="rz-button"
                   disabled={busy}
                   onClick={() => demo("employer")}
+                  aria-label="Кабинет работодателя"
                 >
-                  Кабинет работодателя
+                  <Buildings size={21} /><span>Работодатель<small>Команда и подбор</small></span><ArrowUpRight size={16} />
                 </button>
               </div>
               <small>Демонстрационные аккаунты и синтетические данные</small>

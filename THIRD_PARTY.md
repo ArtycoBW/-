@@ -8,4 +8,6 @@
 
 Основные зависимости: Next.js (MIT), React (MIT), Tailwind CSS (MIT), Three.js (MIT), react-spring (MIT), Lenis (MIT), FastAPI (MIT), SQLAlchemy (MIT), scikit-learn (BSD-3-Clause), NumPy (BSD-3-Clause), SciPy (BSD-3-Clause), pypdf (BSD-3-Clause), ReportLab (BSD), PostgreSQL (PostgreSQL License), Mailpit (MIT). Полные тексты лицензий находятся в дистрибутивах соответствующих пакетов. Точные версии фиксируются в `frontend/package-lock.json` и `backend/requirements.txt`.
 
-Шрифты интерфейса: Inter, Lora, JetBrains Mono, получаемые через next/font. Тексты SIL Open Font License из репозитория google/fonts сохранены в `licenses/fonts/` и включаются в runtime-образ. Презентация сохраняет Montserrat из шаблона.
+Шрифты интерфейса: Manrope, Inter, Lora, JetBrains Mono, получаемые через next/font. Тексты SIL Open Font License из репозитория google/fonts сохранены в `licenses/fonts/` и включаются в runtime-образ. Презентация сохраняет Montserrat из шаблона.
+
+Иконки кабинетов и формы входа: Phosphor Icons (MIT), лицензия сохранена в `licenses/phosphor-icons.txt`. Знак «Разряд» в `frontend/public/brand/mark.svg` создан для проекта.

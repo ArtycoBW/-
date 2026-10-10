@@ -2,6 +2,7 @@
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { ContactAccess } from "@/components/product/contact-access";
 import {
   api,
   post,
@@ -24,6 +25,7 @@ import {
 } from "@/lib/api";
 import {
   Brand,
+  Mark,
   Empty,
   Field,
   Notice,
@@ -32,6 +34,9 @@ import {
   Skills,
   Tag,
 } from "@/components/product/ui";
+
+import { SquaresFour, UserCircle, Certificate, PaperPlaneTilt, Briefcase, ArrowsLeftRight, TerminalWindow, Buildings, UsersThree, List, Bell, ArrowUpRight, CheckCircle, Clock, MapPin, Trophy } from "@phosphor-icons/react";
+const navIcons = { overview: SquaresFour, profile: UserCircle, assessment: Certificate, invitations: PaperPlaneTilt, vacancies: Briefcase, applications: ArrowsLeftRight, challenges: TerminalWindow, company: Buildings, talent: UsersThree };
 
 const candidateNav = [
   ["overview", "Обзор", "◈"],
@@ -76,7 +81,7 @@ export function Dashboard() {
   if (!user)
     return (
       <main className="rz-loading">
-        <span className="rz-mark">↗</span>
+        <Mark />
         <p>Открываем ваш кабинет…</p>
       </main>
     );
@@ -84,6 +89,7 @@ export function Dashboard() {
   const label = nav.find((x) => x[0] === section)?.[1] || "Обзор";
   return (
     <div className="rz-workspace">
+      {menu && <button className="rz-mobile-overlay" aria-label="Закрыть меню" onClick={() => setMenu(false)} />}
       <aside className={`rz-sidebar ${menu ? "open" : ""}`}>
         <Brand />
         <div className="rz-role">
@@ -101,18 +107,19 @@ export function Dashboard() {
         </div>
         <p className="rz-nav-label">ВАШЕ ПРОСТРАНСТВО</p>
         <nav aria-label="Разделы кабинета">
-          {nav.map(([id, name, icon]) => (
+          {nav.map(([id, name]) => { const NavIcon = navIcons[id as keyof typeof navIcons]; return (
             <Link
               key={id}
               onClick={() => setMenu(false)}
               href={id === "overview" ? "/app" : `/app/${id}`}
+              aria-current={section === id ? "page" : undefined}
               className={section === id ? "active" : ""}
             >
-              <span aria-hidden="true">{icon}</span>
+              <span aria-hidden="true"><NavIcon size={21} weight={section === id ? "duotone" : "regular"} /></span>
               {name}
               {id === "assessment" && <i />}
             </Link>
-          ))}
+          ); })}
         </nav>
         <div className="rz-sidebar-bottom">
           <Link href="/methodology">Как работает подбор ↗</Link>
@@ -138,9 +145,10 @@ export function Dashboard() {
             <button
               className="rz-menu-button"
               aria-label="Открыть меню"
+              aria-expanded={menu}
               onClick={() => setMenu(!menu)}
             >
-              ☰
+              <List size={22} />
             </button>
             <span className="rz-muted">Кабинет</span>
             <span className="rz-breadcrumb">/</span>
@@ -155,11 +163,11 @@ export function Dashboard() {
               aria-label="Приглашения"
               className="rz-icon-button"
             >
-              ↗
+              <Bell size={19} />
             </Link>
           </div>
         </header>
-        <main className="rz-main">
+        <main className="rz-main"><div key={section} className="rz-route">
           {error && <Notice error>{error}</Notice>}
           {section === "overview" ? (
             <Overview user={user} />
@@ -184,7 +192,7 @@ export function Dashboard() {
               Выберите раздел в меню своего кабинета.
             </Empty>
           )}
-        </main>
+        </div></main>
         <footer className="rz-app-footer">
           <span>Разряд — ваши навыки имеют значение.</span>
           <span>
@@ -255,16 +263,16 @@ function Overview({ user }: { user: User }) {
   return (
     <>
       <PageHead
-        eyebrow="СЛЕДУЮЩИЙ ШАГ НАЧИНАЕТСЯ ЗДЕСЬ"
+        eyebrow={candidate ? "Личный кабинет" : "Рабочее пространство команды"}
         title={
           candidate
             ? `Здравствуйте${profile ? ", " + profile.name.split(" ")[0] : ""}.`
-            : `Команда начинается с людей.`
+            : `Подбор специалистов`
         }
         text={
           candidate
-            ? "Ваши навыки уже могут стать чьим-то точным совпадением."
-            : `${company?.name || "Ваша компания"} · находите людей по результатам, а не обещаниям.`
+            ? "Управляйте профилем и выбирайте предложения от компаний."
+            : `${company?.name || "Ваша компания"} · потребности, приглашения и отклики в одном месте.`
         }
         action={
           <Link
@@ -328,29 +336,18 @@ function Overview({ user }: { user: User }) {
         <section className="rz-feature-panel">
           <p className="rz-eyebrow">
             {candidate
-              ? "ВАШ ПРОФИЛЬ — ВАША РЕПУТАЦИЯ"
+              ? "ПРОФИЛЬ СПЕЦИАЛИСТА"
               : "ОБРАТНАЯ МЕХАНИКА НАЙМА"}
           </p>
-          <h2>
-            {candidate ? (
-              <>
-                Навыки подтверждены.
-                <br />
-                <em>Возможности открыты.</em>
-              </>
-            ) : (
-              <>
-                Сначала нужный человек.
-                <br />
-                <em>Потом знакомство.</em>
-              </>
-            )}
-          </h2>
-          <p>
-            {candidate
-              ? "Добавляйте достижения, решайте короткие задачи и получайте предложения с понятными условиями."
-              : "Опишите задачи и стек. Получите категорию специалистов, сравните доказательства и предложите конкретные условия."}
-          </p>
+          <h2>{candidate ? profile?.name || "Ваш профиль" : company?.name || "Ваша команда"}</h2>
+          <p>{candidate
+            ? `${specName(profile?.specialization || "backend")} · ${gradeName(profile?.grade || null)}. ${profile?.city || "Укажите город в профиле"}`
+            : "Сохраните требования к роли. Сравните стек, результаты тестов и подтверждённые достижения в одной подборке."}</p>
+          {candidate && profile && <Skills items={profile.skills.slice(0, 5)} />}
+          <div className="rz-profile-summary">
+            <span>{candidate ? "Публикация профиля" : "Принцип отбора"}<strong>{candidate ? profile?.published ? "Виден работодателям" : "Пока скрыт" : "Специализация + грейд"}</strong></span>
+            <span>{candidate ? "Желаемая зарплата" : "Контакты кандидата"}<strong>{candidate ? `от ${money(profile?.salary_min || 0)} ₽` : "После его согласия"}</strong></span>
+          </div>
           <Link
             className="rz-button"
             href={candidate ? "/app/profile" : "/app/talent"}
@@ -429,7 +426,7 @@ function Overview({ user }: { user: User }) {
             {invitations.slice(0, 3).map((i) => (
               <div className="rz-card" key={i.id}>
                 <div className="rz-card-top">
-                  <span className="rz-company-icon">↗</span>
+                  <span className="rz-company-icon"><Buildings size={22} /></span>
                   <Tag tone={i.status === "accepted" ? "green" : ""}>
                     {statusName(i.status)}
                   </Tag>
@@ -534,7 +531,7 @@ function ProfileEditor() {
     <>
       <PageHead
         eyebrow="ПРОФИЛЬ СПЕЦИАЛИСТА"
-        title="Покажите, что вы умеете."
+        title="Мой профиль"
         text="Самоописание рассказывает о вас. Тест и достижения подтверждают навыки."
         action={
           <a href="/api/v1/profile/pdf" className="rz-button">
@@ -663,6 +660,7 @@ function ProfileEditor() {
           </button>
         </form>
         <aside className="rz-stack">
+          <ContactAccess />
           <section className="rz-panel">
             <Tag tone="green">{gradeName(p.grade)}</Tag>
             <h2 className="rz-margin">Подтверждённый уровень</h2>
@@ -853,8 +851,8 @@ function Assessment() {
     <>
       <PageHead
         eyebrow="ПОДТВЕРЖДЕНИЕ КОМПЕТЕНЦИЙ"
-        title="Не просто слова в резюме."
-        text="Сопоставимая сложность. Индивидуальные параметры. Понятный результат."
+        title="Подтвердить уровень"
+        text="Выберите направление и грейд. В тесте 8 вопросов, на выполнение 30 минут."
       />
       {state.error && <Notice error>{state.error}</Notice>}
       {state.message && <Notice>{state.message}</Notice>}
@@ -1064,49 +1062,26 @@ function TalentCard({
 }) {
   return (
     <article className="rz-card rz-talent-card">
-      <div className="rz-card-top">
-        <span className="rz-profile-symbol" aria-hidden="true">
-          {p.specialization === "backend" ? "{ }" : "</>"}
-        </span>
-        {p.match && (
-          <span className="rz-match">
-            {p.match.score} <small>баллов подбора</small>
-          </span>
-        )}
-      </div>
-      <div className="rz-card-top">
-        <h3>{p.name}</h3>
-        <span className="rz-verified" title="Грейд подтверждён тестом">
-          ✓
-        </span>
-      </div>
-      <p className="rz-muted">
-        {specName(p.specialization)} · {gradeName(p.grade)}
-      </p>
-      <Skills items={p.skills} />
-      <div className="rz-candidate-facts">
-        <span>◷ {p.experience} лет опыта</span>
-        <span>⌖ {p.city || "Город не указан"}</span>
-        <span>◇ Тест {p.score}/100</span>
-      </div>
-      {p.achievements.length > 0 && (
-        <Tag tone="purple">♜ Достижения ФСП · демореестр</Tag>
-      )}
-      <div className="rz-card-bottom">
-        <strong>от {money(p.salary_min)} ₽</strong>
-        <div>
-          <button
-            className="rz-icon-button"
-            aria-label={`Подробнее: ${p.name}`}
-            onClick={onDetails || onInvite}
-          >
-            ↗
-          </button>
-          <button className="rz-button small primary" onClick={onInvite}>
-            Пригласить
-          </button>
+      <div className="rz-talent-main">
+        <div className="rz-person-heading">
+          <span className="rz-person-avatar" aria-hidden="true">{p.name.split(" ").slice(0,2).map(x=>x[0]).join("")}</span>
+          <div><h3>{p.name} <CheckCircle size={18} weight="fill" className="rz-person-verified" aria-label="Грейд подтверждён" /></h3>
+          <p className="rz-muted">{specName(p.specialization)} · {gradeName(p.grade)}</p></div>
+        </div>
+        <Skills items={p.skills} />
+        <div className="rz-person-facts">
+          <span><MapPin size={15} /> {p.city || "Город не указан"}</span>
+          <span><Clock size={15} /> Опыт: {p.experience} лет</span>
+          <span><Certificate size={15} /> Тест: {p.score}/100</span>
+          {p.achievements.length > 0 && <span><Trophy size={15} /> ФСП · демореестр</span>}
         </div>
       </div>
+      <aside className="rz-talent-actions">
+        {p.match && <div className="rz-match"><strong>{p.match.score}</strong><small>баллов соответствия</small></div>}
+        <strong className="rz-person-salary">от {money(p.salary_min)} ₽</strong>
+        <div><button className="rz-icon-button" aria-label={`Подробнее: ${p.name}`} onClick={onDetails || onInvite}><ArrowUpRight size={19} /></button>
+        <button className="rz-button small primary" onClick={onInvite}>Пригласить</button></div>
+      </aside>
       {p.match && (
         <details className="rz-explanation">
           <summary>Почему в подборке?</summary>
@@ -1324,8 +1299,8 @@ function Talent() {
     <>
       <PageHead
         eyebrow="БАНК ПОДТВЕРЖДЁННЫХ КОМПЕТЕНЦИЙ"
-        title="Ваша команда. Точное совпадение."
-        text="Найдите людей, чьи навыки подтверждены делом. Начните с понятного предложения."
+        title="Найти специалистов"
+        text="Выберите требования к роли и сравните подтверждённые навыки."
         action={
           <button className="rz-button primary" onClick={() => setForm(!form)}>
             + Описать потребность
@@ -1742,8 +1717,8 @@ function Invitations({ user }: { user: User }) {
         eyebrow="ЗНАКОМСТВО НА ВАШИХ УСЛОВИЯХ"
         title={
           user.role === "candidate"
-            ? "Вас хотят в команду."
-            : "От предложения к знакомству."
+            ? "Приглашения для вас"
+            : "Отправленные приглашения"
         }
         text="Зарплата и задачи известны заранее. Решение всегда остаётся за специалистом."
       />
@@ -1866,7 +1841,7 @@ function Vacancies({ user }: { user: User }) {
       <PageHead
         eyebrow="ОТКРЫТЫЕ ВОЗМОЖНОСТИ"
         title={
-          employer ? "Расскажите о вашей команде." : "Можно сделать первый шаг."
+          employer ? "Вакансии компании" : "Открытые вакансии"
         }
         text={
           employer
@@ -1932,7 +1907,7 @@ function Vacancies({ user }: { user: User }) {
           {items.map((v) => (
             <article className="rz-card" key={v.id}>
               <div className="rz-card-top">
-                <span className="rz-company-icon">↗</span>
+                <span className="rz-company-icon"><Buildings size={22} /></span>
                 <Tag>{v.archived ? "В архиве" : formatName(v.work_format)}</Tag>
               </div>
               <p className="rz-muted">{v.company_name || "Ваша компания"}</p>
@@ -2072,7 +2047,7 @@ function Applications({ user }: { user: User }) {
     <>
       <PageHead
         eyebrow="ДВИЖЕНИЕ К ЗНАКОМСТВУ"
-        title="Каждый шаг — на виду."
+        title="Отклики"
         text="Следите за статусами откликов и продолжайте общение с подходящей командой."
       />
       {state.error && <Notice error>{state.error}</Notice>}
@@ -2147,7 +2122,7 @@ function CompanyEditor() {
     <>
       <PageHead
         eyebrow="ЛИЦО ВАШЕЙ КОМАНДЫ"
-        title="Хорошее знакомство начинается здесь."
+        title="Профиль компании"
         text="Понятное описание компании помогает специалисту принять решение."
       />
       {state.error && <Notice error>{state.error}</Notice>}
@@ -2244,7 +2219,7 @@ function Challenges({ user }: { user: User }) {
     <>
       <PageHead
         eyebrow="ДЕРЖИТЕ НАВЫКИ В ФОРМЕ"
-        title="Маленькая задача. Свежий сигнал."
+        title="Практика"
         text="Практические задачи от команд. Оценка по открытой рубрике, без изменения грейда."
         action={
           user.role === "employer" ? (

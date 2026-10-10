@@ -18,8 +18,6 @@ test("регистрация → подтверждение грейда → п�
   await page
     .getByRole("button", { name: "Создать аккаунт →", exact: true })
     .click();
-  await page.getByRole("link", { name: "открыть одноразовую ссылку" }).click();
-  await page.getByRole("button", { name: "Подтвердить и войти →" }).click();
   await page.waitForURL("**/app");
   await page.getByRole("link", { name: "Мой профиль", exact: true }).click();
   await page.getByLabel("Навыки через запятую").fill(`Python, SQL, ${key}`);
@@ -77,6 +75,7 @@ test("регистрация → подтверждение грейда → п�
       .fill(q.answer);
   }
   await page.getByRole("button", { name: "Сохранить черновик" }).click();
+  await expect(page.getByText("Черновик сохранён", { exact: true })).toBeVisible();
   await page.reload();
   await expect(
     page.getByLabel("Ответ на вопрос 1", { exact: true }),
@@ -111,6 +110,7 @@ test("регистрация → подтверждение грейда → п�
   ).toHaveCount(0);
   await page.goto("/app/invitations");
   await page.getByRole("button", { name: /Принять/ }).click();
+  await expect(page.getByText("Предложение принято. Только эта компания получила доступ к вашим контактам.", { exact: true })).toBeVisible();
   await ep.reload();
   await expect(
     ep.getByText(`${key}.private@example.org`, { exact: false }),

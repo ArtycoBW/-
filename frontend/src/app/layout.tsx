@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono, Lora, Inter } from "next/font/google";
+import { JetBrains_Mono, Lora, Inter, Manrope } from "next/font/google";
 
 import {
   generateMetadata,
@@ -20,6 +20,7 @@ const inter = Inter({
   subsets: ["latin", "cyrillic"],
   display: "swap",
 });
+const productFont = Manrope({ variable: "--font-product", subsets: ["latin", "cyrillic"], display: "swap" });
 
 const instrumentSerif = Lora({
   variable: "--font-instrument-serif",
@@ -67,7 +68,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.variable} ${instrumentSerif.variable} ${fragmentMono.variable}`}
+        className={`${inter.variable} ${instrumentSerif.variable} ${fragmentMono.variable} ${productFont.variable}`}
       >
         {/* Before anything is parsed: marks a returning visitor's choice so the
             server-rendered consent banner is hidden before its first paint. */}

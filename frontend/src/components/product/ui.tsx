@@ -1,10 +1,11 @@
 "use client";
 import { ReactNode } from "react";
 import Link from "next/link";
+import Image from "next/image";
 export function Mark() {
   return (
     <span className="rz-mark" aria-hidden="true">
-      ↗
+      <Image src="/brand/mark.svg" alt="" width={40} height={40} />
     </span>
   );
 }

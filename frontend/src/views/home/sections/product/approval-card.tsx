@@ -1,45 +1,15 @@
 "use client";
 
-import { animated, to, useSpring, useSprings } from "@react-spring/web";
+import { animated, useSpring, useSprings } from "@react-spring/web";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import type { ProductContent } from "@/data/mocks/home/product";
-import { SPRING, SPRING_SOFT, STEP } from "@/lib/motion";
+import { SPRING, STEP } from "@/lib/motion";
 
 import { CARD } from "./feature-row";
 import { CARD_START } from "./use-card-play";
 import { useLoopCycle } from "./use-loop-cycle";
-
-/**
- * Field rows beside the accent bar, positions inside the padding box.
- * 1440 (3888:5885): rows 28 apart from y148, key and value share a top
- * (the last value is 24 tall, 2 above its key).
- * 1024 (3888:10288 → 10293): rows 30 apart from key y148, values 2 above.
- * 768 (3840:1019): rows 28 apart from y153, the last value 2 above.
- * 390 (3893:3180): rows 26 apart from y151, one 18 line each.
- */
-const FIELD_LAYOUT = [
-  {
-    key: "top-38.75 w1024:top-36.75 w768:top-38 w390:top-37.5",
-    value:
-      "top-38.75 text-label leading-label w1024:top-36.25 w768:top-38 w390:top-37.5 w390:leading-product-small",
-  },
-  {
-    key: "top-45.75 w1024:top-44.25 w768:top-45 w390:top-44",
-    value:
-      "top-45.75 text-label leading-label w1024:top-43.75 w768:top-45 w390:top-44 w390:leading-product-small",
-  },
-  {
-    key: "top-53.25 w1024:top-51.75 w768:top-52.5 w390:top-50.5",
-    value:
-      "top-52.75 text-body leading-body w1024:top-51.25 w768:top-52 w390:top-50.5 w390:text-label w390:leading-product-small",
-  },
-] as const;
-
-const MONO = "font-mono text-product-small leading-product-small";
-const MINI_BUTTON =
-  "absolute top-62.75 flex items-center gap-2 overflow-clip rounded-product-button text-product-mini leading-product-mini font-medium whitespace-nowrap shadow-float w768:top-63 w390:top-60 w390:gap-1.5";
 
 /** Timeline, ms after the card enters view. */
 const AT = {
@@ -52,14 +22,6 @@ const AT = {
   /** Approve, Hold, then the waiting time — one STEP apart. */
   buttons: CARD_START + 1560,
 } as const;
-/** Typing dots: two hops each, the three dots a quarter-hop apart, over this long. */
-const HOPS_MS = 640;
-const HOP_LAG = 0.25;
-const HOP_PX = 3;
-const hopY = (t: number, i: number) => {
-  const p = Math.min(2, Math.max(0, t * (2 + 2 * HOP_LAG) - i * HOP_LAG));
-  return -HOP_PX * Math.abs(Math.sin(Math.PI * p));
-};
 /** "waiting 26 min" gains a minute this often once the buttons are up. */
 const TICK_MS = 720;
 /** Ticks stop here so the hold keeps a steady value. */
@@ -84,37 +46,6 @@ export const ApprovalCard = ({
   /** Reverse order on reset: later elements leave first. */
   const out = (rank: number) => rank * 32;
 
-  const [typingIn] = useSpring(
-    () => ({
-      from: { v: 0 },
-      to: { v: on && !reduced ? 1 : 0 },
-      delay: on ? AT.typing : 0,
-      config: SPRING,
-      immediate: !on || snap,
-    }),
-    [on, snap],
-  );
-  const [typingOut] = useSpring(
-    () => ({
-      from: { v: 1 },
-      to: { v: on ? 0 : 1 },
-      delay: on ? AT.typingOut : 0,
-      config: SPRING,
-      immediate: !on || snap,
-    }),
-    [on, snap],
-  );
-  // One linear clock drives every dot: each hops, a quarter-hop behind the last.
-  const [hops] = useSpring(
-    () => ({
-      from: { t: 0 },
-      to: { t: on ? 1 : 0 },
-      delay: on ? AT.typing + 120 : 0,
-      config: { duration: HOPS_MS },
-      immediate: !on || snap,
-    }),
-    [on, snap],
-  );
   const [message] = useSpring(
     () => ({
       from: RISE_FROM,
@@ -132,16 +63,6 @@ export const ApprovalCard = ({
       to: on ? RISE_TO : RISE_FROM,
       delay: on ? AT.fields + i * AT.fieldStep : out(5 - i),
       config: SPRING,
-      immediate: snap,
-    }),
-    [on, snap],
-  );
-  const [bar] = useSpring(
-    () => ({
-      from: { scaleY: 0 },
-      to: { scaleY: on ? 1 : 0 },
-      delay: on ? AT.bar : out(2),
-      config: on ? SPRING_SOFT : SPRING,
       immediate: snap,
     }),
     [on, snap],
@@ -184,123 +105,23 @@ export const ApprovalCard = ({
   );
 
   return (
-    <figure
-      ref={ref}
-      className={`${CARD} h-82 w1024:h-80 w768:h-80.25 w390:h-72.25`}
-    >
-      <p className="absolute top-7.75 left-7.75 text-label leading-label font-medium whitespace-nowrap text-foreground w1024:top-5.75 w1024:left-5.75 w390:top-4.75 w390:left-4.75 w390:leading-product-small">
-        {approval.channel}
-      </p>
-      <p
-        className={`absolute top-7.75 right-7.75 w-30 text-right text-foreground-dim w1024:top-5.75 w1024:right-5.75 w390:top-4.75 w390:right-4.75 ${MONO}`}
-      >
-        {approval.day}
-      </p>
-      <span className="absolute top-15.75 left-7.75 h-px w-174 bg-product-card-border w1024:top-13.75 w1024:left-5.75 w1024:w-120 w390:top-11.75 w390:left-4.75 w390:w-77.5" />
-
-      <animated.span
-        aria-hidden="true"
-        className="absolute top-31 left-17.75 flex gap-1 w1024:top-28.5 w1024:left-15.75 w768:top-31.25 w390:top-26 w390:left-4.75"
-        style={{
-          opacity: to([typingIn.v, typingOut.v], (a, b) => a * b),
-        }}
-      >
-        {[0, 1, 2].map((i) => (
-          <animated.span
-            key={i}
-            className="block size-1.5 rounded-full bg-foreground-dim"
-            style={{ y: hops.t.to((t) => hopY(t, i)) }}
-          />
-        ))}
-      </animated.span>
-
-      <animated.div className="absolute inset-0" style={message}>
-        <Image
-          src="/assets/product/product-avatar.svg"
-          alt=""
-          width={28}
-          height={28}
-          className="absolute top-19 left-7.75 size-7 w1024:top-18.75 w1024:left-5.75 w768:top-19 w390:top-14.5 w390:left-4.75"
-        />
-        <p className="absolute top-20 left-17.75 text-label leading-label font-medium whitespace-nowrap text-foreground w1024:top-19.75 w1024:left-15.75 w768:top-20 w390:top-15.75 w390:left-13.75 w390:leading-product-small">
-          {approval.sender}
-        </p>
-        <p
-          className={`absolute top-20 right-7.75 whitespace-nowrap text-foreground-dim w1024:top-19.75 w1024:right-5.75 w768:top-20 w390:top-15.75 w390:right-4.75 ${MONO}`}
-        >
-          {approval.time}
-        </p>
-        <p className="absolute top-28.75 left-17.75 w-130 text-body leading-body text-foreground-muted w1024:top-26.25 w1024:left-15.75 w1024:w-110 w768:top-29 w390:top-24.5 w390:left-4.75 w390:w-77.5 w390:text-label w390:leading-product-small">
-          {approval.message}
-        </p>
+    <figure ref={ref} className={`${CARD} rz-landing-invitation`}>
+      <header><strong>{approval.channel}</strong><span>{approval.day}</span></header>
+      <animated.div style={message} className="rz-offer-sender">
+        <Image src="/brand/mark.svg" alt="" width={28} height={28} />
+        <strong>{approval.sender}</strong><time>{approval.time}</time>
       </animated.div>
-
-      <animated.span
-        className="absolute top-38.75 left-17.75 h-20 w-0.75 origin-top w1024:top-35.75 w1024:left-15.75 w1024:h-23 w768:top-38 w768:h-20 w390:top-37.5 w390:left-4.75 w390:h-17.5 w390:w-0.5"
-        style={bar}
-      >
-        <Image
-          src="/assets/product/product-accent.png"
-          alt=""
-          width={3}
-          height={96}
-          className="block h-20 w-0.75 rounded-full w1024:h-23 w768:h-20 w390:h-17.5 w390:w-0.5"
-        />
-      </animated.span>
-      <dl>
+      <animated.p style={message} className="rz-offer-copy">{approval.message}</animated.p>
+      <dl className="rz-offer-fields">
         {approval.fields.map((field, i) => (
-          <animated.div
-            key={field.key}
-            className="absolute inset-0"
-            style={fields[i]}
-          >
-            <dt
-              className={`absolute left-22 whitespace-nowrap text-foreground-dim w1024:left-20.25 w768:left-18.5 w390:left-7.25 ${MONO} ${FIELD_LAYOUT[i].key}`}
-            >
-              {field.key}
-            </dt>
-            <dd
-              className={`absolute left-48 font-medium whitespace-nowrap text-foreground w1024:left-43.25 w768:left-41.5 w390:left-29.25 ${FIELD_LAYOUT[i].value}`}
-            >
-              {field.value}
-            </dd>
-          </animated.div>
+          <animated.div key={field.key} style={fields[i]}><dt>{field.key}</dt><dd>{field.value}</dd></animated.div>
         ))}
       </dl>
-
-      <animated.span
-        className={`left-17.75 bg-accent px-4 py-3 text-on-accent w1024:left-15.75 w390:left-4.75 w390:px-3 w390:py-1.5 ${MINI_BUTTON}`}
-        style={buttons[0]}
-      >
-        <Image
-          src="/assets/product/product-icon-approve.svg"
-          alt=""
-          width={14}
-          height={14}
-          className="size-3.5"
-        />
-        {approval.approve}
-      </animated.span>
-      {/* Figma strokes inside the 86 × 44 frame; trim padding by the 1px border. */}
-      <animated.span
-        className={`left-48.5 border border-product-tick bg-surface-raised px-3.75 py-2.75 text-foreground w1024:left-46.5 w390:left-31 w390:px-2.75 w390:py-1.25 ${MINI_BUTTON}`}
-        style={buttons[1]}
-      >
-        <Image
-          src="/assets/product/product-icon-hold.svg"
-          alt=""
-          width={14}
-          height={14}
-          className="size-3.5"
-        />
-        {approval.hold}
-      </animated.span>
-      <animated.p
-        className={`absolute top-68.75 right-7.75 w-40 text-right text-foreground-dim tabular-nums w1024:top-65.75 w1024:right-5.75 w768:top-69 w390:top-61.25 w390:right-4.75 ${MONO}`}
-        style={buttons[2]}
-      >
-        {waiting}
-      </animated.p>
+      <div className="rz-offer-actions">
+        <animated.span style={buttons[0]} className="rz-offer-accept">✓ {approval.approve}</animated.span>
+        <animated.span style={buttons[1]} className="rz-offer-later">Ⅱ {approval.hold}</animated.span>
+        <animated.p style={buttons[2]}>{waiting}</animated.p>
+      </div>
     </figure>
   );
 };

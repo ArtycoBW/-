@@ -242,7 +242,7 @@ export const NavMenu = ({
             <div className="flex h-14 shrink-0 items-center justify-between px-page-edge">
               <Link href={brand.href} className="flex items-center gap-3">
                 <Image
-                  src="/assets/nav/nav-logo-mark.svg"
+                  src="/brand/mark.svg"
                   alt=""
                   width={28}
                   height={28}

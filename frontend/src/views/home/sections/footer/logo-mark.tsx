@@ -5,14 +5,14 @@ const SIZE = {
   md: {
     box: "size-7 rounded-footer-mark",
     glyph: "size-7",
-    src: "/assets/footer/footer-logo-glyph.svg",
+    src: "/brand/mark.svg",
     px: 28,
   },
   /** Relay Labs mark 3888:7105 — 26, radius 8. */
   sm: {
     box: "size-6.5 rounded-footer-mark",
     glyph: "size-6.5",
-    src: "/assets/footer/footer-labs-glyph.svg",
+    src: "/brand/mark.svg",
     px: 26,
   },
 } as const;

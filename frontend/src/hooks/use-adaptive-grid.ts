@@ -53,7 +53,7 @@ export const useAdaptiveGrid = ({
     );
 
     if (size > FONT_BASE) {
-      root.style.setProperty("font-size", `${size}px`);
+      root.style.setProperty("font-size", `${Math.min(size * 0.9, 19.2)}px`);
     } else {
       // Below the base width, let the `vw` media queries in globals.css drive.
       root.style.removeProperty("font-size");

@@ -18,6 +18,7 @@
 @import "../style/sections/footer.css";
 @import "../style/sections/preloader.css";
 @import "../style/workspace.css";
+@import "../style/product-refresh.css";
 
 /* ---------------------------------------------------------------------------
    TIER 1 — PRIMITIVES  (`--raw-*`)
@@ -363,7 +364,7 @@
      1920 (21.333px), then centres too. Keep in sync with
      src/components/common/grid/grid.config.ts. */
   html {
-    font-size: min(1.111111vw, 21.333333px); /* 16 * 100 / 1440, ≤ 1920 */
+    font-size: min(1vw, 19.2px); /* Desktop composition at 90%; browser zoom remains accessible. */
   }
 
   @media (width <= 1200px) {

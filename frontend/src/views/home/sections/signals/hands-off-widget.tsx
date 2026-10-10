@@ -24,7 +24,7 @@ export const HandsOffWidget = ({
     <RingGauge value={value} delay={widgetDelay(1) + 200} />
     <FocusText
       delay={widgetDelay(1) + TEXT_AFTER}
-      className="absolute top-52.25 left-5.75 w-84 text-center text-body leading-body text-foreground-muted w1024:w-102.5 w768:top-55.25 w768:left-20.25 w768:w-43.5 w390:left-13.5 w390:w-60"
+      className="absolute bottom-5 left-5 right-5 text-center text-label leading-label text-foreground-muted w768:bottom-6 w390:bottom-5"
     >
       {caption}
     </FocusText>
