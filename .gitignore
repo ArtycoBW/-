@@ -37,3 +37,6 @@ Thumbs.db
 **/.cursorrules
 **/obsidian/
 **/*agent*
+.next-old/
+frontend/test-results/
+frontend/playwright-report/

@@ -24,7 +24,7 @@ async def lifespan(_):
     Base.metadata.create_all(engine)
     yield
 
-app = FastAPI(title="Разряд API", version="1.0.0", description="Прямой найм по подтверждённым навыкам. Все суммы — рубли до вычета налогов. Авторизация — HttpOnly cookie.", lifespan=lifespan)
+app = FastAPI(title="Разряд API", version="1.0.0", description="Прямой найм по подтверждённым навыкам. Все суммы — рубли до вычета налогов. Авторизация — HttpOnly cookie.", lifespan=lifespan, docs_url="/api/v1/docs", openapi_url="/api/v1/openapi.json", redoc_url=None)
 P = "/api/v1"
 rate_buckets = defaultdict(deque)
 
@@ -34,7 +34,11 @@ async def safeguards(request: Request, call_next):
         origin = request.headers.get("origin")
         if origin and origin != config.PUBLIC_ORIGIN:
             return JSONResponse({"detail": "Источник запроса не разрешён"}, status_code=403)
-        if int(request.headers.get("content-length", "0") or 0) > 6 * 1024 * 1024:
+        try:
+            content_length = int(request.headers.get("content-length", "0") or 0)
+        except ValueError:
+            return JSONResponse({"detail": "Некорректный размер запроса"}, status_code=400)
+        if content_length > 6 * 1024 * 1024:
             return JSONResponse({"detail": "Размер запроса превышает 6 МБ"}, status_code=413)
         if "/auth/" in request.url.path:
             key = (request.client.host if request.client else "local", request.url.path)
@@ -280,8 +284,10 @@ def needs(user=Depends(employer_user), db: DBSession = Depends(get_db)):
 def candidates(need_id: str | None = None, specialization: s.Spec | None = None, grade: s.Grade | None = None, skill: str = Query("", max_length=40), fsp: bool = False, offset: int = Query(0, ge=0), limit: int = Query(30, ge=1, le=100), user=Depends(employer_user), db: DBSession = Depends(get_db)):
     need = owned(db, m.Need, need_id, user) if need_id else None
     query = select(m.Candidate).where(m.Candidate.published.is_(True), m.Candidate.consent.is_(True), m.Candidate.grade.is_not(None))
-    target_spec = specialization or (need.specialization if need else None)
-    target_grade = grade or (need.grade if need else None)
+    if need and ((specialization and specialization != need.specialization) or (grade and grade != need.grade)):
+        raise HTTPException(422, "Фильтр не совпадает с категорией выбранной потребности")
+    target_spec = need.specialization if need else specialization
+    target_grade = need.grade if need else grade
     if target_spec:
         query = query.where(m.Candidate.specialization == target_spec)
     if target_grade:

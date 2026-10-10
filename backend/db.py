@@ -1,5 +1,6 @@
 from pathlib import Path
-from sqlalchemy import create_engine, event
+from fastapi import Request
+from sqlalchemy import create_engine, event, text
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 from backend.config import DATABASE_URL
 
@@ -17,6 +18,10 @@ SessionLocal = sessionmaker(bind=engine, expire_on_commit=False)
 class Base(DeclarativeBase):
     pass
 
-def get_db():
+def get_db(request: Request):
     with SessionLocal() as db:
+        # SQLite не поддерживает SELECT FOR UPDATE: резервируем запись до чтения.
+        # PostgreSQL использует адресные блокировки в доменных переходах.
+        if engine.dialect.name == "sqlite" and request.method in {"POST", "PUT", "PATCH", "DELETE"}:
+            db.execute(text("BEGIN IMMEDIATE"))
         yield db

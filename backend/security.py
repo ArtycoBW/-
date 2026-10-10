@@ -64,8 +64,15 @@ def send_token(db, user, kind):
         msg["Subject"] = "Разряд — подтверждение действия"
         msg["From"], msg["To"] = config.SMTP_FROM, user.email
         msg.set_content(body)
-        with smtplib.SMTP(config.SMTP_HOST, config.SMTP_PORT, timeout=10) as smtp:
-            smtp.send_message(msg)
+        try:
+            with smtplib.SMTP(config.SMTP_HOST, config.SMTP_PORT, timeout=10) as smtp:
+                if config.SMTP_STARTTLS:
+                    smtp.starttls()
+                if config.SMTP_USERNAME:
+                    smtp.login(config.SMTP_USERNAME, config.SMTP_PASSWORD)
+                smtp.send_message(msg)
+        except (OSError, smtplib.SMTPException):
+            raise HTTPException(503, "Не удалось доставить письмо. Повторите позже") from None
     elif config.DEMO_MODE:
         directory = Path(config.MAIL_DIR)
         directory.mkdir(parents=True, exist_ok=True)

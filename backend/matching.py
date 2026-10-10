@@ -2,12 +2,22 @@
 import json
 import math
 import time
+from functools import lru_cache
 from pathlib import Path
 from backend.config import MODEL_PATH
 
 FEATURES = ["skills", "test", "grade", "freshness", "fsp", "format"]
 BASE_WEIGHTS = [0.40, 0.25, 0.15, 0.07, 0.08, 0.05]
 ALIASES = {"js": "javascript", "ts": "typescript", "postgres": "postgresql", "react.js": "react", "nextjs": "next.js", "py": "python"}
+
+@lru_cache(maxsize=4)
+def load_model(path, modified_at):
+    model = json.loads(Path(path).read_text(encoding="utf-8"))
+    if model["features"] != FEATURES or len(model["coef"]) != len(FEATURES):
+        raise ValueError("Несовместимые признаки модели")
+    if not all(math.isfinite(v) for v in [model["intercept"], *model["coef"]]):
+        raise ValueError("Некорректные коэффициенты модели")
+    return model
 
 def normalize(skill):
     return ALIASES.get(skill.strip().lower(), skill.strip().lower())
@@ -26,9 +36,9 @@ def features(profile, need, achievements, now=None):
 def rank(profile, need, achievements):
     x = features(profile, need, achievements)
     baseline = sum(w * v for w, v in zip(BASE_WEIGHTS, x))
-    score, mode = baseline, "rules-v1"
+    score, mode, learned = baseline, "rules-v1", None
     try:
-        model = json.loads(Path(MODEL_PATH).read_text(encoding="utf-8"))
+        model = load_model(str(MODEL_PATH), Path(MODEL_PATH).stat().st_mtime_ns)
         if model["features"] == FEATURES:
             logit = model["intercept"] + sum(w * v for w, v in zip(model["coef"], x))
             learned = 1 / (1 + math.exp(-max(-50, min(50, logit))))
@@ -39,6 +49,8 @@ def rank(profile, need, achievements):
     requested = {normalize(s) for s in need.skills}
     available = {normalize(s) for s in profile.skills}
     return {"score": round(score * 100, 1), "mode": mode,
+            "baseline_score": round(baseline * 100, 2), "learned_score": round(learned * 100, 2) if learned is not None else None,
+            "blend": {"baseline": 0.7, "learned": 0.3} if learned is not None else {"baseline": 1.0, "learned": 0.0},
             "matched_skills": sorted(requested & available), "missing_skills": sorted(requested - available),
             "factors": [{"key": name, "value": round(value * 100, 1), "contribution": round(weight * value * 100, 1)} for name, value, weight in zip(FEATURES, x, BASE_WEIGHTS)],
             "explanation": [f"Совпадает {len(requested & available)} из {len(requested)} навыков", f"Подтверждённый тест: {profile.score:g} из 100", f"Достижений в демореестре ФСП: {len(achievements)}"],
