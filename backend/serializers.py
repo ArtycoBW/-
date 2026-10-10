@@ -15,10 +15,11 @@ def row_dict(row, exclude=()):
 def grant_exists(db, company_id, candidate_id):
     return db.scalar(select(ContactGrant).where(ContactGrant.company_id == company_id, ContactGrant.candidate_id == candidate_id)) is not None
 
-def candidate_dto(db, candidate, viewer):
+def candidate_dto(db, candidate, viewer, *, achievements=None, contact_granted=None, user_email=None):
     own = viewer.id == candidate.id
-    granted = viewer.role == "employer" and grant_exists(db, viewer.id, candidate.id)
-    achievements = db.scalars(select(Achievement).where(Achievement.candidate_id == candidate.id)).all()
+    granted = viewer.role == "employer" and (grant_exists(db, viewer.id, candidate.id) if contact_granted is None else contact_granted)
+    if achievements is None:
+        achievements = db.scalars(select(Achievement).where(Achievement.candidate_id == candidate.id)).all()
     data = row_dict(candidate, exclude=("contact", "consent", "fsp_id"))
     if not own:
         for key in ("name", "city", "bio"):
@@ -29,7 +30,7 @@ def candidate_dto(db, candidate, viewer):
     data["contacts_unlocked"] = own or granted
     if own or granted:
         data["contact"] = candidate.contact
-        data["email"] = db.get(User, candidate.id).email
+        data["email"] = user_email if user_email is not None else db.get(User, candidate.id).email
     if own:
         data["consent"] = candidate.consent
         data["fsp_id"] = candidate.fsp_id

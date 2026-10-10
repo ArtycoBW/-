@@ -26,6 +26,20 @@ def test_need_cannot_escape_its_category():
     assert employer.get(f"/api/v1/candidates?need_id={need['id']}&grade=senior").status_code==422
 
 
+def test_candidate_bank_preserves_addressed_contact_access():
+    candidate,cid=account("candidate",grade="middle")
+    other_candidate,other_id=account("candidate","2",grade="middle")
+    employer,_=account("employer")
+    other_employer,_=account("employer","2")
+    iid=employer.post("/api/v1/invitations",json=offer(cid)).json()["id"]
+    candidate.patch(f"/api/v1/invitations/{iid}",json={"status":"accepted"})
+    own={p['id']:p for p in employer.get('/api/v1/candidates').json()['items']}
+    other=other_employer.get('/api/v1/candidates').json()['items']
+    assert own[cid]['email']=='candidate1@example.org'
+    assert 'email' not in own[other_id] and 'contact' not in own[other_id]
+    assert all('email' not in p and 'contact' not in p for p in other)
+
+
 def test_challenge_is_owned_review_and_does_not_change_grade():
     candidate,_=account("candidate",grade="middle")
     employer,_=account("employer")

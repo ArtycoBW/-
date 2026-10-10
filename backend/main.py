@@ -292,15 +292,22 @@ def candidates(need_id: str | None = None, specialization: s.Spec | None = None,
         query = query.where(m.Candidate.specialization == target_spec)
     if target_grade:
         query = query.where(m.Candidate.grade == target_grade)
+    profiles = [p for p in db.scalars(query) if not skill or any(skill.lower() in sk.lower() for sk in p.skills)]
+    ids = [p.id for p in profiles]
+    # Связи загружаются пакетно: число SQL-запросов не растёт с размером выдачи.
+    by_candidate = defaultdict(list)
+    if ids:
+        for achievement in db.scalars(select(m.Achievement).where(m.Achievement.candidate_id.in_(ids))):
+            by_candidate[achievement.candidate_id].append(achievement)
+    granted_ids = set(db.scalars(select(m.ContactGrant.candidate_id).where(m.ContactGrant.company_id == user.id, m.ContactGrant.candidate_id.in_(ids)))) if ids else set()
+    emails = dict(db.execute(select(m.User.id, m.User.email).where(m.User.id.in_(granted_ids))).all()) if granted_ids else {}
     results = []
-    for profile in db.scalars(query):
-        if skill and not any(skill.lower() in sk.lower() for sk in profile.skills):
-            continue
-        achievements = db.scalars(select(m.Achievement).where(m.Achievement.candidate_id == profile.id)).all()
+    for profile in profiles:
+        achievements = by_candidate[profile.id]
         if fsp and not achievements:
             continue
         reference = need or SimpleNamespace(skills=profile.skills, grade=profile.grade, work_format=profile.work_format)
-        dto = candidate_dto(db, profile, user)
+        dto = candidate_dto(db, profile, user, achievements=achievements, contact_granted=profile.id in granted_ids, user_email=emails.get(profile.id))
         dto["match"] = rank(profile, reference, achievements)
         results.append(dto)
     results.sort(key=lambda x: (-x["match"]["score"], x["id"]))
