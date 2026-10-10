@@ -2,6 +2,9 @@
 import { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { AppSelect } from "./controls";
+import { Badge } from "@/components/ui/workspace/badge";
+import { Tray } from "@phosphor-icons/react";
 export function Mark() {
   return (
     <span className="rz-mark" aria-hidden="true">
@@ -26,7 +29,11 @@ export function Tag({
   children: ReactNode;
   tone?: string;
 }) {
-  return <span className={`rz-tag ${tone}`}>{children}</span>;
+  return (
+    <Badge variant="outline" className={`rz-tag ${tone}`}>
+      {children}
+    </Badge>
+  );
 }
 export function Empty({
   title,
@@ -37,7 +44,9 @@ export function Empty({
 }) {
   return (
     <div className="rz-empty">
-      <span aria-hidden="true">↗</span>
+      <span className="rz-empty-icon" aria-hidden="true">
+        <Tray size={26} />
+      </span>
       <h3>{title}</h3>
       <p>{children}</p>
     </div>
@@ -70,7 +79,10 @@ export function Field({
 }) {
   return (
     <div className="rz-field">
-      <label><span>{label}</span>{children}</label>
+      <label>
+        <span>{label}</span>
+        {children}
+      </label>
       {hint && <small>{hint}</small>}
     </div>
   );
@@ -83,10 +95,10 @@ export function SelectSpec({
   onChange: (v: string) => void;
 }) {
   return (
-    <select value={value} onChange={(e) => onChange(e.target.value)}>
+    <AppSelect value={value} onChange={(e) => onChange(e.target.value)}>
       <option value="backend">Бэкенд-разработка</option>
       <option value="frontend">Фронтенд-разработка</option>
-    </select>
+    </AppSelect>
   );
 }
 export function SelectGrade({
@@ -97,11 +109,11 @@ export function SelectGrade({
   onChange: (v: string) => void;
 }) {
   return (
-    <select value={value} onChange={(e) => onChange(e.target.value)}>
+    <AppSelect value={value} onChange={(e) => onChange(e.target.value)}>
       <option value="junior">Начальный (Junior)</option>
       <option value="middle">Средний (Middle)</option>
       <option value="senior">Старший (Senior)</option>
-    </select>
+    </AppSelect>
   );
 }
 export function Skills({ items }: { items: string[] }) {

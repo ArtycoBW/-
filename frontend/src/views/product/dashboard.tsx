@@ -2,6 +2,30 @@
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { AppSelect, AppCheckbox } from "@/components/product/controls";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { ContactAccess } from "@/components/product/contact-access";
 import {
   api,
@@ -35,26 +59,61 @@ import {
   Tag,
 } from "@/components/product/ui";
 
-import { SquaresFour, UserCircle, Certificate, PaperPlaneTilt, Briefcase, ArrowsLeftRight, TerminalWindow, Buildings, UsersThree, List, Bell, ArrowUpRight, CheckCircle, Clock, MapPin, Trophy } from "@phosphor-icons/react";
-const navIcons = { overview: SquaresFour, profile: UserCircle, assessment: Certificate, invitations: PaperPlaneTilt, vacancies: Briefcase, applications: ArrowsLeftRight, challenges: TerminalWindow, company: Buildings, talent: UsersThree };
+import {
+  SquaresFour,
+  UserCircle,
+  Certificate,
+  PaperPlaneTilt,
+  Briefcase,
+  ArrowsLeftRight,
+  TerminalWindow,
+  Buildings,
+  UsersThree,
+  List,
+  Bell,
+  Eye,
+  CheckCircle,
+  Clock,
+  MapPin,
+  Trophy,
+  SidebarSimple,
+  SignOut,
+  Question,
+  LockKey,
+  CaretDown,
+  MagnifyingGlass,
+  BookmarkSimple,
+  X,
+} from "@phosphor-icons/react";
+const navIcons = {
+  overview: SquaresFour,
+  profile: UserCircle,
+  assessment: Certificate,
+  invitations: PaperPlaneTilt,
+  vacancies: Briefcase,
+  applications: ArrowsLeftRight,
+  challenges: TerminalWindow,
+  company: Buildings,
+  talent: UsersThree,
+};
 
 const candidateNav = [
-  ["overview", "Обзор", "◈"],
-  ["profile", "Мой профиль", "◎"],
-  ["assessment", "Подтвердить уровень", "◇"],
-  ["invitations", "Приглашения", "↗"],
-  ["vacancies", "Вакансии", "▤"],
-  ["applications", "Мои отклики", "⇄"],
-  ["challenges", "Практика", "⌘"],
+  ["overview", "Обзор"],
+  ["profile", "Мой профиль"],
+  ["assessment", "Подтвердить уровень"],
+  ["invitations", "Приглашения"],
+  ["vacancies", "Вакансии"],
+  ["applications", "Мои отклики"],
+  ["challenges", "Практика"],
 ];
 const employerNav = [
-  ["overview", "Обзор", "◈"],
-  ["talent", "Найти специалистов", "◎"],
-  ["invitations", "Приглашения", "↗"],
-  ["vacancies", "Мои вакансии", "▤"],
-  ["applications", "Отклики", "⇄"],
-  ["challenges", "Задания команде", "⌘"],
-  ["company", "Моя компания", "▧"],
+  ["overview", "Обзор"],
+  ["talent", "Найти специалистов"],
+  ["invitations", "Приглашения"],
+  ["vacancies", "Мои вакансии"],
+  ["applications", "Отклики"],
+  ["challenges", "Задания команде"],
+  ["company", "Моя компания"],
 ];
 
 export function Dashboard() {
@@ -64,14 +123,37 @@ export function Dashboard() {
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState("");
   const [menu, setMenu] = useState(false);
-  const [demo, setDemo] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => {
+    try {
+      return (
+        typeof window !== "undefined" &&
+        localStorage.getItem("razryad.sidebar") === "compact"
+      );
+    } catch {
+      return false;
+    }
+  });
+  function toggleSidebar() {
+    setCollapsed((value) => {
+      const next = !value;
+      try {
+        localStorage.setItem("razryad.sidebar", next ? "compact" : "full");
+      } catch {}
+      return next;
+    });
+  }
+  async function logout() {
+    try {
+      await post("/auth/logout");
+      router.push("/");
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }
   useEffect(() => {
     api<User>("/auth/me")
       .then(setUser)
       .catch(() => router.replace("/auth"));
-    api<{ demo: boolean }>("/health")
-      .then((r) => setDemo(r.demo))
-      .catch(() => {});
   }, [router]);
   useEffect(() => {
     const expired = () => router.replace("/auth?expired=1");
@@ -87,122 +169,211 @@ export function Dashboard() {
     );
   const nav = user.role === "candidate" ? candidateNav : employerNav;
   const label = nav.find((x) => x[0] === section)?.[1] || "Обзор";
+  const profileHref =
+    user.role === "candidate" ? "/app/profile" : "/app/company";
   return (
-    <div className="rz-workspace">
-      {menu && <button className="rz-mobile-overlay" aria-label="Закрыть меню" onClick={() => setMenu(false)} />}
-      <aside className={`rz-sidebar ${menu ? "open" : ""}`}>
-        <Brand />
-        <div className="rz-role">
-          <span className="rz-avatar">
-            {user.role === "candidate" ? "С" : "К"}
-          </span>
-          <div>
-            <strong>
-              {user.role === "candidate"
-                ? "Кабинет специалиста"
-                : "Кабинет работодателя"}
-            </strong>
-            <small>{user.email}</small>
+    <TooltipProvider delayDuration={250}>
+      <div className={`rz-workspace ${collapsed ? "rz-compact" : ""}`}>
+        <a href="#workspace-main" className="rz-skip">
+          К содержимому
+        </a>
+        {menu && (
+          <Button
+            variant="ghost"
+            className="rz-mobile-overlay"
+            aria-label="Закрыть меню"
+            onClick={() => setMenu(false)}
+          />
+        )}
+        <aside className={`rz-sidebar ${menu ? "open" : ""}`}>
+          <Brand />
+          <div className="rz-space-label">
+            <span className="rz-space-dot" />
+            <span>{user.role === "candidate" ? "Карьера" : "Команда"}</span>
           </div>
+          <nav aria-label="Разделы кабинета">
+            {nav.map(([id, name]) => {
+              const NavIcon = navIcons[id as keyof typeof navIcons];
+              return (
+                <Tooltip key={id}>
+                  <TooltipTrigger asChild>
+                    <Link
+                      aria-label={name}
+                      onClick={() => setMenu(false)}
+                      href={id === "overview" ? "/app" : `/app/${id}`}
+                      aria-current={section === id ? "page" : undefined}
+                      className={section === id ? "active" : ""}
+                    >
+                      <NavIcon
+                        size={21}
+                        weight={section === id ? "duotone" : "regular"}
+                        aria-hidden="true"
+                      />
+                      <span className="rz-nav-text">{name}</span>
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="rz-ui-popup">
+                    {name}
+                  </TooltipContent>
+                </Tooltip>
+              );
+            })}
+          </nav>
+          <div className="rz-sidebar-bottom">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link href="/methodology" aria-label="Как работает подбор">
+                  <Question size={20} />
+                  <span className="rz-nav-text">Как работает подбор</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right" className="rz-ui-popup">
+                Как работает подбор
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link href="/privacy-policy" aria-label="Приватность данных">
+                  <LockKey size={20} />
+                  <span className="rz-nav-text">Приватность данных</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right" className="rz-ui-popup">
+                Приватность данных
+              </TooltipContent>
+            </Tooltip>
+            <div className="rz-account">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="rz-account-trigger"
+                    aria-label="Меню аккаунта"
+                  >
+                    <span className="rz-avatar">
+                      {user.email.slice(0, 2).toUpperCase()}
+                    </span>
+                    <span className="rz-nav-text">
+                      <strong>
+                        {user.role === "candidate"
+                          ? "Личный кабинет"
+                          : "Кабинет компании"}
+                      </strong>
+                      <small>{user.email}</small>
+                    </span>
+                    <CaretDown size={15} className="rz-account-caret" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  side="right"
+                  align="end"
+                  className="rz-ui-popup rz-account-menu"
+                >
+                  <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href={profileHref}>
+                      <UserCircle size={18} />
+                      {user.role === "candidate"
+                        ? "Мой профиль"
+                        : "Моя компания"}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={logout}>
+                    <SignOut size={18} />
+                    Выйти из аккаунта
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+        </aside>
+        <div className="rz-content">
+          <header className="rz-topbar">
+            <div>
+              <Button
+                variant="ghost"
+                className="rz-collapse-button"
+                aria-label={collapsed ? "Развернуть меню" : "Свернуть меню"}
+                aria-expanded={!collapsed}
+                onClick={toggleSidebar}
+              >
+                <SidebarSimple size={21} />
+              </Button>
+              <Button
+                variant="ghost"
+                className="rz-menu-button"
+                aria-label="Открыть меню"
+                aria-expanded={menu}
+                onClick={() => setMenu(!menu)}
+              >
+                <List size={22} />
+              </Button>
+              <span className="rz-muted">
+                {user.role === "candidate" ? "Карьера" : "Команда"}
+              </span>
+              <span className="rz-breadcrumb">/</span>
+              <strong>{label}</strong>
+            </div>
+            <div className="rz-topbar-actions">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    href="/app/invitations"
+                    aria-label="Приглашения"
+                    className="rz-icon-button"
+                  >
+                    <Bell size={20} />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent className="rz-ui-popup">
+                  Приглашения
+                </TooltipContent>
+              </Tooltip>
+              <Link
+                href={profileHref}
+                className="rz-top-avatar"
+                aria-label="Открыть профиль"
+              >
+                {user.email[0].toUpperCase()}
+              </Link>
+            </div>
+          </header>
+          <main id="workspace-main" className="rz-main">
+            <div key={section} className="rz-route">
+              {error && <Notice error>{error}</Notice>}
+              {section === "overview" ? (
+                <Overview user={user} />
+              ) : section === "profile" && user.role === "candidate" ? (
+                <ProfileEditor />
+              ) : section === "assessment" && user.role === "candidate" ? (
+                <Assessment />
+              ) : section === "talent" && user.role === "employer" ? (
+                <Talent />
+              ) : section === "invitations" ? (
+                <Invitations user={user} />
+              ) : section === "vacancies" ? (
+                <Vacancies user={user} />
+              ) : section === "applications" ? (
+                <Applications user={user} />
+              ) : section === "company" && user.role === "employer" ? (
+                <CompanyEditor />
+              ) : section === "challenges" ? (
+                <Challenges user={user} />
+              ) : (
+                <Empty title="Раздел недоступен">
+                  Выберите раздел в меню своего кабинета.
+                </Empty>
+              )}
+            </div>
+          </main>
+          <footer className="rz-app-footer">
+            <span>Разряд · профиль, навыки, работа</span>
+            <Link href="/privacy-policy">О данных платформы</Link>
+          </footer>
         </div>
-        <p className="rz-nav-label">ВАШЕ ПРОСТРАНСТВО</p>
-        <nav aria-label="Разделы кабинета">
-          {nav.map(([id, name]) => { const NavIcon = navIcons[id as keyof typeof navIcons]; return (
-            <Link
-              key={id}
-              onClick={() => setMenu(false)}
-              href={id === "overview" ? "/app" : `/app/${id}`}
-              aria-current={section === id ? "page" : undefined}
-              className={section === id ? "active" : ""}
-            >
-              <span aria-hidden="true"><NavIcon size={21} weight={section === id ? "duotone" : "regular"} /></span>
-              {name}
-              {id === "assessment" && <i />}
-            </Link>
-          ); })}
-        </nav>
-        <div className="rz-sidebar-bottom">
-          <Link href="/methodology">Как работает подбор ↗</Link>
-          <Link href="/privacy-policy">Приватность данных</Link>
-          <button
-            onClick={async () => {
-              try {
-                await post("/auth/logout");
-                router.push("/");
-              } catch (e) {
-                setError((e as Error).message);
-              }
-            }}
-          >
-            Выйти из аккаунта
-          </button>
-          <small>РАЗРЯД / ФСП × ЛЦТ 2026</small>
-        </div>
-      </aside>
-      <div className="rz-content">
-        <header className="rz-topbar">
-          <div>
-            <button
-              className="rz-menu-button"
-              aria-label="Открыть меню"
-              aria-expanded={menu}
-              onClick={() => setMenu(!menu)}
-            >
-              <List size={22} />
-            </button>
-            <span className="rz-muted">Кабинет</span>
-            <span className="rz-breadcrumb">/</span>
-            <strong>{label}</strong>
-          </div>
-          <div className="rz-topbar-actions">
-            <Tag tone="subtle">
-              {demo ? "Демонстрационная среда" : "Рабочая среда"}
-            </Tag>
-            <Link
-              href="/app/invitations"
-              aria-label="Приглашения"
-              className="rz-icon-button"
-            >
-              <Bell size={19} />
-            </Link>
-          </div>
-        </header>
-        <main className="rz-main"><div key={section} className="rz-route">
-          {error && <Notice error>{error}</Notice>}
-          {section === "overview" ? (
-            <Overview user={user} />
-          ) : section === "profile" && user.role === "candidate" ? (
-            <ProfileEditor />
-          ) : section === "assessment" && user.role === "candidate" ? (
-            <Assessment />
-          ) : section === "talent" && user.role === "employer" ? (
-            <Talent />
-          ) : section === "invitations" ? (
-            <Invitations user={user} />
-          ) : section === "vacancies" ? (
-            <Vacancies user={user} />
-          ) : section === "applications" ? (
-            <Applications user={user} />
-          ) : section === "company" && user.role === "employer" ? (
-            <CompanyEditor />
-          ) : section === "challenges" ? (
-            <Challenges user={user} />
-          ) : (
-            <Empty title="Раздел недоступен">
-              Выберите раздел в меню своего кабинета.
-            </Empty>
-          )}
-        </div></main>
-        <footer className="rz-app-footer">
-          <span>Разряд — ваши навыки имеют значение.</span>
-          <span>
-            {demo
-              ? "Все стартовые профили и компании — демоданные"
-              : "Контакты открываются только с вашего согласия"}
-          </span>
-        </footer>
       </div>
-    </div>
+    </TooltipProvider>
   );
 }
 
@@ -236,13 +407,14 @@ function useMessage() {
 }
 
 function Overview({ user }: { user: User }) {
-  const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [company, setCompany] = useState<Company | null>(null);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [candidates, setCandidates] = useState<Profile[]>([]);
   const [total, setTotal] = useState(0);
   const [error, setError] = useState("");
+  const [invitedProfile, setInvitedProfile] = useState<Profile | null>(null);
+  const [message, setMessage] = useState("");
   useEffect(() => {
     Promise.all([
       api<Invitation[]>("/invitations").then(setInvitations),
@@ -279,7 +451,7 @@ function Overview({ user }: { user: User }) {
             className="rz-button primary"
             href={candidate ? "/app/assessment" : "/app/talent"}
           >
-            {candidate ? "Подтвердить уровень" : "Найти специалиста"} ↗
+            {candidate ? "Подтвердить уровень" : "Найти специалиста"}
           </Link>
         }
       />
@@ -291,7 +463,7 @@ function Overview({ user }: { user: User }) {
           </span>
           <strong>
             {candidate ? gradeName(profile?.grade || null) : total}
-            <i>↗</i>
+            <i></i>
           </strong>
           <small>
             {candidate
@@ -327,7 +499,7 @@ function Overview({ user }: { user: User }) {
           </strong>
           <small>
             {candidate
-              ? "Ваш следующий шаг может быть здесь"
+              ? "Ожидают вашего решения"
               : "Контакты доступны после согласия"}
           </small>
         </div>
@@ -335,36 +507,58 @@ function Overview({ user }: { user: User }) {
       <div className="rz-overview-grid">
         <section className="rz-feature-panel">
           <p className="rz-eyebrow">
-            {candidate
-              ? "ПРОФИЛЬ СПЕЦИАЛИСТА"
-              : "ОБРАТНАЯ МЕХАНИКА НАЙМА"}
+            {candidate ? "ПРОФИЛЬ СПЕЦИАЛИСТА" : "ПРОФИЛЬ КОМПАНИИ"}
           </p>
-          <h2>{candidate ? profile?.name || "Ваш профиль" : company?.name || "Ваша команда"}</h2>
-          <p>{candidate
-            ? `${specName(profile?.specialization || "backend")} · ${gradeName(profile?.grade || null)}. ${profile?.city || "Укажите город в профиле"}`
-            : "Сохраните требования к роли. Сравните стек, результаты тестов и подтверждённые достижения в одной подборке."}</p>
-          {candidate && profile && <Skills items={profile.skills.slice(0, 5)} />}
+          <h2>
+            {candidate
+              ? profile?.name || "Ваш профиль"
+              : company?.name || "Ваша команда"}
+          </h2>
+          <p>
+            {candidate
+              ? `${specName(profile?.specialization || "backend")} · ${gradeName(profile?.grade || null)}. ${profile?.city || "Укажите город в профиле"}`
+              : "Сохраните требования к роли. Сравните стек, результаты тестов и подтверждённые достижения в одной подборке."}
+          </p>
+          {candidate && profile && (
+            <Skills items={profile.skills.slice(0, 5)} />
+          )}
           <div className="rz-profile-summary">
-            <span>{candidate ? "Публикация профиля" : "Принцип отбора"}<strong>{candidate ? profile?.published ? "Виден работодателям" : "Пока скрыт" : "Специализация + грейд"}</strong></span>
-            <span>{candidate ? "Желаемая зарплата" : "Контакты кандидата"}<strong>{candidate ? `от ${money(profile?.salary_min || 0)} ₽` : "После его согласия"}</strong></span>
+            <span>
+              {candidate ? "Публикация профиля" : "Принцип отбора"}
+              <strong>
+                {candidate
+                  ? profile?.published
+                    ? "Виден работодателям"
+                    : "Пока скрыт"
+                  : "Специализация + грейд"}
+              </strong>
+            </span>
+            <span>
+              {candidate ? "Желаемая зарплата" : "Контакты кандидата"}
+              <strong>
+                {candidate
+                  ? `от ${money(profile?.salary_min || 0)} ₽`
+                  : "После его согласия"}
+              </strong>
+            </span>
           </div>
           <Link
             className="rz-button"
             href={candidate ? "/app/profile" : "/app/talent"}
           >
-            {candidate ? "Посмотреть профиль" : "Собрать подборку"} →
+            {candidate ? "Посмотреть профиль" : "Собрать подборку"}
           </Link>
           <div className="rz-signal-graphic" aria-hidden="true">
             <span>ПРОФИЛЬ</span>
             <i />
-            <b>↗</b>
+            <b></b>
             <i />
             <span>ВОЗМОЖНОСТЬ</span>
           </div>
         </section>
         <section className="rz-panel">
           <div className="rz-section-title">
-            <h2>{candidate ? "Ваш путь" : "Принципы подбора"}</h2>
+            <h2>{candidate ? "Следующие действия" : "Принципы подбора"}</h2>
             <Tag>03 шага</Tag>
           </div>
           <div className="rz-step">
@@ -403,21 +597,17 @@ function Overview({ user }: { user: User }) {
               </strong>
               <p>Контакт открывается после согласия</p>
             </div>
-            <span>↗</span>
+            <span></span>
           </div>
           <Link className="rz-text-link" href="/methodology">
-            Узнать о методике →
+            Узнать о методике
           </Link>
         </section>
       </div>
       <div className="rz-section-title">
-        <h2>
-          {candidate
-            ? "Предложения для вас"
-            : "Люди, с которыми стоит познакомиться"}
-        </h2>
+        <h2>{candidate ? "Предложения для вас" : "Специалисты в подборке"}</h2>
         <Link href={candidate ? "/app/invitations" : "/app/talent"}>
-          Посмотреть все →
+          Посмотреть все
         </Link>
       </div>
       {candidate ? (
@@ -426,7 +616,9 @@ function Overview({ user }: { user: User }) {
             {invitations.slice(0, 3).map((i) => (
               <div className="rz-card" key={i.id}>
                 <div className="rz-card-top">
-                  <span className="rz-company-icon"><Buildings size={22} /></span>
+                  <span className="rz-company-icon">
+                    <Buildings size={22} />
+                  </span>
                   <Tag tone={i.status === "accepted" ? "green" : ""}>
                     {statusName(i.status)}
                   </Tag>
@@ -437,7 +629,7 @@ function Overview({ user }: { user: User }) {
                   {money(i.salary_min)} – {money(i.salary_max)} ₽
                 </p>
                 <Link href="/app/invitations" className="rz-text-link">
-                  Обсудить предложение →
+                  Обсудить предложение
                 </Link>
               </div>
             ))}
@@ -454,13 +646,17 @@ function Overview({ user }: { user: User }) {
             <TalentCard
               key={p.id}
               profile={p}
-              onInvite={() => {
-                router.push("/app/talent");
-              }}
+              onInvite={() => setInvitedProfile(p)}
             />
           ))}
         </div>
       )}
+      {message && <Notice>{message}</Notice>}
+      {invitedProfile && <InviteModal profile={invitedProfile} onClose={() => setInvitedProfile(null)} onDone={() => {
+        setInvitedProfile(null);
+        setMessage("Приглашение отправлено. Контакты откроются после принятия.");
+        api<Invitation[]>("/invitations").then(setInvitations).catch(e => setError(e.message));
+      }} />}
     </>
   );
 }
@@ -535,7 +731,7 @@ function ProfileEditor() {
         text="Самоописание рассказывает о вас. Тест и достижения подтверждают навыки."
         action={
           <a href="/api/v1/profile/pdf" className="rz-button">
-            Скачать PDF ↓
+            Скачать PDF
           </a>
         }
       />
@@ -546,7 +742,7 @@ function ProfileEditor() {
           <h2>Основная информация</h2>
           <div className="rz-two">
             <Field label="Имя и фамилия">
-              <input
+              <Input
                 required
                 minLength={2}
                 maxLength={120}
@@ -555,7 +751,7 @@ function ProfileEditor() {
               />
             </Field>
             <Field label="Город">
-              <input
+              <Input
                 maxLength={120}
                 value={p.city}
                 onChange={(e) => change("city", e.target.value)}
@@ -580,7 +776,7 @@ function ProfileEditor() {
             label="Навыки через запятую"
             hint="Например: Python, FastAPI, PostgreSQL"
           >
-            <input
+            <Input
               required
               value={skills}
               onChange={(e) => setSkills(e.target.value)}
@@ -588,7 +784,7 @@ function ProfileEditor() {
           </Field>
           <div className="rz-two">
             <Field label="Опыт, лет">
-              <input
+              <Input
                 type="number"
                 min={0}
                 max={60}
@@ -597,7 +793,7 @@ function ProfileEditor() {
               />
             </Field>
             <Field label="Желаемая зарплата от, ₽">
-              <input
+              <Input
                 type="number"
                 min={0}
                 max={10000000}
@@ -607,17 +803,17 @@ function ProfileEditor() {
             </Field>
           </div>
           <Field label="Формат работы">
-            <select
+            <AppSelect
               value={p.work_format}
               onChange={(e) => change("work_format", e.target.value)}
             >
               <option value="remote">Удалённо</option>
               <option value="hybrid">Гибрид</option>
               <option value="office">В офисе</option>
-            </select>
+            </AppSelect>
           </Field>
           <Field label="О себе">
-            <textarea
+            <Textarea
               rows={5}
               maxLength={3000}
               value={p.bio}
@@ -628,15 +824,14 @@ function ProfileEditor() {
             label="Контакт для связи"
             hint="Скрыт до принятия приглашения или вашего отклика"
           >
-            <input
+            <Input
               maxLength={250}
               value={p.contact || ""}
               onChange={(e) => change("contact", e.target.value)}
             />
           </Field>
           <label className="rz-check">
-            <input
-              type="checkbox"
+            <AppCheckbox
               checked={p.consent}
               onChange={(e) => {
                 change("consent", e.target.checked);
@@ -646,8 +841,7 @@ function ProfileEditor() {
             <span>Согласен на обработку данных профиля</span>
           </label>
           <label className="rz-check">
-            <input
-              type="checkbox"
+            <AppCheckbox
               checked={p.published}
               onChange={(e) => change("published", e.target.checked)}
             />
@@ -655,9 +849,9 @@ function ProfileEditor() {
               Показывать мой профиль работодателям после подтверждения уровня
             </span>
           </label>
-          <button className="rz-button primary" disabled={state.busy}>
+          <Button className="rz-button primary" disabled={state.busy}>
             {state.busy ? "Сохраняем…" : "Сохранить профиль"}
-          </button>
+          </Button>
         </form>
         <aside className="rz-stack">
           <ContactAccess />
@@ -670,7 +864,7 @@ function ProfileEditor() {
                 : "Пройдите тест, чтобы ваш профиль появился в банке специалистов."}
             </p>
             <Link href="/app/assessment" className="rz-text-link">
-              Открыть тестирование →
+              Открыть тестирование
             </Link>
           </section>
           <section className="rz-panel">
@@ -681,7 +875,7 @@ function ProfileEditor() {
             </p>
             <label className="rz-button rz-upload">
               Загрузить резюме
-              <input
+              <Input
                 type="file"
                 accept="application/pdf"
                 onChange={async (e) => {
@@ -734,7 +928,7 @@ function ProfileEditor() {
               </p>
             )}
             <div className="rz-actions">
-              <button
+              <Button
                 className="rz-button"
                 onClick={async () => {
                   try {
@@ -752,9 +946,9 @@ function ProfileEditor() {
                 }}
               >
                 Связать демо-ID
-              </button>
+              </Button>
               {p.fsp_id && (
-                <button
+                <Button
                   className="rz-text-link"
                   onClick={async () => {
                     try {
@@ -769,7 +963,7 @@ function ProfileEditor() {
                   }}
                 >
                   Отвязать
-                </button>
+                </Button>
               )}
             </div>
             <small className="rz-muted">
@@ -866,13 +1060,13 @@ function Assessment() {
             <Field label="Уровень, который хотите подтвердить">
               <SelectGrade value={grade} onChange={setGrade} />
             </Field>
-            <button
+            <Button
               className="rz-button primary"
               disabled={state.busy}
               onClick={start}
             >
-              Начать тест →
-            </button>
+              Начать тест
+            </Button>
             <small className="rz-muted">
               Перед началом заполните навыки и согласия в профиле.
             </small>
@@ -901,7 +1095,7 @@ function Assessment() {
               </div>
             </div>
             <Link href="/methodology" className="rz-text-link">
-              Полная методика →
+              Полная методика
             </Link>
           </section>
         </div>
@@ -941,9 +1135,9 @@ function Assessment() {
             <Link href="/app/profile" className="rz-button primary">
               Мой профиль
             </Link>
-            <button className="rz-button" onClick={() => setAttempt(null)}>
+            <Button className="rz-button" onClick={() => setAttempt(null)}>
               К выбору уровня
-            </button>
+            </Button>
           </div>
         </section>
       ) : (
@@ -976,7 +1170,7 @@ function Assessment() {
                   <p>{q.text}</p>
                 </div>
                 <Field label={`Ответ на вопрос ${i + 1}`}>
-                  <input
+                  <Input
                     inputMode="decimal"
                     value={answers[q.id] || ""}
                     maxLength={50}
@@ -988,10 +1182,10 @@ function Assessment() {
               </div>
             ))}
             <div className="rz-actions">
-              <button className="rz-button primary" disabled={state.busy}>
+              <Button className="rz-button primary" disabled={state.busy}>
                 Завершить и проверить
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 disabled={state.busy || remaining === 0}
                 className="rz-button"
@@ -1007,7 +1201,7 @@ function Assessment() {
                 }}
               >
                 Сохранить черновик
-              </button>
+              </Button>
             </div>
           </form>
         </section>
@@ -1064,23 +1258,66 @@ function TalentCard({
     <article className="rz-card rz-talent-card">
       <div className="rz-talent-main">
         <div className="rz-person-heading">
-          <span className="rz-person-avatar" aria-hidden="true">{p.name.split(" ").slice(0,2).map(x=>x[0]).join("")}</span>
-          <div><h3>{p.name} <CheckCircle size={18} weight="fill" className="rz-person-verified" aria-label="Грейд подтверждён" /></h3>
-          <p className="rz-muted">{specName(p.specialization)} · {gradeName(p.grade)}</p></div>
+          <span className="rz-person-avatar" aria-hidden="true">
+            {p.name
+              .split(" ")
+              .slice(0, 2)
+              .map((x) => x[0])
+              .join("")}
+          </span>
+          <div>
+            <h3>
+              {p.name}{" "}
+              <CheckCircle
+                size={18}
+                weight="fill"
+                className="rz-person-verified"
+                aria-label="Грейд подтверждён"
+              />
+            </h3>
+            <p className="rz-muted">
+              {specName(p.specialization)} · {gradeName(p.grade)}
+            </p>
+          </div>
         </div>
         <Skills items={p.skills} />
         <div className="rz-person-facts">
-          <span><MapPin size={15} /> {p.city || "Город не указан"}</span>
-          <span><Clock size={15} /> Опыт: {p.experience} лет</span>
-          <span><Certificate size={15} /> Тест: {p.score}/100</span>
-          {p.achievements.length > 0 && <span><Trophy size={15} /> ФСП · демореестр</span>}
+          <span>
+            <MapPin size={15} /> {p.city || "Город не указан"}
+          </span>
+          <span>
+            <Clock size={15} /> Опыт: {p.experience} лет
+          </span>
+          <span>
+            <Certificate size={15} /> Тест: {p.score}/100
+          </span>
+          {p.achievements.length > 0 && (
+            <span>
+              <Trophy size={15} /> ФСП · демореестр
+            </span>
+          )}
         </div>
       </div>
       <aside className="rz-talent-actions">
-        {p.match && <div className="rz-match"><strong>{p.match.score}</strong><small>баллов соответствия</small></div>}
+        {p.match && (
+          <div className="rz-match">
+            <strong>{p.match.score}</strong>
+            <small>баллов соответствия</small>
+          </div>
+        )}
         <strong className="rz-person-salary">от {money(p.salary_min)} ₽</strong>
-        <div><button className="rz-icon-button" aria-label={`Подробнее: ${p.name}`} onClick={onDetails || onInvite}><ArrowUpRight size={19} /></button>
-        <button className="rz-button small primary" onClick={onInvite}>Пригласить</button></div>
+        <div>
+          {onDetails && <Button
+            className="rz-icon-button"
+            aria-label={`Подробнее: ${p.name}`}
+            onClick={onDetails}
+          >
+            <Eye size={19} />
+          </Button>}
+          <Button className="rz-button small primary" onClick={onInvite}>
+            Пригласить
+          </Button>
+        </div>
       </aside>
       {p.match && (
         <details className="rz-explanation">
@@ -1150,7 +1387,7 @@ function NeedFields({
   return (
     <>
       <Field label="Название роли">
-        <input
+        <Input
           required
           minLength={3}
           maxLength={160}
@@ -1173,7 +1410,7 @@ function NeedFields({
         </Field>
       </div>
       <Field label="Навыки через запятую">
-        <input
+        <Input
           required
           value={v.skills.join(",")}
           onChange={(e) =>
@@ -1182,7 +1419,7 @@ function NeedFields({
         />
       </Field>
       <Field label="Задачи и ожидания">
-        <textarea
+        <Textarea
           rows={4}
           required
           minLength={10}
@@ -1193,7 +1430,7 @@ function NeedFields({
       </Field>
       <div className="rz-two">
         <Field label="Зарплата от, ₽">
-          <input
+          <Input
             type="number"
             required
             min={1}
@@ -1205,7 +1442,7 @@ function NeedFields({
           />
         </Field>
         <Field label="Зарплата до, ₽">
-          <input
+          <Input
             type="number"
             required
             min={v.salary_min || 1}
@@ -1218,14 +1455,14 @@ function NeedFields({
         </Field>
       </div>
       <Field label="Формат работы">
-        <select
+        <AppSelect
           value={v.work_format}
           onChange={(e) => onChange({ ...v, work_format: e.target.value })}
         >
           <option value="remote">Удалённо</option>
           <option value="hybrid">Гибрид</option>
           <option value="office">В офисе</option>
-        </select>
+        </AppSelect>
       </Field>
       <small className="rz-muted">Суммы в месяц, до вычета налогов.</small>
     </>
@@ -1234,7 +1471,6 @@ function NeedFields({
 
 function Talent() {
   const params = useSearchParams();
-  const router = useRouter();
   const [items, setItems] = useState<Profile[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
@@ -1291,10 +1527,14 @@ function Talent() {
       if (grade) q.set("grade", grade);
       if (skill) q.set("skill", skill);
       if (fsp) q.set("fsp", "true");
-      router.replace(`/app/talent?${q}`, { scroll: false });
+      const query = q.toString();
+      const url = `/app/talent${query ? `?${query}` : ""}`;
+      if (`${window.location.pathname}${window.location.search}` !== url) {
+        window.history.replaceState(null, "", url);
+      }
     }, 250);
     return () => clearTimeout(timer);
-  }, [load, router, need, spec, grade, skill, fsp]);
+  }, [load, need, spec, grade, skill, fsp]);
   return (
     <>
       <PageHead
@@ -1302,9 +1542,9 @@ function Talent() {
         title="Найти специалистов"
         text="Выберите требования к роли и сравните подтверждённые навыки."
         action={
-          <button className="rz-button primary" onClick={() => setForm(!form)}>
+          <Button className="rz-button primary" onClick={() => setForm(!form)}>
             + Описать потребность
-          </button>
+          </Button>
         }
       />
       {state.error && <Notice error>{state.error}</Notice>}
@@ -1332,22 +1572,22 @@ function Talent() {
         >
           <h2>Кого ищет ваша команда?</h2>
           <NeedFields value={values} onChange={setValues} />
-          <button className="rz-button primary" disabled={state.busy}>
-            Сохранить и подобрать →
-          </button>
+          <Button className="rz-button primary" disabled={state.busy}>
+            Сохранить и подобрать
+          </Button>
         </form>
       )}
       <div className="rz-filterbar">
         <label className="rz-search">
-          <span>⌕</span>
-          <input
+          <MagnifyingGlass size={18} aria-hidden="true" />
+          <Input
             aria-label="Поиск по навыку"
             placeholder="Навык, например Python"
             value={skill}
             onChange={(e) => setSkill(e.target.value)}
           />
         </label>
-        <select
+        <AppSelect
           aria-label="Сохранённая потребность"
           value={need}
           onChange={(e) => {
@@ -1362,8 +1602,8 @@ function Talent() {
               {n.title} · {gradeName(n.grade)}
             </option>
           ))}
-        </select>
-        <select
+        </AppSelect>
+        <AppSelect
           aria-label="Специализация"
           value={spec}
           onChange={(e) => setSpec(e.target.value)}
@@ -1371,8 +1611,8 @@ function Talent() {
           <option value="">Все направления</option>
           <option value="backend">Бэкенд</option>
           <option value="frontend">Фронтенд</option>
-        </select>
-        <select
+        </AppSelect>
+        <AppSelect
           aria-label="Грейд"
           value={grade}
           onChange={(e) => setGrade(e.target.value)}
@@ -1381,7 +1621,7 @@ function Talent() {
           <option value="junior">Начальный</option>
           <option value="middle">Средний</option>
           <option value="senior">Старший</option>
-        </select>
+        </AppSelect>
       </div>
       <div className="rz-results-bar">
         <p>
@@ -1393,8 +1633,7 @@ function Talent() {
           </span>
         </p>
         <label className="rz-check">
-          <input
-            type="checkbox"
+          <AppCheckbox
             checked={fsp}
             onChange={(e) => setFsp(e.target.checked)}
           />
@@ -1424,23 +1663,23 @@ function Talent() {
       )}
       {total > 12 && (
         <div className="rz-pagination">
-          <button
+          <Button
             className="rz-button"
             disabled={page === 0 || state.busy}
             onClick={() => setPage(page - 1)}
           >
-            ← Назад
-          </button>
+            Назад
+          </Button>
           <span>
             {page + 1} / {Math.ceil(total / 12)}
           </span>
-          <button
+          <Button
             className="rz-button"
             disabled={(page + 1) * 12 >= total || state.busy}
             onClick={() => setPage(page + 1)}
           >
-            Далее →
-          </button>
+            Далее
+          </Button>
         </div>
       )}
       {selected && (
@@ -1474,7 +1713,7 @@ function Talent() {
             Контакты скрыты до принятия приглашения. Достижения в этом стенде —
             из демонстрационного реестра.
           </Notice>
-          <button
+          <Button
             className="rz-button primary"
             onClick={() => {
               setSelected(details);
@@ -1482,7 +1721,7 @@ function Talent() {
             }}
           >
             Пригласить специалиста
-          </button>
+          </Button>
         </Modal>
       )}
     </>
@@ -1498,70 +1737,36 @@ function Modal({
   children: React.ReactNode;
   onClose: () => void;
 }) {
-  const dialog = useRef<HTMLElement>(null);
-  const close = useRef(onClose);
-  useEffect(() => {
-    close.current = onClose;
-  }, [onClose]);
-  useEffect(() => {
-    const previous = document.activeElement as HTMLElement | null;
-    const overflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    dialog.current?.querySelector<HTMLElement>("button")?.focus();
-    const fn = (e: KeyboardEvent) => {
-      if (e.key === "Escape") close.current();
-      if (e.key === "Tab") {
-        const targets = [
-          ...(dialog.current?.querySelectorAll<HTMLElement>(
-            'a[href],button:not(:disabled),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),[tabindex="0"]',
-          ) || []),
-        ];
-        const first = targets[0],
-          last = targets[targets.length - 1];
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault();
-          last?.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault();
-          first?.focus();
-        }
-      }
-    };
-    document.addEventListener("keydown", fn);
-    return () => {
-      document.removeEventListener("keydown", fn);
-      document.body.style.overflow = overflow;
-      previous?.focus();
-    };
-  }, []);
+  const returnFocus = useRef<HTMLElement | null>(null);
+  const heading = useRef<HTMLHeadingElement | null>(null);
   return (
-    <div
-      className="rz-modal-backdrop"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+    <Dialog
+      open
+      onOpenChange={(open) => {
+        if (!open) onClose();
       }}
     >
-      <section
-        ref={dialog}
-        role="dialog"
-        aria-modal="true"
-        aria-label={title}
-        className="rz-modal"
+      <DialogContent
+        className="rz-dialog"
+        aria-describedby={undefined}
+        onOpenAutoFocus={(event) => {
+          event.preventDefault();
+          returnFocus.current = document.activeElement as HTMLElement;
+          heading.current?.focus();
+        }}
+        onCloseAutoFocus={(event) => {
+          event.preventDefault();
+          returnFocus.current?.focus({ preventScroll: true });
+        }}
       >
-        <div className="rz-section-title">
-          <h2>{title}</h2>
-          <button
-            className="rz-icon-button"
-            autoFocus
-            aria-label="Закрыть"
-            onClick={onClose}
-          >
-            ×
-          </button>
-        </div>
-        {children}
-      </section>
-    </div>
+        <DialogHeader>
+          <DialogTitle ref={heading} tabIndex={-1}>
+            {title}
+          </DialogTitle>
+        </DialogHeader>
+        <div className="rz-dialog-body">{children}</div>
+      </DialogContent>
+    </Dialog>
   );
 }
 function InviteModal({
@@ -1618,7 +1823,7 @@ function InviteModal({
         }}
       >
         <Field label="Роль и команда">
-          <input
+          <Input
             required
             minLength={3}
             maxLength={160}
@@ -1627,7 +1832,7 @@ function InviteModal({
           />
         </Field>
         <Field label="Расскажите о предложении">
-          <textarea
+          <Textarea
             required
             rows={4}
             minLength={10}
@@ -1638,7 +1843,7 @@ function InviteModal({
         </Field>
         <div className="rz-two">
           <Field label="Зарплата от, ₽">
-            <input
+            <Input
               required
               type="number"
               min={1}
@@ -1647,7 +1852,7 @@ function InviteModal({
             />
           </Field>
           <Field label="Зарплата до, ₽">
-            <input
+            <Input
               required
               type="number"
               min={low}
@@ -1657,7 +1862,7 @@ function InviteModal({
           </Field>
         </div>
         <Field label="Контакт компании">
-          <input
+          <Input
             required
             minLength={3}
             maxLength={250}
@@ -1669,12 +1874,12 @@ function InviteModal({
           Зарплата до вычета налогов. Контакты специалиста откроются только
           после его согласия.
         </small>
-        <button
+        <Button
           className="rz-button primary"
           disabled={state.busy || !contact.trim() || low < 1 || high < low}
         >
-          Отправить приглашение →
-        </button>
+          Отправить приглашение
+        </Button>
       </form>
     </Modal>
   );
@@ -1730,7 +1935,7 @@ function Invitations({ user }: { user: User }) {
             <article className="rz-panel" key={i.id}>
               <div className="rz-card-top">
                 <p className="rz-eyebrow">
-                  {i.company_name} → {i.candidate_name}
+                  {i.company_name} {i.candidate_name}
                 </p>
                 <Tag tone={i.status === "accepted" ? "green" : ""}>
                   {statusName(i.status)}
@@ -1756,38 +1961,38 @@ function Invitations({ user }: { user: User }) {
                 <div className="rz-actions">
                   {user.role === "candidate" ? (
                     <>
-                      <button
+                      <Button
                         disabled={state.busy}
                         className="rz-button primary"
                         onClick={() => act(i.id, "accepted")}
                       >
-                        Принять и открыть контакты ↗
-                      </button>
-                      <button
+                        Принять и открыть контакты
+                      </Button>
+                      <Button
                         disabled={state.busy}
                         className="rz-button"
                         onClick={() => act(i.id, "declined")}
                       >
                         Отклонить
-                      </button>
+                      </Button>
                       {i.status === "sent" && (
-                        <button
+                        <Button
                           disabled={state.busy}
                           className="rz-text-link"
                           onClick={() => act(i.id, "viewed")}
                         >
                           Отметить просмотренным
-                        </button>
+                        </Button>
                       )}
                     </>
                   ) : (
-                    <button
+                    <Button
                       className="rz-button"
                       disabled={state.busy}
                       onClick={() => act(i.id, "withdrawn")}
                     >
                       Отозвать приглашение
-                    </button>
+                    </Button>
                   )}
                 </div>
               )}
@@ -1808,6 +2013,36 @@ function Invitations({ user }: { user: User }) {
 function Vacancies({ user }: { user: User }) {
   const [items, setItems] = useState<Need[]>([]);
   const [q, setQ] = useState("");
+  const [vacSpec, setVacSpec] = useState("");
+  const [vacGrade, setVacGrade] = useState("");
+  const [vacFormat, setVacFormat] = useState("");
+  const [page, setPage] = useState(0);
+  const [savedOnly, setSavedOnly] = useState(false);
+  const [saved, setSaved] = useState<string[]>(() => {
+    try {
+      const value = JSON.parse(
+        localStorage.getItem(`razryad.saved.${user.id}`) || "[]",
+      );
+      return Array.isArray(value)
+        ? value.filter((x) => typeof x === "string")
+        : [];
+    } catch {
+      return [];
+    }
+  });
+  const [loading, setLoading] = useState(true);
+  const request = useRef(0);
+  function toggleSaved(id: string) {
+    setSaved((old) => {
+      const next = old.includes(id)
+        ? old.filter((x) => x !== id)
+        : [...old, id];
+      try {
+        localStorage.setItem(`razryad.saved.${user.id}`, JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  }
   const [form, setForm] = useState(false);
   const [editing, setEditing] = useState("");
   const [values, setValues] = useState(initialNeed);
@@ -1818,39 +2053,65 @@ function Vacancies({ user }: { user: User }) {
   const { setError, setBusy } = state;
   const employer = user.role === "employer";
   const load = useCallback(async () => {
+    const current = ++request.current;
+    setLoading(true);
     try {
-      if (employer) setItems(await api<Need[]>("/company/vacancies"));
-      else
-        setItems(
-          (
-            await api<{ items: Need[] }>(
-              `/vacancies?q=${encodeURIComponent(q)}`,
-            )
-          ).items,
-        );
+      let rows: Need[] = [];
+      if (employer) rows = await api<Need[]>("/company/vacancies");
+      else {
+        let offset = 0;
+        while (true) {
+          const batch = await api<{ items: Need[]; total: number }>(
+            `/vacancies?limit=100&offset=${offset}`,
+          );
+          if (current !== request.current) return;
+          rows.push(...batch.items);
+          offset += batch.items.length;
+          if (!batch.items.length || offset >= batch.total) break;
+        }
+      }
+      if (current === request.current) setItems(rows);
     } catch (e) {
-      setError((e as Error).message);
+      if (current === request.current) setError((e as Error).message);
+    } finally {
+      if (current === request.current) setLoading(false);
     }
-  }, [employer, q, setError]);
+  }, [employer, setError]);
+  const cancelLoad = useCallback(() => {
+    request.current++;
+  }, []);
   useEffect(() => {
-    const t = setTimeout(load, 200);
-    return () => clearTimeout(t);
-  }, [load]);
+    load();
+    return cancelLoad;
+  }, [load, cancelLoad]);
+  const filtered = items.filter(
+    (v) =>
+      (!vacSpec || v.specialization === vacSpec) &&
+      (!vacGrade || v.grade === vacGrade) &&
+      (!vacFormat || v.work_format === vacFormat) &&
+      (!savedOnly || saved.includes(v.id)) &&
+      `${v.title} ${v.company_name || ""} ${v.skills.join(" ")}`
+        .toLowerCase()
+        .includes(q.toLowerCase()),
+  );
+  const currentPage = Math.min(
+    page,
+    Math.max(0, Math.ceil(filtered.length / 12) - 1),
+  );
+  const visible = filtered.slice(currentPage * 12, (currentPage + 1) * 12);
   return (
     <>
       <PageHead
         eyebrow="ОТКРЫТЫЕ ВОЗМОЖНОСТИ"
-        title={
-          employer ? "Вакансии компании" : "Открытые вакансии"
-        }
+        title={employer ? "Вакансии компании" : "Открытые вакансии"}
         text={
           employer
             ? "Публикуйте вакансии с прозрачными условиями и работайте с откликами."
-            : "Дополнительный путь к работе — вакансии напрямую от компаний."
+            : "Найдите команду по стеку, уровню и условиям. Зарплата известна до первого разговора."
         }
         action={
           employer ? (
-            <button
+            <Button
               className="rz-button primary"
               onClick={() => {
                 setEditing("");
@@ -1859,7 +2120,7 @@ function Vacancies({ user }: { user: User }) {
               }}
             >
               + Новая вакансия
-            </button>
+            </Button>
           ) : undefined
         }
       />
@@ -1886,97 +2147,277 @@ function Vacancies({ user }: { user: User }) {
         >
           <h2>{editing ? "Редактировать вакансию" : "Новая вакансия"}</h2>
           <NeedFields value={values} onChange={setValues} />
-          <button className="rz-button primary" disabled={state.busy}>
+          <Button className="rz-button primary" disabled={state.busy}>
             Сохранить вакансию
-          </button>
+          </Button>
         </form>
       )}
       {!employer && (
-        <label className="rz-search rz-margin-bottom">
-          <span>⌕</span>
-          <input
+        <div className="rz-list-tabs" aria-label="Список вакансий">
+          <Button
+            variant="ghost"
+            aria-pressed={!savedOnly}
+            onClick={() => {
+              setSavedOnly(false);
+              setPage(0);
+            }}
+          >
+            Все вакансии <span>{items.length}</span>
+          </Button>
+          <Button
+            variant="ghost"
+            aria-pressed={savedOnly}
+            onClick={() => {
+              setSavedOnly(true);
+              setPage(0);
+            }}
+          >
+            <BookmarkSimple size={16} />
+            Избранное <span>{saved.length}</span>
+          </Button>
+        </div>
+      )}
+      <div className="rz-vacancy-toolbar">
+        <label className="rz-search">
+          <MagnifyingGlass size={18} aria-hidden="true" />
+          <Input
             value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Название роли или навык"
+            onChange={(e) => {
+              setQ(e.target.value);
+              setPage(0);
+            }}
+            placeholder="Роль, компания или навык"
             aria-label="Поиск вакансий"
           />
         </label>
-      )}
-      {items.length ? (
-        <div className="rz-card-grid">
-          {items.map((v) => (
-            <article className="rz-card" key={v.id}>
-              <div className="rz-card-top">
-                <span className="rz-company-icon"><Buildings size={22} /></span>
-                <Tag>{v.archived ? "В архиве" : formatName(v.work_format)}</Tag>
+        <AppSelect
+          aria-label="Направление вакансии"
+          value={vacSpec}
+          onChange={(e) => {
+            setVacSpec(e.target.value);
+            setPage(0);
+          }}
+        >
+          <option value="">Все направления</option>
+          <option value="backend">Бэкенд</option>
+          <option value="frontend">Фронтенд</option>
+        </AppSelect>
+        <AppSelect
+          aria-label="Уровень вакансии"
+          value={vacGrade}
+          onChange={(e) => {
+            setVacGrade(e.target.value);
+            setPage(0);
+          }}
+        >
+          <option value="">Любой уровень</option>
+          <option value="junior">Junior</option>
+          <option value="middle">Middle</option>
+          <option value="senior">Senior</option>
+        </AppSelect>
+        <AppSelect
+          aria-label="Формат вакансии"
+          value={vacFormat}
+          onChange={(e) => {
+            setVacFormat(e.target.value);
+            setPage(0);
+          }}
+        >
+          <option value="">Любой формат</option>
+          <option value="remote">Удалённо</option>
+          <option value="hybrid">Гибрид</option>
+          <option value="office">Офис</option>
+        </AppSelect>
+      </div>
+      <div className="rz-results-bar">
+        <span aria-live="polite">
+          {loading
+            ? "Загружаем вакансии…"
+            : `Найдено вакансий: ${filtered.length}`}
+        </span>
+        {(q || vacSpec || vacGrade || vacFormat) && (
+          <Button
+            variant="ghost"
+            className="rz-text-link"
+            onClick={() => {
+              setQ("");
+              setVacSpec("");
+              setVacGrade("");
+              setVacFormat("");
+              setPage(0);
+            }}
+          >
+            <X size={14} />
+            Сбросить фильтры
+          </Button>
+        )}
+      </div>
+      {loading ? (
+        <div className="rz-list-skeleton" aria-label="Загрузка вакансий">
+          <div />
+          <div />
+          <div />
+        </div>
+      ) : visible.length ? (
+        <div className="rz-vacancy-list">
+          {visible.map((v) => (
+            <article className="rz-vacancy-row" key={v.id}>
+              <span className="rz-company-icon" aria-hidden="true">
+                {(v.company_name || "Компания")
+                  .split(" ")
+                  .slice(0, 2)
+                  .map((x) => x[0])
+                  .join("")}
+              </span>
+              <div>
+                <p className="rz-vacancy-company">
+                  {v.company_name || "Ваша компания"}
+                </p>
+                <h3>{v.title}</h3>
+                <div className="rz-vacancy-meta">
+                  <span>
+                    <Briefcase size={14} />
+                    {gradeName(v.grade)}
+                  </span>
+                  <span>
+                    <MapPin size={14} />
+                    {formatName(v.work_format)}
+                  </span>
+                  {v.archived && <Tag>В архиве</Tag>}
+                </div>
+                <Skills items={v.skills} />
+                <p className="rz-vacancy-description">{v.description}</p>
               </div>
-              <p className="rz-muted">{v.company_name || "Ваша компания"}</p>
-              <h3>{v.title}</h3>
-              <p className="rz-salary">
-                {money(v.salary_min)} – {money(v.salary_max)} ₽
-              </p>
-              <p className="rz-muted">
-                {gradeName(v.grade)} · до вычета налогов
-              </p>
-              <Skills items={v.skills} />
-              <p className="rz-clamp">{v.description}</p>
-              <div className="rz-actions">
-                {employer ? (
-                  <>
-                    <button
-                      className="rz-button"
-                      onClick={() => {
-                        setValues(v);
-                        setEditing(v.id);
-                        setForm(true);
-                        window.scrollTo(0, 0);
-                      }}
-                    >
-                      Изменить
-                    </button>
-                    <button
-                      className="rz-text-link"
-                      onClick={async () => {
-                        try {
-                          await patch(`/vacancies/${v.id}`, {
-                            status: v.archived ? "published" : "archived",
-                          });
-                          load();
-                        } catch (e) {
-                          setError((e as Error).message);
-                        }
-                      }}
-                    >
-                      {v.archived ? "Опубликовать" : "В архив"}
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    className="rz-button primary"
-                    onClick={() => {
-                      setSelected(v);
-                      setShare(false);
-                      setLetter("");
-                    }}
-                  >
-                    Подробнее и откликнуться ↗
-                  </button>
-                )}
+              <div className="rz-vacancy-aside">
+                <p className="rz-salary">
+                  {money(v.salary_min)} – {money(v.salary_max)} ₽
+                </p>
+                <small>в месяц · до вычета налогов</small>
+                <div className="rz-actions">
+                  {employer ? (
+                    <>
+                      <Button
+                        className="rz-button"
+                        onClick={() => {
+                          setValues(v);
+                          setEditing(v.id);
+                          setForm(true);
+                          window.scrollTo(0, 0);
+                        }}
+                      >
+                        Изменить
+                      </Button>
+                      <Button
+                        className="rz-text-link"
+                        onClick={async () => {
+                          try {
+                            await patch(`/vacancies/${v.id}`, {
+                              status: v.archived ? "published" : "archived",
+                            });
+                            load();
+                          } catch (e) {
+                            setError((e as Error).message);
+                          }
+                        }}
+                      >
+                        {v.archived ? "Опубликовать" : "В архив"}
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            className="rz-bookmark"
+                            aria-label={
+                              saved.includes(v.id)
+                                ? "Убрать из избранного"
+                                : "Сохранить вакансию"
+                            }
+                            aria-pressed={saved.includes(v.id)}
+                            onClick={() => toggleSaved(v.id)}
+                          >
+                            <BookmarkSimple
+                              size={18}
+                              weight={saved.includes(v.id) ? "fill" : "regular"}
+                            />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent className="rz-ui-popup">
+                          {saved.includes(v.id) ? "Сохранено" : "В избранное"}
+                        </TooltipContent>
+                      </Tooltip>
+                      <Button
+                        className="rz-button primary"
+                        onClick={() => {
+                          setSelected(v);
+                          setShare(false);
+                          setLetter("");
+                          setError("");
+                        }}
+                      >
+                        Подробнее
+                      </Button>
+                    </>
+                  )}
+                </div>
               </div>
             </article>
           ))}
         </div>
       ) : (
-        <Empty title="Вакансий пока нет">
-          Измените запрос или создайте свою вакансию.
+        <Empty
+          title={
+            savedOnly
+              ? "Вы ещё не сохранили вакансии"
+              : "По этим условиям вакансий нет"
+          }
+        >
+          {savedOnly
+            ? "Нажмите на закладку рядом с подходящей ролью. Избранное сохраняется в этом браузере."
+            : "Попробуйте убрать один из фильтров или изменить поисковый запрос."}
         </Empty>
+      )}
+      {filtered.length > 12 && (
+        <div className="rz-pagination">
+          <Button
+            className="rz-button"
+            disabled={currentPage === 0}
+            onClick={() => {
+              setPage(currentPage - 1);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          >
+            Назад
+          </Button>
+          <span>
+            {currentPage + 1} / {Math.ceil(filtered.length / 12)}
+          </span>
+          <Button
+            className="rz-button"
+            disabled={(currentPage + 1) * 12 >= filtered.length}
+            onClick={() => {
+              setPage(currentPage + 1);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          >
+            Далее
+          </Button>
+        </div>
       )}
       {selected && (
         <Modal title={selected.title} onClose={() => setSelected(null)}>
           <p className="rz-salary">
             {money(selected.salary_min)} – {money(selected.salary_max)} ₽
           </p>
+          <div className="rz-vacancy-meta">
+            <span>{selected.company_name}</span>
+            <span>{formatName(selected.work_format)}</span>
+            <span>{gradeName(selected.grade)}</span>
+          </div>
           <p>{selected.description}</p>
+          {state.error && <Notice error>{state.error}</Notice>}
           <Skills items={selected.skills} />
           <form
             className="rz-form"
@@ -2001,7 +2442,7 @@ function Vacancies({ user }: { user: User }) {
             }}
           >
             <Field label="Сопроводительное письмо">
-              <textarea
+              <Textarea
                 rows={3}
                 maxLength={2000}
                 value={letter}
@@ -2009,8 +2450,7 @@ function Vacancies({ user }: { user: User }) {
               />
             </Field>
             <label className="rz-check">
-              <input
-                type="checkbox"
+              <AppCheckbox
                 required
                 checked={share}
                 onChange={(e) => setShare(e.target.checked)}
@@ -2019,9 +2459,9 @@ function Vacancies({ user }: { user: User }) {
                 Разрешаю передать контакты компании «{selected.company_name}»
               </span>
             </label>
-            <button disabled={state.busy} className="rz-button primary">
+            <Button disabled={state.busy} className="rz-button primary">
               Отправить отклик
-            </button>
+            </Button>
           </form>
         </Modal>
       )}
@@ -2074,7 +2514,7 @@ function Applications({ user }: { user: User }) {
                     ? ["withdrawn"]
                     : ["reviewing", "interview", "rejected"]
                   ).map((status) => (
-                    <button
+                    <Button
                       className="rz-button"
                       disabled={state.busy}
                       key={status}
@@ -2091,7 +2531,7 @@ function Applications({ user }: { user: User }) {
                       }}
                     >
                       {statusName(status)}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               )}
@@ -2159,7 +2599,7 @@ function CompanyEditor() {
             ] as const
           ).map(([key, label]) => (
             <Field key={key} label={label}>
-              <input
+              <Input
                 required={key !== "city"}
                 value={value[key]}
                 onChange={(e) => setValue({ ...value, [key]: e.target.value })}
@@ -2168,7 +2608,7 @@ function CompanyEditor() {
             </Field>
           ))}
           <Field label="О команде и продукте">
-            <textarea
+            <Textarea
               rows={6}
               maxLength={3000}
               value={value.description}
@@ -2177,9 +2617,9 @@ function CompanyEditor() {
               }
             />
           </Field>
-          <button className="rz-button primary" disabled={state.busy}>
+          <Button className="rz-button primary" disabled={state.busy}>
             Сохранить изменения
-          </button>
+          </Button>
           <Notice>
             Профиль компании в прототипе не означает независимую проверку
             юридического лица.
@@ -2192,6 +2632,9 @@ function CompanyEditor() {
 
 function Challenges({ user }: { user: User }) {
   const [items, setItems] = useState<Challenge[]>([]);
+  const [query, setQuery] = useState("");
+  const [direction, setDirection] = useState("");
+  const [taskPage, setTaskPage] = useState(0);
   const [form, setForm] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -2215,6 +2658,17 @@ function Challenges({ user }: { user: User }) {
   useEffect(() => {
     load();
   }, [load]);
+  const filteredTasks = items.filter(
+    (c) =>
+      (!direction || c.specialization === direction) &&
+      `${c.title} ${c.description} ${c.company_name}`
+        .toLocaleLowerCase("ru")
+        .includes(query.trim().toLocaleLowerCase("ru")),
+  );
+  const currentTaskPage = Math.min(
+    taskPage,
+    Math.max(0, Math.ceil(filteredTasks.length / 6) - 1),
+  );
   return (
     <>
       <PageHead
@@ -2223,12 +2677,12 @@ function Challenges({ user }: { user: User }) {
         text="Практические задачи от команд. Оценка по открытой рубрике, без изменения грейда."
         action={
           user.role === "employer" ? (
-            <button
+            <Button
               className="rz-button primary"
               onClick={() => setForm(!form)}
             >
               + Новое задание
-            </button>
+            </Button>
           ) : undefined
         }
       />
@@ -2254,7 +2708,7 @@ function Challenges({ user }: { user: User }) {
           }}
         >
           <Field label="Название">
-            <input
+            <Input
               required
               minLength={3}
               value={title}
@@ -2265,7 +2719,7 @@ function Challenges({ user }: { user: User }) {
             <SelectSpec value={spec} onChange={setSpec} />
           </Field>
           <Field label="Условие">
-            <textarea
+            <Textarea
               required
               minLength={20}
               value={description}
@@ -2273,137 +2727,191 @@ function Challenges({ user }: { user: User }) {
             />
           </Field>
           <Field label="Рубрика оценки">
-            <textarea
+            <Textarea
               required
               minLength={10}
               value={rubric}
               onChange={(e) => setRubric(e.target.value)}
             />
           </Field>
-          <button className="rz-button primary">Опубликовать задание</button>
+          <Button className="rz-button primary">Опубликовать задание</Button>
         </form>
       )}
-      {items.length ? (
+      <div className="rz-task-toolbar">
+        <div className="rz-search">
+          <MagnifyingGlass size={18} />
+          <Input
+            aria-label="Поиск заданий"
+            placeholder="Задача или команда"
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setTaskPage(0);
+            }}
+          />
+        </div>
+        <AppSelect
+          aria-label="Направление задания"
+          value={direction}
+          onChange={(e) => {
+            setDirection(e.target.value);
+            setTaskPage(0);
+          }}
+        >
+          <option value="">Все направления</option>
+          <option value="backend">Бэкенд-разработка</option>
+          <option value="frontend">Фронтенд-разработка</option>
+        </AppSelect>
+        <span className="rz-muted" aria-live="polite">
+          Найдено заданий: {filteredTasks.length}
+        </span>
+      </div>
+      {filteredTasks.length ? (
         <div className="rz-stack">
-          {items.map((c) => (
-            <section className="rz-panel" key={c.id}>
-              <div className="rz-card-top">
-                <Tag>{specName(c.specialization)}</Tag>
-                <span className="rz-muted">{c.company_name}</span>
-              </div>
-              <h2 className="rz-margin">{c.title}</h2>
-              <p>{c.description}</p>
-              <div className="rz-rubric">
-                <strong>Как оценивается</strong>
-                <p>{c.rubric}</p>
-              </div>
-              {user.role === "candidate" && !c.submissions.length && (
-                <form
-                  className="rz-form"
-                  onSubmit={async (e) => {
-                    e.preventDefault();
-                    setBusy(true);
-                    try {
-                      await post(`/challenges/${c.id}/submissions`, {
-                        answer: answers[c.id] || "",
-                      });
-                      load();
-                      state.setMessage(
-                        "Решение отправлено на проверку работодателю",
-                      );
-                    } catch (e) {
-                      setError((e as Error).message);
-                    } finally {
-                      setBusy(false);
-                    }
-                  }}
-                >
-                  <Field label="Ваш подход к решению">
-                    <textarea
-                      rows={4}
-                      required
-                      minLength={20}
-                      maxLength={8000}
-                      value={answers[c.id] || ""}
-                      onChange={(e) =>
-                        setAnswers({ ...answers, [c.id]: e.target.value })
-                      }
-                    />
-                  </Field>
-                  <button className="rz-button primary" disabled={state.busy}>
-                    Отправить решение →
-                  </button>
-                </form>
-              )}
-              {c.submissions.map((s) => (
-                <div className="rz-submission" key={s.id}>
-                  <Tag tone={s.score !== null ? "green" : ""}>
-                    {s.score === null ? "Ожидает проверки" : `${s.score} / 100`}
-                  </Tag>
-                  <p className="rz-prewrap">{s.answer}</p>
-                  {s.feedback && <Notice>{s.feedback}</Notice>}
-                  {user.role === "employer" && s.score === null && (
-                    <form
-                      className="rz-form"
-                      onSubmit={async (e) => {
-                        e.preventDefault();
-                        try {
-                          await post(
-                            `/submissions/${s.id}/review`,
-                            reviews[s.id] || { score: 0, feedback: "" },
-                          );
-                          load();
-                        } catch (e) {
-                          setError((e as Error).message);
-                        }
-                      }}
-                    >
-                      <Field label="Оценка 0–100">
-                        <input
-                          type="number"
-                          required
-                          min={0}
-                          max={100}
-                          value={reviews[s.id]?.score ?? 0}
-                          onChange={(e) =>
-                            setReviews({
-                              ...reviews,
-                              [s.id]: {
-                                score: Number(e.target.value),
-                                feedback: reviews[s.id]?.feedback || "",
-                              },
-                            })
-                          }
-                        />
-                      </Field>
-                      <Field label="Обратная связь">
-                        <textarea
-                          required
-                          minLength={10}
-                          value={reviews[s.id]?.feedback || ""}
-                          onChange={(e) =>
-                            setReviews({
-                              ...reviews,
-                              [s.id]: {
-                                score: reviews[s.id]?.score || 0,
-                                feedback: e.target.value,
-                              },
-                            })
-                          }
-                        />
-                      </Field>
-                      <button className="rz-button">Оценить решение</button>
-                    </form>
-                  )}
+          {filteredTasks
+            .slice(currentTaskPage * 6, currentTaskPage * 6 + 6)
+            .map((c) => (
+              <section className="rz-panel" key={c.id}>
+                <div className="rz-card-top">
+                  <Tag>{specName(c.specialization)}</Tag>
+                  <span className="rz-muted">{c.company_name}</span>
                 </div>
-              ))}
-            </section>
-          ))}
+                <h2 className="rz-margin">{c.title}</h2>
+                <p>{c.description}</p>
+                <div className="rz-rubric">
+                  <strong>Как оценивается</strong>
+                  <p>{c.rubric}</p>
+                </div>
+                {user.role === "candidate" && !c.submissions.length && (
+                  <form
+                    className="rz-form"
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      setBusy(true);
+                      try {
+                        await post(`/challenges/${c.id}/submissions`, {
+                          answer: answers[c.id] || "",
+                        });
+                        load();
+                        state.setMessage(
+                          "Решение отправлено на проверку работодателю",
+                        );
+                      } catch (e) {
+                        setError((e as Error).message);
+                      } finally {
+                        setBusy(false);
+                      }
+                    }}
+                  >
+                    <Field label="Ваш подход к решению">
+                      <Textarea
+                        rows={4}
+                        required
+                        minLength={20}
+                        maxLength={8000}
+                        value={answers[c.id] || ""}
+                        onChange={(e) =>
+                          setAnswers({ ...answers, [c.id]: e.target.value })
+                        }
+                      />
+                    </Field>
+                    <Button className="rz-button primary" disabled={state.busy}>
+                      Отправить решение
+                    </Button>
+                  </form>
+                )}
+                {c.submissions.map((s) => (
+                  <div className="rz-submission" key={s.id}>
+                    <Tag tone={s.score !== null ? "green" : ""}>
+                      {s.score === null
+                        ? "Ожидает проверки"
+                        : `${s.score} / 100`}
+                    </Tag>
+                    <p className="rz-prewrap">{s.answer}</p>
+                    {s.feedback && <Notice>{s.feedback}</Notice>}
+                    {user.role === "employer" && s.score === null && (
+                      <form
+                        className="rz-form"
+                        onSubmit={async (e) => {
+                          e.preventDefault();
+                          try {
+                            await post(
+                              `/submissions/${s.id}/review`,
+                              reviews[s.id] || { score: 0, feedback: "" },
+                            );
+                            load();
+                          } catch (e) {
+                            setError((e as Error).message);
+                          }
+                        }}
+                      >
+                        <Field label="Оценка 0–100">
+                          <Input
+                            type="number"
+                            required
+                            min={0}
+                            max={100}
+                            value={reviews[s.id]?.score ?? 0}
+                            onChange={(e) =>
+                              setReviews({
+                                ...reviews,
+                                [s.id]: {
+                                  score: Number(e.target.value),
+                                  feedback: reviews[s.id]?.feedback || "",
+                                },
+                              })
+                            }
+                          />
+                        </Field>
+                        <Field label="Обратная связь">
+                          <Textarea
+                            required
+                            minLength={10}
+                            value={reviews[s.id]?.feedback || ""}
+                            onChange={(e) =>
+                              setReviews({
+                                ...reviews,
+                                [s.id]: {
+                                  score: reviews[s.id]?.score || 0,
+                                  feedback: e.target.value,
+                                },
+                              })
+                            }
+                          />
+                        </Field>
+                        <Button className="rz-button">Оценить решение</Button>
+                      </form>
+                    )}
+                  </div>
+                ))}
+              </section>
+            ))}
         </div>
       ) : (
         <Empty title="Новых задач пока нет">
           Здесь появятся задания по вашей специализации.
         </Empty>
+      )}
+      {filteredTasks.length > 6 && (
+        <div className="rz-pagination">
+          <Button
+            className="rz-button"
+            disabled={currentTaskPage === 0}
+            onClick={() => setTaskPage(currentTaskPage - 1)}
+          >
+            Назад
+          </Button>
+          <span>
+            {currentTaskPage + 1} / {Math.ceil(filteredTasks.length / 6)}
+          </span>
+          <Button
+            className="rz-button"
+            disabled={(currentTaskPage + 1) * 6 >= filteredTasks.length}
+            onClick={() => setTaskPage(currentTaskPage + 1)}
+          >
+            Далее
+          </Button>
+        </div>
       )}
     </>
   );

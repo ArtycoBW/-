@@ -11,3 +11,5 @@
 Шрифты интерфейса: Manrope, Inter, Lora, JetBrains Mono, получаемые через next/font. Тексты SIL Open Font License из репозитория google/fonts сохранены в `licenses/fonts/` и включаются в runtime-образ. Презентация сохраняет Montserrat из шаблона.
 
 Иконки кабинетов и формы входа: Phosphor Icons (MIT), лицензия сохранена в `licenses/phosphor-icons.txt`. Знак «Разряд» в `frontend/public/brand/mark.svg` создан для проекта.
+
+Элементы кабинетов адаптированы из shadcn/ui (MIT): Select, Dialog, DropdownMenu, Tooltip, Checkbox, Button, Input, Textarea, Badge. Поведение и доступность основаны на Radix UI (MIT). Утилиты классов: cn (MIT), class-variance-authority (Apache-2.0); анимации tw-animate-css (MIT). Лицензии сохранены в `licenses/ui/`. Сторонние компоненты стилизованы под интерфейс «Разряд»; исходный лендинг сохраняет собственные компоненты.

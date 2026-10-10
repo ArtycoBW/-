@@ -35,7 +35,7 @@ test("регистрация → подтверждение грейда → п�
   await page
     .getByRole("link", { name: "Подтвердить уровень", exact: true })
     .click();
-  await page.getByRole("button", { name: "Начать тест →" }).click();
+  await page.getByRole("button", { name: "Начать тест" }).click();
   await expect(
     page.getByLabel("Ответ на вопрос 1", { exact: true }),
   ).toBeVisible();
@@ -127,10 +127,16 @@ test("мобильный кабинет и доступность модальн
     .getByRole("button", { name: "Кабинет работодателя", exact: true })
     .click();
   await page.waitForURL("**/app");
+  await page.getByRole("button", { name: "Пригласить", exact: true }).first().click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
   await page.getByRole("button", { name: "Открыть меню" }).click();
   await page
     .getByRole("link", { name: "Найти специалистов", exact: true })
     .click();
+  await page.waitForURL("**/app/talent");
+  await expect(page.getByRole("heading", { name: "Найти специалистов", exact: true })).toBeVisible();
   await expect(page.locator(".rz-talent-card").first()).toBeVisible();
   await page.screenshot({ path: "../.local/qa/mobile-talent.png" });
   expect(

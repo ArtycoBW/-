@@ -33,7 +33,7 @@ const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000';
     await page.getByRole('button', { name: 'Сохранить профиль', exact: true }).click();
     await expect(page.getByText('Профиль сохранён', { exact: true })).toBeVisible(); await pause();
     await page.getByRole('link', { name: 'Подтвердить уровень', exact: true }).click();
-    await page.getByRole('button', { name: 'Начать тест →' }).click();
+    await page.getByRole('button', { name: 'Начать тест' }).click();
     await expect(page.getByLabel('Ответ на вопрос 1', { exact: true })).toBeVisible(); await pause();
     // Доверенная фикстура проверяет интеграцию. Правильные ответы не доступны пользователю API.
     const questions = JSON.parse(execFileSync('docker', ['compose', 'exec', '-T', 'api', 'python', '-c', 'import json,sys; from sqlalchemy import select; from backend.db import SessionLocal; from backend.models import Attempt,User; db=SessionLocal(); q=db.scalar(select(Attempt.questions).join(User,User.id==Attempt.candidate_id).where(User.email==sys.argv[1]).order_by(Attempt.started_at.desc())); print(json.dumps(q,ensure_ascii=False))', email], { cwd: root, encoding: 'utf8' }));
