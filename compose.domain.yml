@@ -1,0 +1,55 @@
+name: razryad-domain
+
+# Independent entry point; never combine this file with compose.yml.
+services:
+  domain-api:
+    image: ${DOMAIN_API_IMAGE:-razryad-api}
+    restart: unless-stopped
+    env_file: .local/domain-api.env
+    networks:
+      entry:
+        aliases: [api]
+      database: {}
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/ready')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  domain-web:
+    image: ${DOMAIN_WEB_IMAGE:-razryad-web}
+    restart: unless-stopped
+    networks: [entry]
+    ports: ["127.0.0.1:3001:3000"]
+    depends_on:
+      domain-api:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:3000/api/v1/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  domain-tunnel:
+    image: cloudflare/cloudflared@sha256:9b49eed8f62806d5d45ddf59ecefb5710429598ea6d3fcccd2af938f621b2b07
+    profiles: [tunnel]
+    restart: unless-stopped
+    command: [tunnel, --no-autoupdate, --protocol, http2, run, --token-file, /run/secrets/tunnel_token]
+    secrets: [tunnel_token]
+    networks: [entry]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    depends_on:
+      domain-web:
+        condition: service_healthy
+
+networks:
+  entry: {}
+  database:
+    external: true
+    name: razryad_default
+
+secrets:
+  tunnel_token:
+    file: .local/cloudflare-tunnel-token.txt
