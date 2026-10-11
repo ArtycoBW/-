@@ -15,7 +15,7 @@
 			<text x="30" y="633" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,1266) scale(1,-1)">Контроль готовности, восстановление и условия включения почты</text>
 			<rect x="30" y="480" width="270" height="100" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
 			<text x="99.8544921875" y="552" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,1104) scale(1,-1)">Проверка DNS</text>
-			<text x="100.27734375" y="525" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,1050) scale(1,-1)">Каждые 30 минут</text>
+			<text x="75.91015625" y="525" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,1050) scale(1,-1)">Проверено при выпуске</text>
 			<text x="115.8671875" y="501" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,1002) scale(1,-1)">NS + A/AAAA</text>
 			<rect x="365" y="480" width="270" height="100" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
 			<text x="416.021484375" y="552" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,1104) scale(1,-1)">Публичный HTTPS</text>

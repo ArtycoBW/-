@@ -12,7 +12,7 @@
 		<g transform="">
 			<rect x="0" y="0" width="1000" height="760" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
 			<text x="30" y="724" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 27px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,1448) scale(1,-1)">05 / Подтверждение почты / sequence</text>
-			<text x="30" y="693" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,1386) scale(1,-1)">Реализовано; обязательность включается после проверки публичного HTTPS</text>
+			<text x="30" y="693" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,1386) scale(1,-1)">Включено на постоянном домене; доставка и одноразовость проверены</text>
 			<rect x="15" y="598" width="190" height="62" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
 			<text x="73.526123046875" y="632" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,1264) scale(1,-1)">Браузер</text>
 			<path d="M 110,590 L 110,70 Z" style="stroke: rgb(79%,83%,88%); stroke-linecap: butt; stroke-width: 1; stroke-dasharray: 4, 4;"/>

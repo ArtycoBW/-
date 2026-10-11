@@ -27,7 +27,7 @@ def prepare():
         for email, name, city, specialization, grade, experience, salary, skills, bio in specs:
             user = db.scalar(select(User).where(User.email == email))
             if user is None:
-                user = User(email=email, role="candidate", password_hash=password_hasher.hash("RazryadDemo2026!"), verified=False)
+                user = User(email=email, role="candidate", password_hash=password_hasher.hash("RazryadDemo2026!"), verified=True)
                 db.add(user); db.flush()
             profile = db.get(Candidate, user.id)
             if profile is not None:

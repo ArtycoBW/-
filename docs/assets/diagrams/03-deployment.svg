@@ -16,9 +16,9 @@
 			<rect x="30" y="525" width="440" height="85" rx="10" ry="0" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,96%,97%); fill-rule: evenodd;"/>
 			<text x="135.568603515625" y="582" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,1164) scale(1,-1)">Временный HTTPS-адрес</text>
 			<text x="124.14453125" y="555" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,1110) scale(1,-1)">trycloudflare.com / стенд комиссии</text>
-			<rect x="530" y="525" width="440" height="85" rx="10" ry="0" style="stroke: rgb(72%,48%,7%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(100%,96%,89%); fill-rule: evenodd;"/>
-			<text x="632.646240234375" y="582" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(72%,48%,7%); stroke:none;" transform="translate(0,1164) scale(1,-1)">Постоянный HTTPS-адрес</text>
-			<text x="613.12109375" y="555" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,1110) scale(1,-1)">razryad.agropulseai.ru / ожидает DNS</text>
+			<rect x="530" y="525" width="440" height="85" rx="10" ry="0" style="stroke: rgb(13%,52%,43%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(91%,96%,94%); fill-rule: evenodd;"/>
+			<text x="632.646240234375" y="582" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(13%,52%,43%); stroke:none;" transform="translate(0,1164) scale(1,-1)">Постоянный HTTPS-адрес</text>
+			<text x="629.578125" y="555" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,1110) scale(1,-1)">razryad.agropulseai.ru / работает</text>
 			<rect x="30" y="240" width="440" height="235" rx="12" ry="0" style="stroke: rgb(79%,83%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(97%,98%,98%); fill-rule: evenodd; stroke-dasharray: 6, 4;"/>
 			<text x="44" y="450" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 17px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,900) scale(1,-1)">Docker project: razryad</text>
 			<rect x="530" y="240" width="440" height="235" rx="12" ry="0" style="stroke: rgb(79%,83%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(97%,98%,98%); fill-rule: evenodd; stroke-dasharray: 6, 4;"/>

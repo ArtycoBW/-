@@ -68,7 +68,7 @@ def populate():
             for n in range(24):
                 key=f"{spec}-{n}"
                 email = f"judge.{spec}@demo.razryad.ru" if n==0 else f"track.{spec}{n}@demo.razryad.ru"
-                user,_=add(m.User,key,email=email,password_hash=password,role="candidate",verified=False)
+                user,_=add(m.User,key,email=email,password_hash=password,role="candidate",verified=True)
                 grade=["middle","junior","senior"][n%3]
                 person,created=add(m.Candidate,key,name=names[index] if n==0 else names[(index+n)%10]+f" · {n+1}",city=cities[(n+index)%6],bio=f"Специализация: {label}. Развиваю {TASKS[spec][n%3][0].lower()}. Работаю с {', '.join(skills[:3])}. Ценю ревью, проверяемые решения и ответственность за результат. Учебный профиль комиссии; история и достижения вымышленные.",contact=email,specialization=spec,desired_grade=grade,grade=grade,skills=skills[:3]+([skills[3]] if n%4 else []),experience={"junior":1,"middle":4,"senior":8}[grade],work_format=["remote","hybrid","office"][n%3],salary_min={"junior":80000,"middle":170000,"senior":265000}[grade],score=[75,87.5,100][n%3],verified_at=now-86400*(10+n),active_at=now-86400*(n%12),published=True,consent=True)
                 if created:

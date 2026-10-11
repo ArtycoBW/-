@@ -85,7 +85,7 @@ def figures():
 
     f=Figure(3,'Развёртывание и сети','Два независимых входа, общая БД; переход сохраняет работающий адрес',720)
     f.box(30,110,440,85,'Временный HTTPS-адрес','trycloudflare.com / стенд комиссии',kind='external')
-    f.box(530,110,440,85,'Постоянный HTTPS-адрес','razryad.agropulseai.ru / ожидает DNS',kind='pending')
+    f.box(530,110,440,85,'Постоянный HTTPS-адрес','razryad.agropulseai.ru / работает',kind='data')
     f.group(30,245,440,235,'Docker project: razryad')
     f.group(530,245,440,235,'Docker project: razryad-domain')
     f.box(55,300,160,80,'QuickTunnel','cloudflared')
@@ -127,7 +127,7 @@ def figures():
     f.arrow([(830,550),(830,648),(745,648)])
     save('04-data-model',f)
 
-    f=Figure(5,'Подтверждение почты / sequence','Реализовано; обязательность включается после проверки публичного HTTPS',760)
+    f=Figure(5,'Подтверждение почты / sequence','Включено на постоянном домене; доставка и одноразовость проверены',760)
     xs=[110,370,630,890]
     for x,title in zip(xs,['Браузер','FastAPI','PostgreSQL','Почта']):
         f.box(x-95,100,190,62,title)
@@ -175,7 +175,7 @@ def figures():
     save('07-matching-pipeline',f)
 
     f=Figure(8,'Эксплуатация и безопасный выпуск','Контроль готовности, восстановление и условия включения почты',700)
-    boxes=[(30,120,'Проверка DNS','Каждые 30 минут','NS + A/AAAA'),(365,120,'Публичный HTTPS','/health и /ready','Проверка сертификата'),(700,120,'Почтовые записи','MX / SPF / DKIM','SMTP + IMAP')]
+    boxes=[(30,120,'Проверка DNS','Проверено при выпуске','NS + A/AAAA'),(365,120,'Публичный HTTPS','/health и /ready','Проверка сертификата'),(700,120,'Почтовые записи','MX / SPF / DKIM','SMTP + IMAP')]
     for x,y,t,a,b in boxes: f.box(x,y,270,100,t,a,b)
     f.arrow([(300,170),(365,170)]); f.arrow([(635,170),(700,170)])
     f.box(700,320,270,110,'Включение флагов','Только domain-api','Исходный туннель сохранён')
