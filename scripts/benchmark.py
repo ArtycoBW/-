@@ -6,6 +6,7 @@ import math
 import platform
 import os
 import time
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 import httpx
@@ -49,19 +50,21 @@ async def run(base, count, concurrency):
         latencies = sorted(r[0] for r in results)
         percentile = lambda p: round(latencies[max(0, math.ceil(p*count)-1)], 2)
         report = {"measured_at_utc": datetime.now(timezone.utc).isoformat(),
-                  "environment": "Локальный Docker Desktop: Next.js production → FastAPI → PostgreSQL 17",
+                  "environment": ("Cloudflare HTTPS → " if base.startswith("https://") else "Локальная сеть → ") + "Docker Desktop: Next.js production → FastAPI → PostgreSQL 17",
                   "client_os": platform.system(), "cpu": platform.processor(), "host_ram_gib": memory_gib(),
                   "endpoint": "GET /api/v1/candidates?limit=12", "profiles": total,
                   "requests": count, "concurrency": concurrency, "warmup_requests": 1,
                   "successes": sum(r[1] == 200 for r in results), "statuses": sorted(set(r[1] for r in results)),
                   "p50_ms": percentile(.5), "p95_ms": percentile(.95), "max_ms": round(max(latencies), 2),
                   "elapsed_seconds": round(elapsed, 2), "requests_per_second": round(count/elapsed, 2),
-                  "limitation": "Синтетический малый банк и локальная сеть. Не подтверждает SLA, безопасность или масштабирование на большой объём."}
+                  "limitation": "Синтетический банк; задержка включает сеть указанного окружения. Не подтверждает SLA, безопасность или масштабирование на большой объём."}
         Path("docs/performance.json").write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
         print(json.dumps(report, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser()
     parser.add_argument("--base-url", default="http://localhost:3000")
     parser.add_argument("--requests", type=int, default=100)
