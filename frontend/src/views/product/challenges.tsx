@@ -10,6 +10,7 @@ import { Empty, Field, Notice, SelectSpec, Tag } from "@/components/product/ui";
 import { api, post, User, Challenge, specName } from "@/lib/api";
 import { specializations } from "@/lib/taxonomy";
 import { MagnifyingGlass } from "@phosphor-icons/react";
+import { PracticeWorkbench, SolutionPreview } from "@/components/product/practice-workbench";
 import { PracticeScene } from "@/components/product/practice-scene";
 export function Challenges({ user }: { user: User }) {
   const [items, setItems] = useState<Challenge[]>([]);
@@ -25,12 +26,11 @@ export function Challenges({ user }: { user: User }) {
   const [rubric, setRubric] = useState(
     "Корректность — 40; граничные случаи — 30; тестирование — 20; ясность — 10.",
   );
-  const [answers, setAnswers] = useState<Record<string, string>>({});
   const [reviews, setReviews] = useState<
     Record<string, { score: number; feedback: string }>
   >({});
   const state = useMessage();
-  const { setError, setBusy } = state;
+  const { setError } = state;
   const load = useCallback(
     () =>
       api<Challenge[]>("/challenges")
@@ -243,12 +243,7 @@ export function Challenges({ user }: { user: User }) {
                     className="rz-button"
                     onClick={() => {
                       setSelectedId(c.id);
-                      try {
-                        const draft = localStorage.getItem(
-                          `razryad.practice.${user.id}.${c.id}`,
-                        );
-                        if (draft) setAnswers((a) => ({ ...a, [c.id]: draft }));
-                      } catch {}
+
                     }}
                   >
                     {c.submissions.length ? "Посмотреть" : "Решить задачу"}
@@ -269,10 +264,18 @@ export function Challenges({ user }: { user: User }) {
             <Modal
               wide
               key={c.id}
+              className={user.role === "candidate" && !c.submissions.length ? "rz-practice-modal" : ""}
               title={c.title}
               onClose={() => setSelectedId(null)}
             >
-              <section className="rz-practice-detail" key={c.id}>
+              {user.role === "candidate" && !c.submissions.length ? (
+                <PracticeWorkbench challenge={c} userId={user.id} onSubmit={async (answer) => {
+                  await post(`/challenges/${c.id}/submissions`, { answer });
+                  setSelectedId(null);
+                  void load();
+                  state.setMessage("Решение отправлено на проверку работодателю");
+                }} />
+              ) : <section className="rz-practice-detail" key={c.id}>
                 {state.error && <Notice error>{state.error}</Notice>}
                 <div className="rz-card-top">
                   <Tag>{specName(c.specialization)}</Tag>
@@ -284,55 +287,6 @@ export function Challenges({ user }: { user: User }) {
                   <strong>Как оценивается</strong>
                   <p>{c.rubric}</p>
                 </div>
-                {user.role === "candidate" && !c.submissions.length && (
-                  <form
-                    className="rz-form"
-                    onSubmit={async (e) => {
-                      e.preventDefault();
-                      setBusy(true);
-                      try {
-                        await post(`/challenges/${c.id}/submissions`, {
-                          answer: answers[c.id] || "",
-                        });
-                        try {
-                          localStorage.removeItem(
-                            `razryad.practice.${user.id}.${c.id}`,
-                          );
-                        } catch {}
-                        load();
-                        state.setMessage(
-                          "Решение отправлено на проверку работодателю",
-                        );
-                      } catch (e) {
-                        setError((e as Error).message);
-                      } finally {
-                        setBusy(false);
-                      }
-                    }}
-                  >
-                    <Field label="Ваш подход к решению">
-                      <Textarea
-                        rows={4}
-                        required
-                        minLength={20}
-                        maxLength={8000}
-                        value={answers[c.id] || ""}
-                        onChange={(e) => {
-                          setAnswers({ ...answers, [c.id]: e.target.value });
-                          try {
-                            localStorage.setItem(
-                              `razryad.practice.${user.id}.${c.id}`,
-                              e.target.value,
-                            );
-                          } catch {}
-                        }}
-                      />
-                    </Field>
-                    <Button className="rz-button primary" disabled={state.busy}>
-                      Отправить решение
-                    </Button>
-                  </form>
-                )}
                 {c.submissions.map((s) => (
                   <div className="rz-submission" key={s.id}>
                     <Tag tone={s.score !== null ? "green" : ""}>
@@ -340,7 +294,7 @@ export function Challenges({ user }: { user: User }) {
                         ? "Ожидает проверки"
                         : `${s.score} / 100`}
                     </Tag>
-                    <p className="rz-prewrap">{s.answer}</p>
+                    <SolutionPreview value={s.answer} />
                     {s.feedback && <Notice>{s.feedback}</Notice>}
                     {user.role === "employer" && s.score === null && (
                       <form
@@ -397,7 +351,7 @@ export function Challenges({ user }: { user: User }) {
                     )}
                   </div>
                 ))}
-              </section>
+              </section>}
             </Modal>
           ))}
       {filteredTasks.length > 6 && (

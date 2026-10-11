@@ -9,11 +9,13 @@ import {
 export function Modal({
   title,
   wide = false,
+  className = "",
   children,
   onClose,
 }: {
   title: string;
   wide?: boolean;
+  className?: string;
   children: React.ReactNode;
   onClose: () => void;
 }) {
@@ -27,7 +29,7 @@ export function Modal({
       }}
     >
       <DialogContent
-        className={`rz-dialog ${wide ? "rz-dialog-wide" : ""}`}
+        className={`rz-dialog ${wide ? "rz-dialog-wide" : ""} ${className}`}
         aria-describedby={undefined}
         onOpenAutoFocus={(event) => {
           event.preventDefault();

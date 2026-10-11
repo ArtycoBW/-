@@ -1,0 +1,455 @@
+/* Readable steps and vacancy cards; scoped to the application. */
+.rz-workspace .rz-step {
+  gap: 16px;
+  padding: 18px 0;
+  align-items: flex-start;
+}
+.rz-workspace .rz-step > b {
+  display: grid;
+  place-items: center;
+  flex: 0 0 44px;
+  min-width: 44px;
+  height: 38px;
+  padding: 0 5px;
+  margin-top: 2px;
+  border-radius: 9px;
+  font:
+    600 13px/1 var(--font-product),
+    sans-serif;
+  font-variant-numeric: tabular-nums;
+  color: #c8c5db;
+}
+.rz-workspace .rz-step > div {
+  min-width: 0;
+}
+.rz-workspace .rz-step strong {
+  display: block;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.rz-workspace .rz-step p {
+  font-size: 13px;
+  line-height: 1.65;
+  color: #b3bdcb;
+}
+.rz-workspace .rz-step > span {
+  flex-shrink: 0;
+  padding-top: 7px;
+}
+.rz-workspace .rz-job-grid .rz-vacancy-row {
+  font-family: var(--font-inter), sans-serif;
+  gap: 16px;
+}
+.rz-workspace .rz-job-grid .rz-vacancy-company {
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 500;
+  color: #c7cfda;
+}
+.rz-workspace .rz-job-grid .rz-job-direction {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #c6b6ec;
+}
+.rz-workspace .rz-job-grid .rz-vacancy-row h3 {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: -0.3px;
+  min-height: 58px;
+}
+.rz-workspace .rz-job-grid .rz-vacancy-meta {
+  font-size: 13px;
+  color: #b3bdcb;
+}
+.rz-workspace .rz-job-grid .rz-tag {
+  font-size: 12px;
+  color: #c7cfda;
+  padding: 4px 8px;
+}
+.rz-workspace .rz-job-grid .rz-vacancy-description {
+  font-size: 14px;
+  line-height: 1.7;
+  min-height: 48px;
+  color: #b3bdcb;
+  letter-spacing: 0;
+}
+.rz-workspace .rz-job-grid .rz-vacancy-aside .rz-salary {
+  font-size: 21px;
+  line-height: 1.5;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  font-variant-numeric: tabular-nums;
+}
+.rz-workspace .rz-job-grid .rz-vacancy-aside > small {
+  font-size: 12px;
+  color: #abb7c7;
+}
+.rz-workspace .rz-job-grid .rz-vacancy-aside .rz-actions {
+  grid-column: 1/-1;
+  grid-row: auto;
+  margin-top: 12px;
+  justify-content: flex-end;
+}
+.rz-workspace .rz-job-grid .rz-vacancy-aside .rz-button {
+  font-size: 13px;
+}
+
+/* Practice workspace. The brief and draft share one scroll container. */
+.rz-dialog.rz-practice-modal {
+  --dialog-width: 1280px;
+}
+.rz-practice-modal .rz-dialog-body {
+  padding: 0;
+}
+.rz-workbench {
+  display: grid;
+  grid-template-columns: minmax(270px, 0.8fr) minmax(0, 1.5fr);
+  font-family: var(--font-inter), sans-serif;
+}
+.rz-workbench-brief {
+  padding: 28px;
+  background: #141920;
+  border-right: 1px solid #303844;
+}
+.rz-workbench-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+.rz-workbench-meta > span:last-child {
+  font-size: 13px;
+  color: #bec7d3;
+}
+.rz-workbench-brief section + section {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid #303844;
+}
+.rz-workbench .rz-workbench-kicker {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #ad9dcf;
+  margin: 0 0 8px;
+}
+.rz-workbench h3 {
+  margin: 0 0 14px;
+  font-size: 18px;
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  color: #edf0f6;
+}
+.rz-workbench-description,
+.rz-workbench-rubric > p:last-child {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #c2cbd7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.rz-workbench-note {
+  display: flex;
+  gap: 10px;
+  margin-top: 28px;
+  color: #a8b5c7;
+}
+.rz-workbench-note svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: #b9a6ec;
+}
+.rz-workbench-note p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.rz-workbench-compose {
+  padding: 28px;
+  min-width: 0;
+  background: #191f28;
+}
+.rz-editor-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.rz-editor-heading h3 {
+  margin: 0;
+  font-size: 21px;
+}
+.rz-editor-draft-label {
+  color: #b6c5bb;
+  border: 1px solid #3a4944;
+  border-radius: 6px;
+  padding: 3px 9px;
+  font-size: 11px;
+}
+.rz-editor-modes {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-bottom: 1px solid #3a4351;
+  margin-bottom: 18px;
+}
+.rz-editor-modes button {
+  border-radius: 0;
+  background: transparent;
+  color: #aab6c8;
+  box-shadow: none;
+  padding: 10px 12px;
+  height: 42px;
+  border-bottom: 2px solid transparent;
+  font-size: 13px;
+}
+.rz-editor-modes button[aria-pressed="true"] {
+  color: #e0d6f9;
+  border-bottom-color: #c4aef2;
+}
+.rz-editor-modes button:hover {
+  background: #252d39;
+  color: #ece7f7;
+}
+.rz-editor-modes .rz-editor-download {
+  margin-left: auto;
+}
+.rz-editor-surface {
+  border: 1px solid #3b4657;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #10151c;
+}
+.rz-editor-surface:focus-within {
+  border-color: #b5a0e4;
+  box-shadow: 0 0 0 2px #b5a0e41a;
+}
+.rz-editor-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid #2b3442;
+  background: #1d2530;
+}
+.rz-editor-tools > span {
+  font-size: 11px;
+  color: #9fadc0;
+  margin-right: 6px;
+}
+.rz-editor-tools button {
+  height: 30px;
+  padding: 4px 9px;
+  font-size: 12px;
+  color: #d1d8e5;
+  background: transparent;
+  box-shadow: none;
+}
+.rz-editor-tools button:hover {
+  background: #343047;
+  color: #e5d7ff;
+}
+.rz-workbench textarea {
+  display: block;
+  width: 100%;
+  min-height: 330px;
+  resize: vertical;
+  padding: 22px;
+  background: transparent;
+  color: #e0e6ef;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  font:
+    13px/1.85 var(--font-fragment-mono),
+    monospace;
+  tab-size: 2;
+}
+.rz-workbench textarea::placeholder {
+  color: #929fb2;
+  opacity: 1;
+}
+.rz-editor-hint {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 10px 14px;
+  border-top: 1px solid #2b3442;
+  color: #9fadc0;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.rz-editor-save {
+  font-size: 11px;
+  color: #a6b9b0;
+  min-height: 36px;
+  padding-top: 10px;
+}
+.rz-editor-save.is-error,
+.rz-editor-error {
+  color: #f2aab4;
+}
+.rz-editor-error {
+  font-size: 13px;
+  padding: 12px;
+  background: #39232e;
+  border: 1px solid #69404e;
+  border-radius: 8px;
+}
+.rz-editor-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #303a48;
+}
+.rz-editor-footer > p {
+  max-width: 230px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #acb8c9;
+}
+.rz-editor-footer > div {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.rz-editor-footer .rz-button {
+  gap: 8px;
+  white-space: nowrap;
+  padding: 10px 14px;
+  font-size: 12px;
+}
+.rz-editor-review {
+  min-height: 413px;
+  padding: 20px;
+  background: #131922;
+  border: 1px solid #3b4657;
+  border-radius: 10px;
+}
+.rz-review-hint {
+  margin: 0 0 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #303a48;
+  color: #aebbd0;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.rz-solution-preview {
+  min-width: 0;
+  color: #d1d9e5;
+  font:
+    14px/1.8 var(--font-inter),
+    sans-serif;
+  overflow-wrap: anywhere;
+}
+.rz-solution-preview p {
+  white-space: pre-wrap;
+  margin: 0 0 16px;
+}
+.rz-solution-preview h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #f0edf7;
+  margin: 22px 0 12px;
+}
+.rz-solution-preview ul {
+  padding-left: 22px;
+  list-style: disc;
+  margin-bottom: 18px;
+}
+.rz-solution-preview li + li {
+  margin-top: 6px;
+}
+.rz-solution-preview pre {
+  padding: 16px;
+  background: #0c1118;
+  border: 1px solid #303b4c;
+  border-radius: 7px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 0 0 18px;
+}
+.rz-solution-preview code {
+  font:
+    12px/1.8 var(--font-fragment-mono),
+    monospace;
+  color: #c6dbd3;
+}
+.rz-solution-code > span {
+  display: block;
+  padding: 5px 10px;
+  font-size: 10px;
+  color: #a6b7ce;
+}
+.rz-solution-preview .rz-editor-empty {
+  color: #a5b1c2;
+}
+@media (max-width: 1000px) {
+  .rz-workbench {
+    grid-template-columns: minmax(220px, 0.85fr) minmax(0, 1.4fr);
+  }
+  .rz-workbench-brief,
+  .rz-workbench-compose {
+    padding: 22px;
+  }
+  .rz-editor-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .rz-editor-footer > p {
+    max-width: none;
+  }
+  .rz-editor-footer > div {
+    justify-content: flex-end;
+  }
+}
+@media (max-width: 720px) {
+  .rz-workbench {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .rz-workbench-brief {
+    border-right: 0;
+    border-bottom: 1px solid #303844;
+  }
+  .rz-workbench-brief,
+  .rz-workbench-compose {
+    padding: 20px;
+  }
+  .rz-workbench-meta {
+    margin-bottom: 20px;
+  }
+  .rz-workbench h3 {
+    font-size: 18px;
+  }
+  .rz-workbench textarea {
+    min-height: 300px;
+    padding: 16px;
+    font-size: 13px;
+  }
+  .rz-editor-modes button {
+    padding-inline: 9px;
+    font-size: 12px;
+  }
+  .rz-editor-download span {
+    display: none;
+  }
+  .rz-editor-tools {
+    padding-inline: 8px;
+  }
+  .rz-editor-tools > span {
+    display: none;
+  }
+  .rz-editor-review {
+    padding: 16px;
+  }
+}
