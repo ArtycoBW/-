@@ -1,0 +1,102 @@
+[
+  {
+    "id": "backend",
+    "name": "Бэкенд-разработка",
+    "skills": [
+      "Python",
+      "FastAPI",
+      "PostgreSQL",
+      "Docker"
+    ]
+  },
+  {
+    "id": "frontend",
+    "name": "Фронтенд-разработка",
+    "skills": [
+      "TypeScript",
+      "React",
+      "Next.js",
+      "CSS"
+    ]
+  },
+  {
+    "id": "fullstack",
+    "name": "Фулстек-разработка",
+    "skills": [
+      "TypeScript",
+      "React",
+      "Python",
+      "PostgreSQL"
+    ]
+  },
+  {
+    "id": "mobile",
+    "name": "Мобильная разработка",
+    "skills": [
+      "Kotlin",
+      "Swift",
+      "Flutter",
+      "API"
+    ]
+  },
+  {
+    "id": "qa",
+    "name": "Тестирование и QA",
+    "skills": [
+      "Python",
+      "Pytest",
+      "Playwright",
+      "SQL"
+    ]
+  },
+  {
+    "id": "devops",
+    "name": "DevOps и SRE",
+    "skills": [
+      "Linux",
+      "Docker",
+      "Kubernetes",
+      "Terraform"
+    ]
+  },
+  {
+    "id": "data_engineering",
+    "name": "Инженерия данных",
+    "skills": [
+      "SQL",
+      "Python",
+      "Airflow",
+      "Kafka"
+    ]
+  },
+  {
+    "id": "data_science",
+    "name": "Анализ данных и ML",
+    "skills": [
+      "Python",
+      "Pandas",
+      "Scikit-learn",
+      "SQL"
+    ]
+  },
+  {
+    "id": "cybersecurity",
+    "name": "Информационная безопасность",
+    "skills": [
+      "Linux",
+      "OWASP",
+      "Python",
+      "SIEM"
+    ]
+  },
+  {
+    "id": "systems_analysis",
+    "name": "Системная аналитика",
+    "skills": [
+      "SQL",
+      "BPMN",
+      "UML",
+      "OpenAPI"
+    ]
+  }
+]

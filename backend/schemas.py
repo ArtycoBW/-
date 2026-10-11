@@ -1,7 +1,7 @@
 from typing import Literal
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator, model_validator
 
-Spec = Literal["backend", "frontend"]
+from backend.taxonomy import Spec
 Grade = Literal["junior", "middle", "senior"]
 WorkFormat = Literal["remote", "hybrid", "office"]
 

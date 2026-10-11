@@ -30,6 +30,8 @@ def prepare():
                 user = User(email=email, role="candidate", password_hash=password_hasher.hash("RazryadDemo2026!"), verified=False)
                 db.add(user); db.flush()
             profile = db.get(Candidate, user.id)
+            if profile is not None:
+                continue
             if profile is None:
                 profile = Candidate(id=user.id); db.add(profile)
             for key, value in dict(name=name, city=city, specialization=specialization, desired_grade=grade or "junior", experience=experience, salary_min=salary, skills=skills, bio=bio, contact=email, work_format="remote", published=True, consent=True).items():
@@ -46,7 +48,8 @@ def prepare():
             (second, "Демонстрационная команда, которая создаёт инструменты для логистики: маршрутизация, статусы заказов и интеграции с перевозчиками. Ищем разработчиков, которым интересны надёжные API и работа с событиями.", "Логистика и интеграции"),
         ]:
             company = db.get(Company, user.id)
-            company.description, company.industry = description, industry
+            if not company.description:
+                company.description, company.industry = description, industry
         db.commit()
         return {"status": "Готово", "review_accounts": 5, "data": "fictional"}
 

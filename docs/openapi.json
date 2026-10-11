@@ -15,14 +15,51 @@
         "operationId": "health_api_v1_health_get",
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "string"
+                    },
+                    "demo": {
+                      "type": "boolean"
+                    },
+                    "email_verification": {
+                      "type": "boolean"
+                    },
+                    "password_recovery": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "version",
+                    "demo",
+                    "email_verification",
+                    "password_recovery"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Некорректные поля запроса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
               }
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/api/v1/catalog": {
@@ -34,14 +71,80 @@
         "operationId": "catalog_api_v1_catalog_get",
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "specializations": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "skills": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "skills"
+                        ]
+                      }
+                    },
+                    "grades": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name"
+                        ]
+                      }
+                    },
+                    "demo": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "specializations",
+                    "grades",
+                    "demo"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Некорректные поля запроса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
               }
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/api/v1/ready": {
@@ -53,14 +156,39 @@
         "operationId": "ready_api_v1_ready_get",
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "database": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "database"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Некорректные поля запроса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
               }
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/api/v1/auth/register": {
@@ -82,24 +210,67 @@
         },
         "responses": {
           "201": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Лимит попыток авторизации",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/api/v1/auth/verify": {
@@ -121,24 +292,67 @@
         },
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/UserResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Лимит попыток авторизации",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/api/v1/auth/login": {
@@ -160,24 +374,67 @@
         },
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/UserResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Лимит попыток авторизации",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/api/v1/auth/logout": {
@@ -189,14 +446,91 @@
         "operationId": "logout_api_v1_auth_logout_post",
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Некорректные поля запроса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Лимит попыток авторизации",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/auth/me": {
@@ -208,14 +542,71 @@
         "operationId": "me_api_v1_auth_me_get",
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/UserResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Некорректные поля запроса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Роль не имеет доступа",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Лимит попыток авторизации",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/auth/recover": {
@@ -237,24 +628,67 @@
         },
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Лимит попыток авторизации",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/api/v1/auth/resend": {
@@ -276,24 +710,67 @@
         },
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Лимит попыток авторизации",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/api/v1/auth/reset": {
@@ -315,24 +792,67 @@
         },
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Лимит попыток авторизации",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/api/v1/auth/demo/{role}": {
@@ -355,24 +875,67 @@
         ],
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/UserResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Лимит попыток авторизации",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/api/v1/profile": {
@@ -384,14 +947,61 @@
         "operationId": "profile_api_v1_profile_get",
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Некорректные поля запроса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Роль не имеет доступа",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -411,24 +1021,81 @@
         },
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/profile/contact-grants": {
@@ -440,14 +1107,84 @@
         "operationId": "contact_grants_api_v1_profile_contact_grants_get",
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "company_id": {
+                        "type": "string"
+                      },
+                      "company_name": {
+                        "type": "string"
+                      },
+                      "reason": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "company_id",
+                      "company_name",
+                      "reason",
+                      "created_at"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Некорректные поля запроса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Роль не имеет доступа",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/profile/contact-grants/{company_id}": {
@@ -470,24 +1207,81 @@
         ],
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/company": {
@@ -499,14 +1293,61 @@
         "operationId": "company_api_v1_company_get",
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Некорректные поля запроса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Роль не имеет доступа",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -526,24 +1367,81 @@
         },
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/assessments": {
@@ -555,14 +1453,64 @@
         "operationId": "attempts_api_v1_assessments_get",
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AttemptResult"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Некорректные поля запроса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Роль не имеет доступа",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -582,24 +1530,81 @@
         },
         "responses": {
           "201": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/AttemptResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/assessments/{attempt_id}/answers": {
@@ -632,24 +1637,81 @@
         },
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/AttemptResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/assessments/{attempt_id}/submit": {
@@ -682,24 +1744,81 @@
         },
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/AttemptResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/needs": {
@@ -711,14 +1830,64 @@
         "operationId": "needs_api_v1_needs_get",
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NeedResult"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Некорректные поля запроса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Роль не имеет доступа",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -738,24 +1907,81 @@
         },
         "responses": {
           "201": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/NeedResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/candidates": {
@@ -791,7 +2017,15 @@
                 {
                   "enum": [
                     "backend",
-                    "frontend"
+                    "frontend",
+                    "fullstack",
+                    "mobile",
+                    "qa",
+                    "devops",
+                    "data_engineering",
+                    "data_science",
+                    "cybersecurity",
+                    "systems_analysis"
                   ],
                   "type": "string"
                 },
@@ -870,24 +2104,84 @@
         ],
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ProfileResult"
+                      }
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "offset": {
+                      "type": "integer"
+                    },
+                    "limit": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "total",
+                    "offset",
+                    "limit"
+                  ]
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Роль не имеет доступа",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/candidates/{candidate_id}": {
@@ -910,24 +2204,61 @@
         ],
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Роль не имеет доступа",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/invitations": {
@@ -939,14 +2270,64 @@
         "operationId": "invitations_api_v1_invitations_get",
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InvitationResult"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Некорректные поля запроса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Роль не имеет доступа",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -966,24 +2347,81 @@
         },
         "responses": {
           "201": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/InvitationResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/invitations/{invitation_id}": {
@@ -1016,24 +2454,81 @@
         },
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/InvitationResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/vacancies": {
@@ -1064,7 +2559,15 @@
                 {
                   "enum": [
                     "backend",
-                    "frontend"
+                    "frontend",
+                    "fullstack",
+                    "mobile",
+                    "qa",
+                    "devops",
+                    "data_engineering",
+                    "data_science",
+                    "cybersecurity",
+                    "systems_analysis"
                   ],
                   "type": "string"
                 },
@@ -1143,24 +2646,42 @@
         ],
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/VacancyResult"
+                      }
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "total"
+                  ]
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": []
       },
       "post": {
         "tags": [
@@ -1180,24 +2701,81 @@
         },
         "responses": {
           "201": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/VacancyResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/company/vacancies": {
@@ -1209,14 +2787,64 @@
         "operationId": "own_vacancies_api_v1_company_vacancies_get",
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/VacancyResult"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Некорректные поля запроса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Роль не имеет доступа",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/vacancies/{vacancy_id}": {
@@ -1249,24 +2877,81 @@
         },
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/VacancyResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       },
       "patch": {
         "tags": [
@@ -1297,24 +2982,81 @@
         },
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/VacancyResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/vacancies/{vacancy_id}/applications": {
@@ -1347,24 +3089,81 @@
         },
         "responses": {
           "201": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/applications": {
@@ -1376,14 +3175,64 @@
         "operationId": "applications_api_v1_applications_get",
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ApplicationResult"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Некорректные поля запроса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Роль не имеет доступа",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/applications/{application_id}": {
@@ -1416,24 +3265,81 @@
         },
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/challenges": {
@@ -1445,14 +3351,64 @@
         "operationId": "challenges_api_v1_challenges_get",
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChallengeResult"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Некорректные поля запроса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Роль не имеет доступа",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -1472,24 +3428,81 @@
         },
         "responses": {
           "201": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ChallengeResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/challenges/{challenge_id}/submissions": {
@@ -1522,24 +3535,81 @@
         },
         "responses": {
           "201": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/SubmissionResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/submissions/{submission_id}/review": {
@@ -1572,24 +3642,81 @@
         },
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/SubmissionResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/integrations/fsp": {
@@ -1611,24 +3738,81 @@
         },
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResult"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -1638,14 +3822,81 @@
         "operationId": "unlink_fsp_api_v1_integrations_fsp_delete",
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Некорректные поля запроса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/profile/import-pdf": {
@@ -1667,24 +3918,81 @@
         },
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ResumeDraft"
+                }
               }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недопустимый Origin или роль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт состояния или дубликат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/profile/pdf": {
@@ -1696,14 +4004,62 @@
         "operationId": "export_profile_api_v1_profile_pdf_get",
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "PDF с русским шрифтом",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Некорректные поля запроса",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Сессия истекла или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Роль не имеет доступа",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ресурс не найден или принадлежит другому пользователю",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ]
       }
     },
     "/api/v1/metrics": {
@@ -1715,14 +4071,29 @@
         "operationId": "metrics_api_v1_metrics_get",
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object",
+                  "description": "Воспроизводимый отчёт ml/metrics.json: синтетические выборки, метрики ранжирования и оценка банка. Схема расширяется с версиями бенчмарка.",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Некорректные поля запроса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
               }
             }
           }
-        }
+        },
+        "security": []
       }
     }
   },
@@ -1795,7 +4166,15 @@
             "type": "string",
             "enum": [
               "backend",
-              "frontend"
+              "frontend",
+              "fullstack",
+              "mobile",
+              "qa",
+              "devops",
+              "data_engineering",
+              "data_science",
+              "cybersecurity",
+              "systems_analysis"
             ],
             "title": "Specialization"
           },
@@ -2004,7 +4383,15 @@
             "type": "string",
             "enum": [
               "backend",
-              "frontend"
+              "frontend",
+              "fullstack",
+              "mobile",
+              "qa",
+              "devops",
+              "data_engineering",
+              "data_science",
+              "cybersecurity",
+              "systems_analysis"
             ],
             "title": "Specialization"
           },
@@ -2080,7 +4467,15 @@
             "type": "string",
             "enum": [
               "backend",
-              "frontend"
+              "frontend",
+              "fullstack",
+              "mobile",
+              "qa",
+              "devops",
+              "data_engineering",
+              "data_science",
+              "cybersecurity",
+              "systems_analysis"
             ],
             "title": "Specialization"
           },
@@ -2240,7 +4635,15 @@
             "type": "string",
             "enum": [
               "backend",
-              "frontend"
+              "frontend",
+              "fullstack",
+              "mobile",
+              "qa",
+              "devops",
+              "data_engineering",
+              "data_science",
+              "cybersecurity",
+              "systems_analysis"
             ],
             "title": "Specialization"
           },
@@ -2348,6 +4751,988 @@
           "type"
         ],
         "title": "ValidationError"
+      },
+      "CompanyResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "industry": {
+            "type": "string"
+          },
+          "contact": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "industry",
+          "contact",
+          "city"
+        ]
+      },
+      "NeedResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "company_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "specialization": {
+            "type": "string",
+            "enum": [
+              "backend",
+              "frontend",
+              "fullstack",
+              "mobile",
+              "qa",
+              "devops",
+              "data_engineering",
+              "data_science",
+              "cybersecurity",
+              "systems_analysis"
+            ]
+          },
+          "grade": {
+            "type": "string",
+            "enum": [
+              "junior",
+              "middle",
+              "senior"
+            ]
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "work_format": {
+            "type": "string"
+          },
+          "salary_min": {
+            "type": "integer"
+          },
+          "salary_max": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "company_id",
+          "title",
+          "description",
+          "specialization",
+          "grade",
+          "skills",
+          "work_format",
+          "salary_min",
+          "salary_max",
+          "created_at"
+        ]
+      },
+      "VacancyResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "company_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "specialization": {
+            "type": "string",
+            "enum": [
+              "backend",
+              "frontend",
+              "fullstack",
+              "mobile",
+              "qa",
+              "devops",
+              "data_engineering",
+              "data_science",
+              "cybersecurity",
+              "systems_analysis"
+            ]
+          },
+          "grade": {
+            "type": "string",
+            "enum": [
+              "junior",
+              "middle",
+              "senior"
+            ]
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "work_format": {
+            "type": "string"
+          },
+          "salary_min": {
+            "type": "integer"
+          },
+          "salary_max": {
+            "type": "integer"
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "number"
+          },
+          "company_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "company_id",
+          "title",
+          "description",
+          "specialization",
+          "grade",
+          "skills",
+          "work_format",
+          "salary_min",
+          "salary_max",
+          "archived",
+          "created_at"
+        ]
+      },
+      "SubmissionResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "candidate_id": {
+            "type": "string"
+          },
+          "challenge_id": {
+            "type": "string"
+          },
+          "answer": {
+            "type": "string"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "feedback": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "candidate_id",
+          "challenge_id",
+          "answer",
+          "score",
+          "feedback",
+          "created_at"
+        ]
+      },
+      "ApplicationResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "candidate_id": {
+            "type": "string"
+          },
+          "vacancy_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "letter": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "number"
+          },
+          "company_name": {
+            "type": "string"
+          },
+          "candidate_name": {
+            "type": "string"
+          },
+          "vacancy_title": {
+            "type": "string"
+          },
+          "candidate": {
+            "$ref": "#/components/schemas/ProfileResult"
+          }
+        },
+        "required": [
+          "id",
+          "candidate_id",
+          "vacancy_id",
+          "status",
+          "letter",
+          "created_at"
+        ]
+      },
+      "ChallengeResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "company_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "specialization": {
+            "type": "string",
+            "enum": [
+              "backend",
+              "frontend",
+              "fullstack",
+              "mobile",
+              "qa",
+              "devops",
+              "data_engineering",
+              "data_science",
+              "cybersecurity",
+              "systems_analysis"
+            ]
+          },
+          "rubric": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "number"
+          },
+          "company_name": {
+            "type": "string"
+          },
+          "submissions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SubmissionResult"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "company_id",
+          "title",
+          "description",
+          "specialization",
+          "rubric",
+          "created_at"
+        ]
+      },
+      "InvitationResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "company_id": {
+            "type": "string"
+          },
+          "candidate_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "contact": {
+            "type": "string"
+          },
+          "salary_min": {
+            "type": "integer"
+          },
+          "salary_max": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "number"
+          },
+          "updated_at": {
+            "type": "number"
+          },
+          "company_name": {
+            "type": "string"
+          },
+          "candidate_name": {
+            "type": "string"
+          },
+          "contacts_unlocked": {
+            "type": "boolean"
+          },
+          "candidate_contact": {
+            "type": "string"
+          },
+          "candidate_email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "company_id",
+          "candidate_id",
+          "title",
+          "message",
+          "contact",
+          "salary_min",
+          "salary_max",
+          "status",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "UserResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "verified": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "role",
+          "verified"
+        ]
+      },
+      "AchievementResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "discipline": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "place": {
+            "type": "integer"
+          },
+          "participants": {
+            "type": "integer"
+          },
+          "source": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "discipline",
+          "date",
+          "place",
+          "participants",
+          "source"
+        ]
+      },
+      "MatchResult": {
+        "type": "object",
+        "properties": {
+          "score": {
+            "type": "number"
+          },
+          "mode": {
+            "type": "string"
+          },
+          "baseline_score": {
+            "type": "number"
+          },
+          "learned_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "blend": {
+            "type": "object",
+            "properties": {
+              "baseline": {
+                "type": "number"
+              },
+              "learned": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "baseline",
+              "learned"
+            ]
+          },
+          "matched_skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "missing_skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "factors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "number"
+                },
+                "contribution": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "key",
+                "value",
+                "contribution"
+              ]
+            }
+          },
+          "explanation": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "notice": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "score",
+          "mode",
+          "baseline_score",
+          "learned_score",
+          "blend",
+          "matched_skills",
+          "missing_skills",
+          "factors",
+          "explanation",
+          "notice"
+        ]
+      },
+      "ProfileResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "bio": {
+            "type": "string"
+          },
+          "specialization": {
+            "type": "string",
+            "enum": [
+              "backend",
+              "frontend",
+              "fullstack",
+              "mobile",
+              "qa",
+              "devops",
+              "data_engineering",
+              "data_science",
+              "cybersecurity",
+              "systems_analysis"
+            ]
+          },
+          "desired_grade": {
+            "type": "string",
+            "enum": [
+              "junior",
+              "middle",
+              "senior"
+            ]
+          },
+          "grade": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "junior",
+                  "middle",
+                  "senior"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "experience": {
+            "type": "integer"
+          },
+          "work_format": {
+            "type": "string"
+          },
+          "salary_min": {
+            "type": "integer"
+          },
+          "score": {
+            "type": "number"
+          },
+          "verified_at": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "active_at": {
+            "type": "number"
+          },
+          "published": {
+            "type": "boolean"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "achievements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AchievementResult"
+            }
+          },
+          "contacts_unlocked": {
+            "type": "boolean"
+          },
+          "grade_change_available_at": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "contact": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "consent": {
+            "type": "boolean"
+          },
+          "fsp_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "match": {
+            "$ref": "#/components/schemas/MatchResult"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "city",
+          "bio",
+          "specialization",
+          "desired_grade",
+          "grade",
+          "skills",
+          "experience",
+          "work_format",
+          "salary_min",
+          "score",
+          "verified_at",
+          "active_at",
+          "published"
+        ],
+        "description": "Контакты и email отсутствуют до адресного согласия. consent/fsp_id доступны только владельцу. match возвращается в подборке."
+      },
+      "AttemptResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "candidate_id": {
+            "type": "string"
+          },
+          "specialization": {
+            "type": "string",
+            "enum": [
+              "backend",
+              "frontend",
+              "fullstack",
+              "mobile",
+              "qa",
+              "devops",
+              "data_engineering",
+              "data_science",
+              "cybersecurity",
+              "systems_analysis"
+            ]
+          },
+          "grade": {
+            "type": "string",
+            "enum": [
+              "junior",
+              "middle",
+              "senior"
+            ]
+          },
+          "bank_version": {
+            "type": "string"
+          },
+          "answers": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "started_at": {
+            "type": "number"
+          },
+          "expires_at": {
+            "type": "number"
+          },
+          "submitted_at": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "passed": {
+            "type": "boolean"
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "skill": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "difficulty": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "id",
+                "skill",
+                "text",
+                "difficulty"
+              ]
+            }
+          },
+          "outcomes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "skill": {
+                  "type": "string"
+                },
+                "correct": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "skill",
+                "correct"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "candidate_id",
+          "specialization",
+          "grade",
+          "bank_version",
+          "answers",
+          "started_at",
+          "expires_at",
+          "submitted_at",
+          "score",
+          "passed"
+        ]
+      },
+      "MessageResult": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "demo_link": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "RegisterResult": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "authenticated": {
+            "type": "boolean"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserResult"
+          },
+          "demo_link": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "message",
+          "authenticated"
+        ]
+      },
+      "ErrorResult": {
+        "type": "object",
+        "properties": {
+          "detail": {
+            "type": "string"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "code": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "field",
+                "code"
+              ]
+            }
+          }
+        },
+        "required": [
+          "detail"
+        ]
+      },
+      "ResumeDraft": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "bio": {
+            "type": "string"
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "contact": {
+            "type": "string"
+          },
+          "experience": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "desired_grade": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "soft_skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "notice": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "bio",
+          "skills",
+          "contact",
+          "experience",
+          "desired_grade",
+          "roles",
+          "soft_skills",
+          "notice"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "SessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "razryad_session",
+        "description": "HttpOnly cookie после /auth/login. Перед изменением данных браузер передаёт Origin публичного сайта."
       }
     }
   }

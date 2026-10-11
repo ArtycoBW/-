@@ -14,9 +14,10 @@ from sqlalchemy import delete, select, text
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import Session as DBSession
 from backend import config, models as m, schemas as s
-from backend.assessment import evaluate, generate_questions, public_questions
+from backend.assessment import BANK_VERSION, evaluate, generate_questions, public_questions
 from backend.db import Base, engine, get_db
 from backend.matching import rank
+from backend.taxonomy import catalog as specialization_catalog
 from backend.security import (DUMMY_HASH, audit, candidate_user, consume_token, create_session, current_user, digest, employer_user, password_hasher, send_token, user_dto)
 from backend.serializers import candidate_dto, company_name, grant_exists, invitation_dto, row_dict
 
@@ -101,7 +102,7 @@ def health():
 
 @app.get(P + "/catalog", tags=["Справочники"])
 def catalog():
-    return {"specializations": [{"id": "backend", "name": "Бэкенд-разработка"}, {"id": "frontend", "name": "Фронтенд-разработка"}], "grades": [{"id": "junior", "name": "Начальный"}, {"id": "middle", "name": "Средний"}, {"id": "senior", "name": "Старший"}], "demo": config.DEMO_MODE}
+    return {"specializations": specialization_catalog(), "grades": [{"id": "junior", "name": "Начальный"}, {"id": "middle", "name": "Средний"}, {"id": "senior", "name": "Старший"}], "demo": config.DEMO_MODE}
 
 @app.get(P + "/ready", tags=["Система"])
 def ready(db: DBSession = Depends(get_db)):
@@ -271,7 +272,7 @@ def start_attempt(data: s.StartAssessment, user=Depends(candidate_user), db: DBS
     if last and now - last.started_at < 86400:
         raise HTTPException(409, "Повтор этого уровня доступен через 24 часа. Можно выбрать уровень ниже")
     seed = secrets.randbelow(2**31-1)
-    attempt = m.Attempt(candidate_id=user.id, specialization=data.specialization, grade=data.grade, seed=seed, questions=generate_questions(data.specialization, data.grade, seed), expires_at=now+1800)
+    attempt = m.Attempt(candidate_id=user.id, specialization=data.specialization, grade=data.grade, seed=seed, bank_version=BANK_VERSION, questions=generate_questions(data.specialization, data.grade, seed), expires_at=now+1800)
     db.add(attempt)
     audit(db, user.id, "assessment.started")
     db.commit()
@@ -565,7 +566,6 @@ def unlink_fsp(user=Depends(candidate_user), db: DBSession = Depends(get_db)):
 @app.post(P + "/profile/import-pdf", tags=["Профиль PDF"])
 async def import_pdf(file: UploadFile = File(...), user=Depends(candidate_user)):
     from pypdf import PdfReader
-    import re
     content = await file.read(5 * 1024 * 1024 + 1)
     if len(content) > 5 * 1024 * 1024:
         raise HTTPException(413, "PDF должен быть меньше 5 МБ")
@@ -580,9 +580,8 @@ async def import_pdf(file: UploadFile = File(...), user=Depends(candidate_user))
         raise HTTPException(422, "Не удалось прочитать PDF. Проверьте файл или заполните форму вручную")
     if len(text.strip()) < 20:
         raise HTTPException(422, "В PDF нет текстового слоя. Заполните профиль вручную")
-    known = ["Python", "FastAPI", "Django", "SQL", "PostgreSQL", "Docker", "JavaScript", "TypeScript", "React", "Next.js", "CSS", "Git", "Redis"]
-    emails = re.findall(r"[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}", text)
-    return {"name": next((line.strip() for line in text.splitlines() if len(line.strip()) > 3), "")[:120], "bio": text[:3000], "skills": [skill for skill in known if skill.lower() in text.lower()], "contact": emails[0] if emails else "", "notice": "Это черновик распознавания. Проверьте и сохраните поля вручную. Грейд подтверждается только тестом."}
+    from backend.resume import extract_resume
+    return extract_resume(text)
 
 @app.get(P + "/profile/pdf", tags=["Профиль PDF"])
 def export_profile(user=Depends(candidate_user), db: DBSession = Depends(get_db)):
@@ -594,3 +593,6 @@ def export_profile(user=Depends(candidate_user), db: DBSession = Depends(get_db)
 def metrics():
     path = Path("ml/metrics.json")
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {"status": "Модель ещё не обучена", "data": "Синтетические данные"}
+
+from backend.api_contract import install_contract
+install_contract(app)

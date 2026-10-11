@@ -34,9 +34,9 @@
   "assessment": {
     "source": "Симуляция IRT, не эмпирическая психометрическая валидация",
     "virtual_participants": 1200,
-    "forms_generated": 600,
-    "unique_forms": 600,
-    "equal_blueprints": 600,
+    "forms_generated": 3000,
+    "unique_forms": 3000,
+    "equal_blueprints": 3000,
     "test_retest_spearman": 0.8541,
     "pass_agreement": 0.8608,
     "pass_kappa": 0.7171,

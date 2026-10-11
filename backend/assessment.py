@@ -1,11 +1,15 @@
 """Семейства эквивалентных задач: параметры меняют ответ, чертёж сохраняется."""
 import math
 import random
+from backend.taxonomy import SPECIALIZATIONS
+from backend.assessment_tracks import track_questions
 
-BANK_VERSION = "1.0"
+BANK_VERSION = "2.0"
 GRADES = {"junior": 1, "middle": 2, "senior": 3}
 
 def generate_questions(specialization: str, grade: str, seed: int) -> list[dict]:
+    if specialization not in SPECIALIZATIONS:
+        raise ValueError("Неизвестная специализация")
     rng = random.Random(seed)
     level = GRADES[grade]
     questions = []
@@ -16,6 +20,10 @@ def generate_questions(specialization: str, grade: str, seed: int) -> list[dict]
                           "explanation": explanation, "difficulty": level})
 
     for repeat in range(2):
+        if specialization not in {"backend", "frontend"}:
+            for i, (skill, text, answer, explanation) in enumerate(track_questions(specialization, level, rng)):
+                add(f"{specialization}-{i}-{repeat}", skill, text, answer, explanation)
+            continue
         n, step = rng.randint(8, 22) * level, rng.randint(2, 5)
         if level == 1:
             add(f"loop-{repeat}", "Алгоритмы", f"Цикл обрабатывает индексы от 0 до {n-1} включительно с шагом {step}. Сколько итераций выполнится? Ответ — целое число.", math.ceil(n / step), "Количество итераций равно округлению n/шага вверх.")

@@ -16,6 +16,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, brier_score_loss, cohen_kappa_score, ndcg_score, roc_auc_score
 
 from backend.assessment import generate_questions
+from backend.taxonomy import SPECIALIZATIONS
 from backend.matching import BASE_WEIGHTS, FEATURES
 
 SEED = 20261010
@@ -68,7 +69,7 @@ def assessment_benchmark():
     passing1, passing2 = score1 >= .7, score2 >= .7
     blueprint_equal = 0
     forms = set()
-    for spec in ["backend", "frontend"]:
+    for spec in SPECIALIZATIONS:
         for grade in ["junior", "middle", "senior"]:
             reference = None
             for seed in range(100):
@@ -78,7 +79,7 @@ def assessment_benchmark():
                 blueprint_equal += int(blueprint == reference)
                 forms.add(hashlib.sha256(json.dumps(q, sort_keys=True, ensure_ascii=False).encode()).hexdigest())
     return {"source": "Симуляция IRT, не эмпирическая психометрическая валидация", "virtual_participants":1200,
-            "forms_generated":600, "unique_forms":len(forms), "equal_blueprints":blueprint_equal,
+            "forms_generated":len(SPECIALIZATIONS)*300, "unique_forms":len(forms), "equal_blueprints":blueprint_equal,
             "test_retest_spearman": round(float(spearmanr(score1, score2).statistic),4),
             "pass_agreement":round(float(accuracy_score(passing1,passing2)),4),
             "pass_kappa":round(float(cohen_kappa_score(passing1,passing2)),4),

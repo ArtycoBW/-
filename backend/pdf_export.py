@@ -1,4 +1,5 @@
 import io
+from backend.taxonomy import SPECIALIZATIONS
 import os
 from pathlib import Path
 from xml.sax.saxutils import escape
@@ -24,7 +25,7 @@ def profile_pdf(profile):
     doc = SimpleDocTemplate(buffer, rightMargin=22*mm, leftMargin=22*mm, topMargin=22*mm, bottomMargin=22*mm, title="Разряд — профиль специалиста", author="Разряд")
     normal = ParagraphStyle("normal", fontName="Russian", fontSize=10, leading=16, textColor=colors.HexColor("#1B1C21"))
     title = ParagraphStyle("title", parent=normal, fontSize=26, leading=32, spaceAfter=18)
-    specs = {"backend": "Бэкенд-разработка", "frontend": "Фронтенд-разработка"}
+    specs = {key: value[0] for key, value in SPECIALIZATIONS.items()}
     grades = {"junior": "Начальный", "middle": "Средний", "senior": "Старший"}
     lines = [Paragraph("РАЗРЯД / Профиль специалиста", normal), Spacer(1, 12*mm), Paragraph(escape(profile["name"]), title)]
     for line in [f"Специализация: {specs.get(profile['specialization'], profile['specialization'])}", f"Подтверждённый уровень: {grades.get(profile['grade'], 'Пока не подтверждён')}", f"Тест: {profile['score']:g} / 100", f"Город: {profile['city']}", f"Опыт: {profile['experience']} лет", f"Стек: {', '.join(profile['skills'])}", profile['bio'], f"Почта: {profile.get('email', 'скрыта')}", f"Контакт: {profile.get('contact', 'скрыт')}"]:

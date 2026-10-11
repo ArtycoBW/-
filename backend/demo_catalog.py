@@ -147,8 +147,9 @@ def populate():
             if i % len(company_ids) != 12:
                 continue
             candidate_id = candidates[i]
+            new_application = key("applications", i) not in existing[Application]
             add(Application,i,candidate_id=candidate_id,vacancy_id=vacancy_id,status=["sent","reviewing","interview"][i%3],letter="Интересны задачи вашей команды. В профиле указаны используемые технологии и результат теста. Готов обсудить подход к реализации и показать учебный проект.")
-            if not db.scalar(select(ContactGrant).where(ContactGrant.company_id==employer.id,ContactGrant.candidate_id==candidate_id)):
+            if new_application and not db.scalar(select(ContactGrant).where(ContactGrant.company_id==employer.id,ContactGrant.candidate_id==candidate_id)):
                 add(ContactGrant,i,company_id=employer.id,candidate_id=candidate_id,reason="application")
         candidate = db.scalar(select(User).where(User.email=="candidate@demo.razryad.ru"))
         for i in range(3):
