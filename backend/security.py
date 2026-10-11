@@ -1,6 +1,7 @@
 import hashlib
 import secrets
 import smtplib
+import ssl
 import time
 from email.message import EmailMessage
 from pathlib import Path
@@ -67,7 +68,7 @@ def send_token(db, user, kind):
         try:
             with smtplib.SMTP(config.SMTP_HOST, config.SMTP_PORT, timeout=10) as smtp:
                 if config.SMTP_STARTTLS:
-                    smtp.starttls()
+                    smtp.starttls(context=ssl.create_default_context())
                 if config.SMTP_USERNAME:
                     smtp.login(config.SMTP_USERNAME, config.SMTP_PASSWORD)
                 smtp.send_message(msg)

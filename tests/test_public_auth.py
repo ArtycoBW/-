@@ -5,6 +5,8 @@ from backend.db import SessionLocal
 from backend.main import app
 from tests.test_api import setup_db, account
 from tests.test_api import offer
+import ssl
+import pytest
 
 
 def test_registration_without_email_has_session_but_does_not_claim_verified(monkeypatch):
@@ -41,6 +43,61 @@ def test_public_demo_never_exposes_recovery_token(monkeypatch, tmp_path):
     result = c.post("/api/v1/auth/recover", json={"email": "candidate1@example.org"})
     assert result.status_code == 200 and result.json()["demo_link"] is None
     assert len(list(tmp_path.glob("*.txt"))) == 1
+
+
+@pytest.mark.parametrize("invalid_certificate", [False, True])
+def test_smtp_verifies_server_before_sending_credentials(monkeypatch, invalid_certificate):
+    from backend import security
+    monkeypatch.setattr(config, "EMAIL_VERIFICATION_REQUIRED", True)
+    monkeypatch.setattr(config, "SMTP_HOST", "smtp.example.org")
+    monkeypatch.setattr(config, "SMTP_PORT", 587)
+    monkeypatch.setattr(config, "SMTP_STARTTLS", True)
+    monkeypatch.setattr(config, "SMTP_USERNAME", "sender@example.org")
+    monkeypatch.setattr(config, "SMTP_PASSWORD", "test-only-secret")
+    monkeypatch.setattr(config, "EXPOSE_DEMO_MAIL", False)
+    calls = []
+
+    class SMTP:
+        def __init__(self, host, port, timeout):
+            assert (host, port, timeout) == ("smtp.example.org", 587, 10)
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def starttls(self, *, context):
+            assert context.check_hostname
+            assert context.verify_mode == ssl.CERT_REQUIRED
+            calls.append("tls")
+            if invalid_certificate:
+                raise ssl.SSLCertVerificationError("untrusted test server")
+
+        def login(self, username, password):
+            assert calls == ["tls"]
+            assert (username, password) == ("sender@example.org", "test-only-secret")
+            calls.append("login")
+
+        def send_message(self, message):
+            assert calls == ["tls", "login"]
+            assert message["To"] == "smtp-test@example.org"
+            assert "token=" in message.get_content()
+            calls.append("send")
+
+    monkeypatch.setattr(security.smtplib, "SMTP", SMTP)
+    c = TestClient(app)
+    result = c.post("/api/v1/auth/register", json={"email": "smtp-test@example.org", "password": "TestPassword2026!", "role": "candidate", "name": "SMTP test", "consent": True})
+    if invalid_certificate:
+        assert result.status_code == 503
+        assert calls == ["tls"]
+        with SessionLocal() as db:
+            assert db.scalar(select(m.User).where(m.User.email == "smtp-test@example.org")) is None
+    else:
+        assert result.status_code == 201
+        assert result.json()["demo_link"] is None
+        assert result.json()["authenticated"] is False
+        assert calls == ["tls", "login", "send"]
 
 
 def test_revocation_is_scoped_and_replay_does_not_reopen_contact():
