@@ -11,6 +11,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (BaseDocTemplate, Frame, PageTemplate, Paragraph,
                                Spacer, PageBreak, Table, TableStyle, KeepTogether)
 from reportlab.platypus.tableofcontents import TableOfContents
+from architecture_diagrams import figures
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "output/pdf"
@@ -67,7 +68,7 @@ class Documentation(BaseDocTemplate):
         canvas.drawString(48, A4[1]-29, "РАЗРЯД / ЛЦТ 2026")
         canvas.setFont("Body", 8)
         canvas.setFillColor(colors.HexColor("#686675"))
-        canvas.drawRightString(A4[0]-48, A4[1]-29, "ТЕХНИЧЕСКАЯ ДОКУМЕНТАЦИЯ · 1.2")
+        canvas.drawRightString(A4[0]-48, A4[1]-29, "ТЕХНИЧЕСКАЯ ДОКУМЕНТАЦИЯ · 1.3")
         canvas.drawString(48, 27, "Демонстрационные данные. Фактические границы описаны в методике.")
         canvas.drawRightString(A4[0]-48, 27, str(doc.page))
         canvas.restoreState()
@@ -98,6 +99,17 @@ def markdown(source):
         if not line:
             i += 1
             continue
+        figure = re.fullmatch(r"!\[([^]]*)\]\((assets/diagrams/[^)]+\.svg)\)", line)
+        if figure:
+            # Use the same vector source directly, preserving embedded Cyrillic fonts.
+            drawing = dict(figures())[Path(figure[2]).stem]
+            scale = (A4[0]-96) / drawing.width
+            drawing.scale(scale, scale)
+            drawing.width *= scale
+            drawing.height *= scale
+            flow.append(KeepTogether([drawing, Spacer(1, 8), Paragraph(inline(figure[1]), styles['Small'])]))
+            i += 1
+            continue
         if line.startswith("|"):
             rows = []
             while i < len(lines) and lines[i].strip().startswith("|"):
@@ -118,6 +130,9 @@ def markdown(source):
             continue
         heading = re.match(r"^(#{1,3}) (.*)", line)
         if heading:
+            following = next((s.strip() for s in lines[i+1:] if s.strip()), '')
+            if heading[1] == '##' and following.startswith('!['):
+                flow.append(PageBreak())
             flow.append(Paragraph(inline(heading[2]), styles["Heading" + str(len(heading[1]))]))
         elif line.startswith("- "):
             flow.append(Paragraph("• " + inline(line[2:]), styles["BulletText"]))
@@ -132,12 +147,12 @@ def main():
             Paragraph("Навыки говорят за вас", styles["CoverTitle"]),
             Paragraph("Цифровая платформа прямого найма с подтверждённой категорией специалиста и профилем достижений ФСП", styles["BodyText"]),
             Spacer(1, 45), Paragraph("Техническое задание · Архитектура · API<br/>Тестирование · Машинное обучение · Эксплуатация", styles["Heading3"]),
-            Spacer(1, 65), Paragraph("Специальный трек Федерации спортивного программирования<br/>Лидеры цифровой трансформации 2026<br/>Версия 1.2 / 11 октября 2026", styles["Small"]),
+            Spacer(1, 65), Paragraph("Специальный трек Федерации спортивного программирования<br/>Лидеры цифровой трансформации 2026<br/>Версия 1.3 / 11 октября 2026<br/>Исторические протоколы сохраняют номера своих выпусков.", styles["Small"]),
             PageBreak(), Paragraph("Содержание", styles["Heading1"])]
     toc = TableOfContents()
     toc.levelStyles = [ParagraphStyle("TOC0", fontName="BodyBold", fontSize=10, leading=14, spaceBefore=6, textColor=purple), ParagraphStyle("TOC1", fontName="Body", fontSize=9, leading=12, leftIndent=14, textColor=ink)]
     flow.extend([toc, PageBreak()])
-    docs = ["01-Техническое-задание.md", "02-Реализация.md", "03-Методика-и-проверка.md", "04-Сдача.md", "05-Проверка-стенда.md", "06-Готовность-и-эксплуатация.md", "07-Архитектура-и-аудит-кейса.md", "08-Функции-и-аккаунты-комиссии.md", "09-Валидация-релиза.md"]
+    docs = [p.name for p in sorted((ROOT / 'docs').glob('[0-9][0-9]-*.md'))]
     for n, filename in enumerate(docs):
         if n:
             flow.append(PageBreak())

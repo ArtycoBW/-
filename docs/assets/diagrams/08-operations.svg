@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="1000" height="700" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1000 700" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="1000" height="700"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-700)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="1000" height="700" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="30" y="664" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 27px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,1328) scale(1,-1)">08 / Эксплуатация и безопасный выпуск</text>
+			<text x="30" y="633" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,1266) scale(1,-1)">Контроль готовности, восстановление и условия включения почты</text>
+			<rect x="30" y="480" width="270" height="100" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
+			<text x="99.8544921875" y="552" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,1104) scale(1,-1)">Проверка DNS</text>
+			<text x="100.27734375" y="525" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,1050) scale(1,-1)">Каждые 30 минут</text>
+			<text x="115.8671875" y="501" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,1002) scale(1,-1)">NS + A/AAAA</text>
+			<rect x="365" y="480" width="270" height="100" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
+			<text x="416.021484375" y="552" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,1104) scale(1,-1)">Публичный HTTPS</text>
+			<text x="444.83203125" y="525" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,1050) scale(1,-1)">/health и /ready</text>
+			<text x="413.88671875" y="501" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,1002) scale(1,-1)">Проверка сертификата</text>
+			<rect x="700" y="480" width="270" height="100" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
+			<text x="758.35986328125" y="552" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,1104) scale(1,-1)">Почтовые записи</text>
+			<text x="774.10546875" y="525" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,1050) scale(1,-1)">MX / SPF / DKIM</text>
+			<text x="784.1015625" y="501" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,1002) scale(1,-1)">SMTP + IMAP</text>
+			<path d="M 300,530 L 365,530 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="365 530, 355.9955 525.6503, 355.9955 534.3497" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<path d="M 635,530 L 700,530 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="700 530, 690.9955 525.6503, 690.9955 534.3497" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<rect x="700" y="270" width="270" height="110" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
+			<text x="750.692138671875" y="352" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,704) scale(1,-1)">Включение флагов</text>
+			<text x="767.078125" y="325" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,650) scale(1,-1)">Только domain-api</text>
+			<text x="728.6328125" y="301" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,602) scale(1,-1)">Исходный туннель сохранён</text>
+			<path d="M 835,480 L 835,380 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="835 380, 830.6503 389.0045, 839.3497 389.0045" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<rect x="365" y="270" width="270" height="110" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
+			<text x="415.218994140625" y="352" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,704) scale(1,-1)">Сквозная проверка</text>
+			<text x="383.70703125" y="325" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,650) scale(1,-1)">Регистрация → письмо → вход</text>
+			<text x="412.296875" y="301" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,602) scale(1,-1)">Сброс и одноразовость</text>
+			<path d="M 700,325 L 635,325 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="635 325, 644.0045 329.3497, 644.0045 320.6503" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<rect x="30" y="270" width="270" height="110" rx="10" ry="0" style="stroke: rgb(13%,52%,43%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(91%,96%,94%); fill-rule: evenodd;"/>
+			<text x="54.056884765625" y="352" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(13%,52%,43%); stroke:none;" transform="translate(0,704) scale(1,-1)">Уведомление владельца</text>
+			<text x="87.3046875" y="325" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,650) scale(1,-1)">Только после успеха</text>
+			<text x="51.70703125" y="301" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,602) scale(1,-1)">Ссылка + проверенные факты</text>
+			<path d="M 365,325 L 300,325 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="300 325, 309.0045 329.3497, 309.0045 320.6503" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<rect x="365" y="80" width="270" height="100" rx="10" ry="0" style="stroke: rgb(72%,48%,7%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(100%,96%,89%); fill-rule: evenodd;"/>
+			<text x="384.69189453125" y="152" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(72%,48%,7%); stroke:none;" transform="translate(0,304) scale(1,-1)">Если проверка не прошла</text>
+			<text x="410.06640625" y="125" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,250) scale(1,-1)">Вернуть прежние флаги</text>
+			<text x="435.99609375" y="101" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,202) scale(1,-1)">Записать ошибку</text>
+			<path d="M 500,270 L 500,180 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="500 180, 495.6503 189.0045, 504.3497 189.0045" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<text x="30" y="38" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,76) scale(1,-1)">Ежедневно: pg_dump → восстановление в отдельную БД → проверка → 7 дней хранения.</text>
+		</g>
+	</g>
+</svg>

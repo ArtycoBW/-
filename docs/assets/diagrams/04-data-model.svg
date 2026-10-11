@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="1000" height="730" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1000 730" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="1000" height="730"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-730)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="1000" height="730" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="30" y="694" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 27px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,1388) scale(1,-1)">04 / Модель данных / ER</text>
+			<text x="30" y="663" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,1326) scale(1,-1)">Ключевые связи; списки полей сокращены. Стрелка направлена к дочерней записи.</text>
+			<rect x="355" y="531" width="290" height="94" rx="10" ry="0" style="stroke: rgb(13%,52%,43%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(91%,96%,94%); fill-rule: evenodd;"/>
+			<text x="479.9423828125" y="597" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(13%,52%,43%); stroke:none;" transform="translate(0,1194) scale(1,-1)">User</text>
+			<text x="421.31640625" y="570" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,1140) scale(1,-1)">id PK · email UNIQUE</text>
+			<text x="390.6171875" y="546" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,1092) scale(1,-1)">role · password_hash · verified</text>
+			<rect x="30" y="363" width="280" height="102" rx="10" ry="0" style="stroke: rgb(13%,52%,43%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(91%,96%,94%); fill-rule: evenodd;"/>
+			<text x="126.688720703125" y="437" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(13%,52%,43%); stroke:none;" transform="translate(0,874) scale(1,-1)">Candidate</text>
+			<text x="104.65234375" y="410" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,820) scale(1,-1)">id PK / FK → User</text>
+			<text x="86.41796875" y="386" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,772) scale(1,-1)">category · skills · fsp_id</text>
+			<rect x="690" y="363" width="280" height="102" rx="10" ry="0" style="stroke: rgb(13%,52%,43%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(91%,96%,94%); fill-rule: evenodd;"/>
+			<text x="789.342041015625" y="437" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(13%,52%,43%); stroke:none;" transform="translate(0,874) scale(1,-1)">Company</text>
+			<text x="764.65234375" y="410" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,820) scale(1,-1)">id PK / FK → User</text>
+			<text x="777.0859375" y="386" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,772) scale(1,-1)">name · contact</text>
+			<path d="M 355,580 L 170,580 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<path d="M 170,580 L 170,465 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="170 465, 165.6503 474.0045, 174.3497 474.0045" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<text x="227.06787109375" y="589" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 15px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,1178) scale(1,-1)">1 : 0..1</text>
+			<path d="M 645,580 L 830,580 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<path d="M 830,580 L 830,465 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="830 465, 825.6503 474.0045, 834.3497 474.0045" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<text x="727.06787109375" y="589" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 15px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,1178) scale(1,-1)">1 : 0..1</text>
+			<rect x="355" y="363" width="290" height="102" rx="10" ry="0" style="stroke: rgb(13%,52%,43%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(91%,96%,94%); fill-rule: evenodd;"/>
+			<text x="431.881103515625" y="437" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(13%,52%,43%); stroke:none;" transform="translate(0,874) scale(1,-1)">Session / Token</text>
+			<text x="431.98046875" y="410" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,820) scale(1,-1)">user_id FK → User</text>
+			<text x="401.71875" y="386" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,772) scale(1,-1)">token_hash PK · expires_at</text>
+			<path d="M 500,531 L 500,465 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="500 465, 495.6503 474.0045, 504.3497 474.0045" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<text x="532.161376953125" y="491" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 15px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,982) scale(1,-1)">1 : N</text>
+			<rect x="30" y="180" width="280" height="115" rx="10" ry="0" style="stroke: rgb(13%,52%,43%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(91%,96%,94%); fill-rule: evenodd;"/>
+			<text x="74.429443359375" y="267" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(13%,52%,43%); stroke:none;" transform="translate(0,534) scale(1,-1)">Attempt / Achievement</text>
+			<text x="112.18359375" y="240" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,480) scale(1,-1)">candidate_id FK</text>
+			<text x="96.3125" y="216" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,432) scale(1,-1)">Тесты / достижения</text>
+			<text x="84.5390625" y="192" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,384) scale(1,-1)">1 кандидат : N записей</text>
+			<path d="M 170,363 L 170,295 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="170 295, 165.6503 304.0045, 174.3497 304.0045" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<rect x="355" y="180" width="290" height="115" rx="10" ry="0" style="stroke: rgb(13%,52%,43%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(91%,96%,94%); fill-rule: evenodd;"/>
+			<text x="397.5595703125" y="267" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(13%,52%,43%); stroke:none;" transform="translate(0,534) scale(1,-1)">Invitation / ContactGrant</text>
+			<text x="402.375" y="240" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,480) scale(1,-1)">candidate_id + company_id</text>
+			<text x="409.0234375" y="216" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,432) scale(1,-1)">Приглашение / согласие</text>
+			<text x="415.75" y="192" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,384) scale(1,-1)">Grant UNIQUE по паре</text>
+			<path d="M 310,390 L 332,390 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<path d="M 332,390 L 332,257 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<path d="M 332,257 L 355,257 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="355 257, 345.9955 252.6503, 345.9955 261.3497" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<path d="M 690,390 L 668,390 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<path d="M 668,390 L 668,257 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<path d="M 668,257 L 645,257 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="645 257, 654.0045 261.3497, 654.0045 252.6503" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<rect x="690" y="180" width="280" height="115" rx="10" ry="0" style="stroke: rgb(13%,52%,43%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(91%,96%,94%); fill-rule: evenodd;"/>
+			<text x="742.862548828125" y="267" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(13%,52%,43%); stroke:none;" transform="translate(0,534) scale(1,-1)">Vacancy / Challenge</text>
+			<text x="774.41796875" y="240" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,480) scale(1,-1)">company_id FK</text>
+			<text x="755.4296875" y="216" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,432) scale(1,-1)">Вакансии / практика</text>
+			<text x="743.375" y="192" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,384) scale(1,-1)">1 компания : N записей</text>
+			<path d="M 830,363 L 830,295 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="830 295, 825.6503 304.0045, 834.3497 304.0045" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<rect x="255" y="37" width="490" height="90" rx="10" ry="0" style="stroke: rgb(13%,52%,43%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(91%,96%,94%); fill-rule: evenodd;"/>
+			<text x="396.501953125" y="99" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(13%,52%,43%); stroke:none;" transform="translate(0,198) scale(1,-1)">Application / Submission</text>
+			<text x="321.83203125" y="72" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,144) scale(1,-1)">Кандидат + вакансия / задача: уникальная пара</text>
+			<text x="342.62890625" y="48" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,96) scale(1,-1)">Отклик / решение связывают две стороны</text>
+			<path d="M 30,415 L 12,415 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<path d="M 12,415 L 12,82 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<path d="M 12,82 L 255,82 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="255 82, 245.9955 77.65034, 245.9955 86.34966" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<path d="M 830,180 L 830,82 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<path d="M 830,82 L 745,82 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="745 82, 754.0045 86.34966, 754.0045 77.65034" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+		</g>
+	</g>
+</svg>

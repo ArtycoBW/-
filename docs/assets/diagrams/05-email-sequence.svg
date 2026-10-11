@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="1000" height="760" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1000 760" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="1000" height="760"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-760)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="1000" height="760" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="30" y="724" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 27px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,1448) scale(1,-1)">05 / Подтверждение почты / sequence</text>
+			<text x="30" y="693" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,1386) scale(1,-1)">Реализовано; обязательность включается после проверки публичного HTTPS</text>
+			<rect x="15" y="598" width="190" height="62" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
+			<text x="73.526123046875" y="632" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,1264) scale(1,-1)">Браузер</text>
+			<path d="M 110,590 L 110,70 Z" style="stroke: rgb(79%,83%,88%); stroke-linecap: butt; stroke-width: 1; stroke-dasharray: 4, 4;"/>
+			<rect x="275" y="598" width="190" height="62" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
+			<text x="336.2119140625" y="632" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,1264) scale(1,-1)">FastAPI</text>
+			<path d="M 370,590 L 370,70 Z" style="stroke: rgb(79%,83%,88%); stroke-linecap: butt; stroke-width: 1; stroke-dasharray: 4, 4;"/>
+			<rect x="535" y="598" width="190" height="62" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
+			<text x="578.2509765625" y="632" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,1264) scale(1,-1)">PostgreSQL</text>
+			<path d="M 630,590 L 630,70 Z" style="stroke: rgb(79%,83%,88%); stroke-linecap: butt; stroke-width: 1; stroke-dasharray: 4, 4;"/>
+			<rect x="795" y="598" width="190" height="62" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
+			<text x="863.304443359375" y="632" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,1264) scale(1,-1)">Почта</text>
+			<path d="M 890,590 L 890,70 Z" style="stroke: rgb(79%,83%,88%); stroke-linecap: butt; stroke-width: 1; stroke-dasharray: 4, 4;"/>
+			<path d="M 110,555 L 370,555 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="370 555, 360.9955 550.6503, 360.9955 559.3497" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<text x="147.626953125" y="564" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 15px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,1128) scale(1,-1)">1. Регистрация + согласие</text>
+			<path d="M 370,512 L 630,512 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="630 512, 620.9955 507.6503, 620.9955 516.3497" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<text x="411.3916015625" y="521" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 15px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,1042) scale(1,-1)">2. User + SHA-256 токена</text>
+			<path d="M 370,469 L 890,469 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="890 469, 880.9955 464.6503, 880.9955 473.3497" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<text x="501.771240234375" y="478" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 15px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,956) scale(1,-1)">3. SMTP STARTTLS: ссылка, TTL 1 ч</text>
+			<path d="M 370,426 L 110,426 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="110 426, 119.0045 430.3497, 119.0045 421.6503" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<text x="122.38037109375" y="435" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 15px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,870) scale(1,-1)">4. «Проверьте почту», без сессии</text>
+			<path d="M 890,383 L 110,383 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="110 383, 119.0045 387.3497, 119.0045 378.6503" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<text x="376.546630859375" y="392" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 15px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,784) scale(1,-1)">5. Пользователь открывает письмо</text>
+			<path d="M 110,340 L 370,340 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="370 340, 360.9955 335.6503, 360.9955 344.3497" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<text x="144.7265625" y="349" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 15px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,698) scale(1,-1)">6. POST /auth/verify + токен</text>
+			<path d="M 370,297 L 630,297 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="630 297, 620.9955 292.6503, 620.9955 301.3497" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<text x="365.09521484375" y="306" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 15px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,612) scale(1,-1)">7. Проверка срока / блокировка строки</text>
+			<path d="M 370,254 L 630,254 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="630 254, 620.9955 249.6503, 620.9955 258.3497" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<text x="396.5234375" y="263" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 15px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,526) scale(1,-1)">8. verified=true; удалить токен</text>
+			<path d="M 370,211 L 110,211 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="110 211, 119.0045 215.3497, 119.0045 206.6503" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<text x="146.4111328125" y="220" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 15px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,440) scale(1,-1)">9. Secure + HttpOnly cookie</text>
+			<path d="M 110,168 L 370,168 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="370 168, 360.9955 163.6503, 360.9955 172.3497" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<text x="176.71142578125" y="177" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 15px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,354) scale(1,-1)">10. Повтор токена</text>
+			<path d="M 370,125 L 110,125 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="110 125, 119.0045 129.3497, 119.0045 120.6503" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<text x="120.450439453125" y="134" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 15px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,268) scale(1,-1)">11. 400: ссылка уже использована</text>
+			<text x="30" y="25" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 17px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,50) scale(1,-1)">Сброс пароля использует отдельный kind=reset и завершает все прежние сессии.</text>
+		</g>
+	</g>
+</svg>

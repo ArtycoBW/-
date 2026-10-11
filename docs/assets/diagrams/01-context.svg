@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="1000" height="660" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1000 660" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="1000" height="660"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-660)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="1000" height="660" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="30" y="624" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 27px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,1248) scale(1,-1)">01 / Контекст системы / C4 L1</text>
+			<text x="30" y="593" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,1186) scale(1,-1)">Роли, граница продукта и внешние системы</text>
+			<rect x="30" y="420" width="245" height="105" rx="10" ry="0" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,96%,97%); fill-rule: evenodd;"/>
+			<text x="110.40869140625" y="497" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,994) scale(1,-1)">Кандидат</text>
+			<text x="64.578125" y="470" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,940) scale(1,-1)">Профиль, тест, отклики</text>
+			<text x="59.15234375" y="446" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,892) scale(1,-1)">Согласия и приглашения</text>
+			<rect x="30" y="225" width="245" height="105" rx="10" ry="0" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,96%,97%); fill-rule: evenodd;"/>
+			<text x="89.567138671875" y="302" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,604) scale(1,-1)">Работодатель</text>
+			<text x="61.23828125" y="275" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,550) scale(1,-1)">Потребности и вакансии</text>
+			<text x="89.82421875" y="251" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,502) scale(1,-1)">Оценка практики</text>
+			<rect x="325" y="158" width="340" height="390" rx="12" ry="0" style="stroke: rgb(79%,83%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(97%,98%,98%); fill-rule: evenodd; stroke-dasharray: 6, 4;"/>
+			<text x="339" y="523" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 17px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,1046) scale(1,-1)">Граница продукта</text>
+			<rect x="355" y="285" width="280" height="140" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
+			<text x="463.053466796875" y="397" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,794) scale(1,-1)">Разряд</text>
+			<text x="392.33203125" y="370" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,740) scale(1,-1)">Подтверждённая категория</text>
+			<text x="417.10546875" y="346" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,692) scale(1,-1)">Объяснимый подбор</text>
+			<text x="383.59765625" y="322" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,644) scale(1,-1)">Адресное открытие контактов</text>
+			<rect x="730" y="440" width="245" height="100" rx="10" ry="0" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,96%,97%); fill-rule: evenodd;"/>
+			<text x="784.626953125" y="512" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,1024) scale(1,-1)">Почта Timeweb</text>
+			<text x="782.71484375" y="485" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,970) scale(1,-1)">SMTP / STARTTLS</text>
+			<text x="789.73046875" y="461" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,922) scale(1,-1)">Доставка ссылок</text>
+			<rect x="730" y="185" width="245" height="145" rx="10" ry="0" style="stroke: rgb(72%,48%,7%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(100%,96%,89%); fill-rule: evenodd;"/>
+			<text x="799.920654296875" y="302" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(72%,48%,7%); stroke:none;" transform="translate(0,604) scale(1,-1)">ФСП / OIDC</text>
+			<text x="770.91796875" y="275" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,550) scale(1,-1)">Официальный доступ</text>
+			<text x="789.1640625" y="251" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,502) scale(1,-1)">не предоставлен</text>
+			<text x="750.80078125" y="227" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,454) scale(1,-1)">Локальный стенд отдельно</text>
+			<path d="M 275,473 L 310,473 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<path d="M 310,473 L 310,380 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<path d="M 310,380 L 355,380 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="355 380, 345.9955 375.6503, 345.9955 384.3497" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<text x="285.416259765625" y="502" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 15px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,1004) scale(1,-1)">HTTPS</text>
+			<path d="M 275,277 L 310,277 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<path d="M 310,277 L 310,330 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<path d="M 310,330 L 355,330 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="355 330, 345.9955 325.6503, 345.9955 334.3497" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<path d="M 635,385 L 690,385 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<path d="M 690,385 L 690,490 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<path d="M 690,490 L 730,490 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="730 490, 720.9955 485.6503, 720.9955 494.3497" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<text x="669.166259765625" y="515" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 15px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,1030) scale(1,-1)">SMTP</text>
+			<path d="M 635,325 L 695,325 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5; stroke-dasharray: 5, 4;"/>
+			<path d="M 695,325 L 695,260 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5; stroke-dasharray: 5, 4;"/>
+			<path d="M 695,260 L 730,260 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5; stroke-dasharray: 5, 4;"/>
+			<polygon points="730 260, 720.9955 255.6503, 720.9955 264.3497" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<text x="30" y="90" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 17px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,180) scale(1,-1)">Сплошные связи: реализованы. Пунктир к ФСП: будущая официальная интеграция.</text>
+			<text x="30" y="57" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 17px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,114) scale(1,-1)">Демонстрационные достижения не являются верификацией Федерации.</text>
+		</g>
+	</g>
+</svg>

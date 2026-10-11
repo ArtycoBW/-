@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="1000" height="710" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1000 710" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="1000" height="710"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-710)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="1000" height="710" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="30" y="674" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 27px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,1348) scale(1,-1)">07 / Поток данных подбора / ML</text>
+			<text x="30" y="643" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,1286) scale(1,-1)">Рабочая модель и эксперимент на человеческой разметке разделены</text>
+			<rect x="30" y="500" width="290" height="95" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
+			<text x="67.795654296875" y="567" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,1134) scale(1,-1)">Профиль + потребность</text>
+			<text x="91.953125" y="540" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,1080) scale(1,-1)">Навыки, уровень, тест</text>
+			<text x="77.48828125" y="516" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,1032) scale(1,-1)">Активность, ФСП, формат</text>
+			<rect x="365" y="500" width="270" height="95" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
+			<text x="446.970703125" y="567" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,1134) scale(1,-1)">6 признаков</text>
+			<text x="411.44921875" y="540" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,1080) scale(1,-1)">Нормализация навыков</text>
+			<text x="400.3828125" y="516" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,1032) scale(1,-1)">Контакты не используются</text>
+			<rect x="700" y="500" width="270" height="95" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
+			<text x="755.238037109375" y="567" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,1134) scale(1,-1)">Базовая формула</text>
+			<text x="767.46875" y="540" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,1080) scale(1,-1)">Веса заданы явно</text>
+			<text x="754.609375" y="516" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,1032) scale(1,-1)">Работает без модели</text>
+			<path d="M 320,550 L 365,550 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="365 550, 355.9955 545.6503, 355.9955 554.3497" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<path d="M 635,550 L 700,550 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="700 550, 690.9955 545.6503, 690.9955 554.3497" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<rect x="365" y="320" width="270" height="100" rx="10" ry="0" style="stroke: rgb(13%,52%,43%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(91%,96%,94%); fill-rule: evenodd;"/>
+			<text x="454.05859375" y="392" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(13%,52%,43%); stroke:none;" transform="translate(0,784) scale(1,-1)">model.json</text>
+			<text x="412.84765625" y="365" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,730) scale(1,-1)">Обучение на синтетике</text>
+			<text x="407.6640625" y="341" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,682) scale(1,-1)">Проверка схемы и чисел</text>
+			<path d="M 500,500 L 500,420 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="500 420, 495.6503 429.0045, 504.3497 429.0045" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<rect x="700" y="320" width="270" height="100" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
+			<text x="761.14306640625" y="392" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,784) scale(1,-1)">Гибридный балл</text>
+			<text x="727.4140625" y="365" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,730) scale(1,-1)">70% формула + 30% модель</text>
+			<text x="733.56640625" y="341" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,682) scale(1,-1)">Без файла: 100% формула</text>
+			<path d="M 835,500 L 835,420 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="835 420, 830.6503 429.0045, 839.3497 429.0045" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<path d="M 635,370 L 700,370 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="700 370, 690.9955 365.6503, 690.9955 374.3497" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<rect x="700" y="160" width="270" height="100" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
+			<text x="737.267822265625" y="232" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,464) scale(1,-1)">Выдача и объяснение</text>
+			<text x="763.09765625" y="205" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,410) scale(1,-1)">Совпавшие навыки</text>
+			<text x="730.24609375" y="181" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,362) scale(1,-1)">Пробелы и вклад признаков</text>
+			<path d="M 835,320 L 835,260 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="835 260, 830.6503 269.0045, 839.3497 269.0045" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<rect x="30" y="110" width="605" height="155" rx="12" ry="0" style="stroke: rgb(79%,83%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(97%,98%,98%); fill-rule: evenodd; stroke-dasharray: 6, 4;"/>
+			<text x="44" y="240" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 17px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,480) scale(1,-1)">Отдельный исследовательский контур / не в рабочем подборе</text>
+			<text x="50" y="208" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,416) scale(1,-1)">Человеческая разметка → 18 train / 10 test резюме</text>
+			<text x="50" y="176" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 17px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,352) scale(1,-1)">Текстовая модель: NDCG@3 = 0,8031 на малой выборке</text>
+			<text x="50" y="144" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,288) scale(1,-1)">Преимущество над TF-IDF статистически не установлено.</text>
+			<text x="30" y="55" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 18px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,110) scale(1,-1)">Баллы соответствия не являются вероятностью трудоустройства.</text>
+			<text x="30" y="25" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,50) scale(1,-1)">Полная продуктовая модель требует независимой проверки на реальных оценках.</text>
+		</g>
+	</g>
+</svg>

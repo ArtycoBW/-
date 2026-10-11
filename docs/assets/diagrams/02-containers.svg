@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="1000" height="660" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1000 660" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="1000" height="660"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-660)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="1000" height="660" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="30" y="624" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 27px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,1248) scale(1,-1)">02 / Контейнеры и модули / C4 L2</text>
+			<text x="30" y="593" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,1186) scale(1,-1)">Модульный монолит: границы ответственности, а не отдельные микросервисы</text>
+			<rect x="30" y="420" width="230" height="115" rx="10" ry="0" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,96%,97%); fill-rule: evenodd;"/>
+			<text x="108.526123046875" y="507" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,1014) scale(1,-1)">Браузер</text>
+			<text x="64.7109375" y="480" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,960) scale(1,-1)">Кабинеты двух ролей</text>
+			<text x="88.53125" y="456" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,912) scale(1,-1)">HttpOnly cookie</text>
+			<rect x="355" y="420" width="280" height="115" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
+			<text x="465.966552734375" y="507" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,1014) scale(1,-1)">Next.js</text>
+			<text x="429.19921875" y="480" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,960) scale(1,-1)">React / TypeScript</text>
+			<text x="426.0703125" y="456" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,912) scale(1,-1)">/api/v1 → API:8000</text>
+			<path d="M 260,480 L 355,480 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="355 480, 345.9955 475.6503, 345.9955 484.3497" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<text x="282.416259765625" y="499" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 15px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,998) scale(1,-1)">HTTPS</text>
+			<rect x="30" y="95" width="665" height="265" rx="12" ry="0" style="stroke: rgb(79%,83%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(97%,98%,98%); fill-rule: evenodd; stroke-dasharray: 6, 4;"/>
+			<text x="44" y="335" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 17px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,670) scale(1,-1)">FastAPI / Python — единый процесс API</text>
+			<rect x="50" y="222" width="195" height="88" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
+			<text x="116.787353515625" y="282" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,564) scale(1,-1)">Доступ</text>
+			<text x="64.890625" y="255" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,510) scale(1,-1)">Сессии, роли, лимиты</text>
+			<rect x="265" y="222" width="195" height="88" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
+			<text x="338.51806640625" y="282" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,564) scale(1,-1)">Найм</text>
+			<text x="289.93359375" y="255" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,510) scale(1,-1)">Профили, согласия</text>
+			<rect x="480" y="222" width="195" height="88" rx="10" ry="0" style="stroke: rgb(28%,20%,80%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(94%,92%,100%); fill-rule: evenodd;"/>
+			<text x="544.699951171875" y="282" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(28%,20%,80%); stroke:none;" transform="translate(0,564) scale(1,-1)">Оценка</text>
+			<text x="518.90625" y="255" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,510) scale(1,-1)">Тесты и подбор</text>
+			<text x="55" y="170" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 18px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,340) scale(1,-1)">SQLAlchemy / транзакции / Alembic / журнал запросов</text>
+			<text x="55" y="135" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,270) scale(1,-1)">API возвращает контакты только при наличии ContactGrant.</text>
+			<path d="M 490,420 L 490,360 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="490 360, 485.6503 369.0045, 494.3497 369.0045" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<text x="524.1650390625" y="381" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 15px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,762) scale(1,-1)">HTTP / JSON</text>
+			<rect x="740" y="240" width="230" height="100" rx="10" ry="0" style="stroke: rgb(13%,52%,43%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(91%,96%,94%); fill-rule: evenodd;"/>
+			<text x="790.044677734375" y="312" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(13%,52%,43%); stroke:none;" transform="translate(0,624) scale(1,-1)">PostgreSQL 17</text>
+			<text x="780.73046875" y="285" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,570) scale(1,-1)">Данные и rate_limits</text>
+			<text x="768.625" y="261" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,522) scale(1,-1)">Хеши сессий и токенов</text>
+			<rect x="740" y="95" width="230" height="100" rx="10" ry="0" style="stroke: rgb(13%,52%,43%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(91%,96%,94%); fill-rule: evenodd;"/>
+			<text x="792.5078125" y="167" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 19px;fill: rgb(13%,52%,43%); stroke:none;" transform="translate(0,334) scale(1,-1)">Модель JSON</text>
+			<text x="810.34375" y="140" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,280) scale(1,-1)">6 признаков</text>
+			<text x="775.1875" y="116" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 16px;fill: rgb(9%,13%,20%); stroke:none;" transform="translate(0,232) scale(1,-1)">Без внешнего ML API</text>
+			<path d="M 695,275 L 740,275 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="740 275, 730.9955 270.6503, 730.9955 279.3497" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<path d="M 675,240 L 710,240 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<path d="M 710,240 L 710,145 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<path d="M 710,145 L 740,145 Z" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<polygon points="740 145, 730.9955 140.6503, 730.9955 149.3497" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(39%,45%,54%); fill-rule: evenodd;"/>
+			<text x="30" y="47" style="font-family: Arial, DejaVu Sans, sans-serif; font-size: 17px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,94) scale(1,-1)">Пароли: Argon2. Одноразовые ссылки: SHA-256 в БД; срок действия 1 час.</text>
+		</g>
+	</g>
+</svg>
