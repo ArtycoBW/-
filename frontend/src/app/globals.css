@@ -20,6 +20,7 @@
 @import "../style/workspace.css";
 @import "../style/product-refresh.css";
 @import "../style/app-ui.css";
+@import "../style/workspace-refinements.css";
 
 /* ---------------------------------------------------------------------------
    TIER 1 — PRIMITIVES  (`--raw-*`)

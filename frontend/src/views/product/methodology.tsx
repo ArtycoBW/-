@@ -1,8 +1,8 @@
 import Link from "next/link";
-export function MethodologyView() {
+export function MethodologyView({ embedded = false }: { embedded?: boolean }) {
   return (
-    <main className="rz-document">
-      <Link href="/">← Разряд</Link>
+    <div className={embedded ? "rz-info-document" : "rz-document"}>
+      {!embedded && <Link href="/">← Разряд</Link>}
       <p className="rz-eyebrow">ПРОЗРАЧНАЯ МЕТОДИКА</p>
       <h1>
         За каждым уровнем —<br />
@@ -12,9 +12,9 @@ export function MethodologyView() {
         <h2>Как подтверждается грейд</h2>
         <p>
           Вы выбираете специализацию и предполагаемый уровень. Система формирует
-          8 параметризованных задач по одному чертежу: алгоритмы, работа с
-          данными, профильная технология и надёжность. Параметры меняют ответы,
-          а состав компетенций остаётся одинаковым.
+          8 параметризованных задач по четырём семействам выбранного направления.
+          Доступны десять направлений и три уровня. Параметры меняют ответы,
+          а состав компетенций внутри категории остаётся одинаковым.
         </p>
         <p>
           Время — 30 минут, проходной результат — 70%. Неудача не понижает
@@ -61,9 +61,9 @@ export function MethodologyView() {
           компании. Публикация профиля управляется отдельно в настройках.
         </p>
       </section>
-      <Link className="rz-button primary" href="/auth?mode=register">
-        Создать профиль →
-      </Link>
-    </main>
+      {!embedded && <Link className="rz-button primary" href="/auth?mode=register">
+        Создать профиль
+      </Link>}
+    </div>
   );
 }

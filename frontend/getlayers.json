@@ -1,7 +1,7 @@
 {
   "project": "Разряд",
   "target": "next",
-  "style": null,
+  "style": "relay-style",
   "scenes": [
     {
       "slot": "whole page — fixed viewport canvas under every section",
@@ -35,5 +35,11 @@
     "#EC1D35",
     "#EDEDED",
     "#1B1C21"
-  ]
+  ],
+  "workspace": {
+    "composition": "vexon-showcase",
+    "scene": "blocky-grid",
+    "source": "src/components/product/practice-grid.js",
+    "adaptation": "Существующая палитра кабинета через CONFIG; поле практики, без заставки перед работой; reduced-motion fallback, 30 fps, DPR 1.5, остановка вне экрана."
+  }
 }

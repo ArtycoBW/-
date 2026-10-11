@@ -10,9 +10,9 @@ export const proofMock = {
   "stats": [
     {
       "id": "volume",
-      "label": "направления",
-      "value": "2",
-      "caption": "бэкенд и фронтенд в первом релизе",
+      "label": "направлений",
+      "value": "10",
+      "caption": "разработка, данные, качество и инфраструктура",
       "visual": "sparkline",
       "trend": "по три категории в каждом",
       "quote": {

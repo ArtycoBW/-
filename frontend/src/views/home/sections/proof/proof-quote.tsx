@@ -68,7 +68,7 @@ export const ProofQuote = ({
   return (
     <figure
       ref={ref}
-      className="absolute top-81.5 left-0 flex w-96 flex-col w1024:top-95.25 w1024:w-69.5 w768:top-98.75 w768:w-54.5 w390:static w390:mt-6 w390:w-full"
+      className="rz-proof-quote absolute top-81.5 left-0 flex w-96 flex-col w1024:top-95.25 w1024:w-69.5 w768:top-98.75 w768:w-54.5 w390:static w390:mt-6 w390:w-full"
     >
       <blockquote className="text-body leading-body text-foreground">
         <Focus trigger={trigger} tag="p" delay={delay}>

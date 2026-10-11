@@ -19,7 +19,7 @@ test("регистрация → подтверждение грейда → п�
     .getByRole("button", { name: "Создать аккаунт →", exact: true })
     .click();
   await page.waitForURL("**/app");
-  await page.getByRole("link", { name: "Мой профиль", exact: true }).click();
+  await page.getByRole("link", { name: "Открыть профиль", exact: true }).click();
   await page.getByLabel("Навыки через запятую").fill(`Python, SQL, ${key}`);
   await page.getByLabel("Контакт для связи").fill(`${key}.private@example.org`);
   await page

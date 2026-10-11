@@ -178,17 +178,8 @@ export const ChartCard = ({ chart }: Pick<ProductContent, "chart">) => {
         ))}
       </ul>
 
-      <figcaption>
-        <span
-          className={`absolute top-7.75 left-7.75 whitespace-nowrap text-foreground-dim w1024:top-5.75 w1024:left-5.75 w768:top-5.75 w768:left-5.75 w390:top-4.75 w390:left-4.75 ${MONO}`}
-        >
-          {chart.caption}
-        </span>
-        <span
-          className={`absolute top-7.75 left-53.25 whitespace-nowrap text-foreground-muted w1024:top-5.75 w1024:left-95.25 w768:top-5.75 w768:left-95.25 w390:top-9.75 w390:left-4.75 ${MONO}`}
-        >
-          {chart.average}
-        </span>
+      <figcaption className="rz-chart-caption">
+        <span>{chart.caption}</span><span>{chart.average}</span>
       </figcaption>
     </figure>
   );

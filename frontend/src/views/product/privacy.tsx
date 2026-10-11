@@ -1,8 +1,8 @@
 import Link from "next/link";
-export function PrivacyView() {
+export function PrivacyView({ embedded = false }: { embedded?: boolean }) {
   return (
-    <main className="rz-document">
-      <Link href="/">← На главную</Link>
+    <div className={embedded ? "rz-info-document" : "rz-document"}>
+      {!embedded && <Link href="/">← На главную</Link>}
       <h1>Данные под вашим контролем</h1>
       <p>
         Версия 1.0 от 10 октября 2026. Демонстрационный прототип «Разряд» для
@@ -36,6 +36,6 @@ export function PrivacyView() {
         утвердить политику. Эта страница описывает поведение прототипа и не
         является заявлением о юридической сертификации.
       </p>
-    </main>
+    </div>
   );
 }

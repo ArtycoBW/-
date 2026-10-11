@@ -942,8 +942,8 @@
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
   translate: 0 0 !important;
-  width: min(680px, calc(100vw - 32px)) !important;
-  max-width: 680px !important;
+  width: min(var(--dialog-width, 680px), calc(100vw - 32px)) !important;
+  max-width: var(--dialog-width, 680px) !important;
   max-height: calc(100dvh - 40px) !important;
   background: #171d26 !important;
   border: 1px solid #414956 !important;

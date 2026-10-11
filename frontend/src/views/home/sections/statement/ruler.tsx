@@ -167,7 +167,7 @@ export const Ruler = ({ caption, now, hours }: RulerProps) => {
 
   return (
     <>
-      <p className="absolute top-112 left-20 h-5 font-mono text-label leading-label whitespace-nowrap text-statement-ink-caption w1024:top-101.5 w1024:left-12 w768:top-99.5 w768:left-10 w390:top-[calc(var(--spacing)*61.25)] w390:left-5 w390:h-10 w390:w-19.75 w390:whitespace-normal">
+      <p className="rz-statement-caption absolute top-112 left-20 h-5 font-mono text-label leading-label whitespace-nowrap text-statement-ink-caption w1024:top-101.5 w1024:left-12 w768:top-99.5 w768:left-10 w390:top-[calc(var(--spacing)*61.25)] w390:left-5 w390:h-10 w390:w-19.75 w390:whitespace-normal">
         <StatementType delay={TIMELINE.caption}>{caption}</StatementType>
       </p>
       <svg

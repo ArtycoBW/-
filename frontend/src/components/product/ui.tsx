@@ -1,4 +1,5 @@
 "use client";
+import { specializations } from "@/lib/taxonomy";
 import { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -96,8 +97,7 @@ export function SelectSpec({
 }) {
   return (
     <AppSelect value={value} onChange={(e) => onChange(e.target.value)}>
-      <option value="backend">Бэкенд-разработка</option>
-      <option value="frontend">Фронтенд-разработка</option>
+      {specializations.map((spec) => <option key={spec.id} value={spec.id}>{spec.name}</option>)}
     </AppSelect>
   );
 }

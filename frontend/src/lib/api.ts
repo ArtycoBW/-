@@ -1,3 +1,4 @@
+import { specializations } from "./taxonomy";
 export type User = {
   id: string;
   email: string;
@@ -166,7 +167,7 @@ export const put = <T>(path: string, data: unknown) =>
 export const patch = <T>(path: string, data: unknown) =>
   api<T>(path, { method: "PATCH", body: JSON.stringify(data) });
 export const specName = (v: string) =>
-  ({ backend: "Бэкенд-разработка", frontend: "Фронтенд-разработка" })[v] || v;
+  specializations.find((s) => s.id === v)?.name || v;
 export const gradeName = (v: string | null) =>
   ({ junior: "Начальный", middle: "Средний", senior: "Старший" })[v || ""] ||
   "Не подтверждён";
