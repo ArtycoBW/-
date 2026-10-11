@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Brand, Field, Notice } from "@/components/product/ui";
 import { api, post, User } from "@/lib/api";
 import { SignalField } from "@/components/product/signal-field";
+import { InfoLink } from "@/components/product/info-dialog";
+import { SessionReturnLink } from "@/components/product/session-navigation";
 import { ArrowUpRight, Eye, EyeSlash, ArrowLeft, Fingerprint, Code, Buildings } from "@phosphor-icons/react";
 
 export function AuthView() {
@@ -13,6 +15,20 @@ export function AuthView() {
   useEffect(()=>setHydrated(true),[]);
   const router = useRouter();
   const [mode, setMode] = useState(params.get("mode") || "login");
+  const [checkingSession, setCheckingSession] = useState(true);
+  useEffect(() => {
+    // Mail links must remain accessible, including when another session is open.
+    if (mode !== "login" && mode !== "register") {
+      setCheckingSession(false);
+      return;
+    }
+    let active = true;
+    setCheckingSession(true);
+    api<User>("/auth/me", { cache: "no-store" })
+      .then(() => { if (active) router.replace("/app"); })
+      .catch(() => { if (active) setCheckingSession(false); });
+    return () => { active = false; };
+  }, [mode, router]);
   useEffect(() => { setMode(params.get("mode") || "login"); }, [params]);
   const [role, setRole] = useState(params.get("role") || "candidate");
   const [email, setEmail] = useState(params.get("email") || "");
@@ -91,6 +107,8 @@ export function AuthView() {
         reset: "Новый пароль",
       } as Record<string, string>
     )[mode] || "Вход";
+  if (checkingSession && (mode === "login" || mode === "register"))
+    return <main className="rz-loading"><p>Проверяем вход…</p></main>;
   return (
     <div className="rz-auth">
       <div className="rz-auth-story">
@@ -116,9 +134,7 @@ export function AuthView() {
         <small>Спортивное программирование. Профессиональный рост.<span>ФСП × ЛЦТ 2026</span></small>
       </div>
       <main className="rz-auth-main">
-        <Link href="/" className="rz-back">
-          <ArrowLeft size={16} /> На главную
-        </Link>
+        <SessionReturnLink className="rz-back" />
         <div className="rz-auth-card">
           <div className="rz-auth-form-brand"><Brand /></div>
           <h2>{title}</h2>
@@ -210,9 +226,9 @@ export function AuthView() {
                 />
                 <span>
                   Согласен на обработку данных по{" "}
-                  <Link href="/privacy-policy">
+                  <InfoLink kind="privacy" className="rz-inline-info">
                     политике конфиденциальности
-                  </Link>
+                  </InfoLink>
                   . Публикация профиля включается отдельно.
                 </span>
               </label>

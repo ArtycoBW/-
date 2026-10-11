@@ -1,8 +1,8 @@
-import Link from "next/link";
+import { SessionReturnLink } from "@/components/product/session-navigation";
 export function PrivacyView({ embedded = false }: { embedded?: boolean }) {
   return (
     <div className={embedded ? "rz-info-document" : "rz-document"}>
-      {!embedded && <Link href="/">← На главную</Link>}
+      {!embedded && <SessionReturnLink />}
       <h1>Данные под вашим контролем</h1>
       <p>
         Версия 1.3 от 11 октября 2026. Демонстрационный прототип «Разряд» для

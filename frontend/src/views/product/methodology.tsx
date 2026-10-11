@@ -1,8 +1,8 @@
-import Link from "next/link";
+import { SessionReturnLink, SessionActionLink } from "@/components/product/session-navigation";
 export function MethodologyView({ embedded = false }: { embedded?: boolean }) {
   return (
     <div className={embedded ? "rz-info-document" : "rz-document"}>
-      {!embedded && <Link href="/">← Разряд</Link>}
+      {!embedded && <SessionReturnLink />}
       <p className="rz-eyebrow">ПРОЗРАЧНАЯ МЕТОДИКА</p>
       <h1>
         За каждым уровнем —<br />
@@ -61,9 +61,7 @@ export function MethodologyView({ embedded = false }: { embedded?: boolean }) {
           компании. Публикация профиля управляется отдельно в настройках.
         </p>
       </section>
-      {!embedded && <Link className="rz-button primary" href="/auth?mode=register">
-        Создать профиль
-      </Link>}
+      {!embedded && <SessionActionLink className="rz-button primary" />}
     </div>
   );
 }

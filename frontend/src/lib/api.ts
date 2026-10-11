@@ -125,6 +125,13 @@ export type Challenge = {
   submissions: Submission[];
 };
 
+export class ApiError extends Error {
+  constructor(message: string, public readonly status: number) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
+
 export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   let response: Response;
   try {
@@ -153,10 +160,11 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   )
     window.dispatchEvent(new Event("session-expired"));
   if (!response.ok)
-    throw new Error(
+    throw new ApiError(
       typeof data.detail === "string"
         ? data.detail
         : "Не удалось выполнить запрос",
+      response.status,
     );
   return data as T;
 }

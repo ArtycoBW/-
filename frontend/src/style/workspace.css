@@ -766,9 +766,19 @@ html:has(.rz-loading) {
   min-width: 15px;
   margin-top: 3px;
 }
-.rz-check a {
+.rz-check a,
+.rz-check .rz-inline-info {
   text-decoration: underline;
   color: #c4b7eb;
+}
+
+.rz-check .rz-inline-info {
+  display: inline;
+  height: auto;
+  padding: 0;
+  font: inherit;
+  white-space: normal;
+  vertical-align: baseline;
 }
 .rz-actions {
   display: flex;

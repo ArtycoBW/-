@@ -39,6 +39,7 @@ export function InfoLink({
   return (
     <>
       <Button
+        type="button"
         variant="ghost"
         className={className}
         onClick={() => setOpen(true)}

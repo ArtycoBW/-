@@ -30,6 +30,7 @@ import { Challenges } from "@/views/product/challenges";
 import { ContactAccess } from "@/components/product/contact-access";
 import {
   api,
+  ApiError,
   post,
   put,
   patch,
@@ -120,6 +121,8 @@ export function Dashboard() {
   const section = pathname.split("/")[2] || "overview";
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState("");
+  const [sessionError, setSessionError] = useState("");
+  const [sessionAttempt, setSessionAttempt] = useState(0);
   const [menu, setMenu] = useState(false);
   const [info, setInfo] = useState<"privacy" | "methodology" | null>(null);
   const [collapsed, setCollapsed] = useState(() => {
@@ -150,10 +153,16 @@ export function Dashboard() {
     }
   }
   useEffect(() => {
-    api<User>("/auth/me")
-      .then(setUser)
-      .catch(() => router.replace("/auth"));
-  }, [router]);
+    let active = true;
+    api<User>("/auth/me", { cache: "no-store" })
+      .then((value) => { if (active) setUser(value); })
+      .catch((error: unknown) => {
+        if (!active) return;
+        if (error instanceof ApiError && error.status === 401) router.replace("/auth?expired=1");
+        else setSessionError((error as Error).message);
+      });
+    return () => { active = false; };
+  }, [router, sessionAttempt]);
   useEffect(() => {
     const expired = () => router.replace("/auth?expired=1");
     window.addEventListener("session-expired", expired);
@@ -163,7 +172,10 @@ export function Dashboard() {
     return (
       <main className="rz-loading">
         <Mark />
-        <p>Открываем ваш кабинет…</p>
+        {sessionError ? <>
+          <p role="alert">{sessionError}</p>
+          <Button onClick={() => { setSessionError(""); setSessionAttempt((value) => value + 1); }}>Повторить</Button>
+        </> : <p>Открываем ваш кабинет…</p>}
       </main>
     );
   const nav = user.role === "candidate" ? candidateNav : employerNav;
@@ -188,7 +200,7 @@ export function Dashboard() {
           />
         )}
         <aside className={`rz-sidebar ${menu ? "open" : ""}`}>
-          <Brand />
+          <Brand href="/app" />
           <div className="rz-space-label">
             <span className="rz-space-dot" />
             <span>{user.role === "candidate" ? "Карьера" : "Команда"}</span>
@@ -593,9 +605,9 @@ function Overview({ user }: { user: User }) {
             </div>
             <span></span>
           </div>
-          <Link className="rz-text-link" href="/methodology">
+          <InfoLink kind="methodology">
             Узнать о методике
-          </Link>
+          </InfoLink>
         </section>
       </div>
       <div className="rz-section-title">

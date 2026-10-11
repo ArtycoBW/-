@@ -13,9 +13,9 @@ export function Mark() {
     </span>
   );
 }
-export function Brand() {
+export function Brand({ href = "/" }: { href?: string }) {
   return (
-    <Link className="rz-brand" href="/">
+    <Link className="rz-brand" href={href}>
       <Mark />
       <span>
         разряд<span className="rz-brand-dot">.</span>

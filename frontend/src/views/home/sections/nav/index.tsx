@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { PillButton } from "@/components/ui/pill-button";
+import { SessionNavButton } from "@/components/product/session-navigation";
 import { Reveal } from "@/components/ui/reveal";
 import type { NavContent } from "@/data/mocks/home/nav";
 
@@ -63,7 +63,7 @@ export const Nav = ({ brand, links, status, cta }: NavContent) => (
             {status}
           </span>
         </p>
-        <PillButton href={cta.href}>{cta.label}</PillButton>
+        <SessionNavButton href={cta.href}>{cta.label}</SessionNavButton>
         <NavMenu brand={brand} links={links} status={status} cta={cta} />
       </div>
     </Reveal>

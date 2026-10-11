@@ -14,7 +14,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 
-import { PillButton } from "@/components/ui/pill-button";
+import { SessionNavButton } from "@/components/product/session-navigation";
 import type { NavContent } from "@/data/mocks/home/nav";
 import { useScroll } from "@/hooks/smooth-scroll/use-scroll";
 import { useFrame } from "@/hooks/use-frame";
@@ -316,9 +316,9 @@ export const NavMenu = ({
                   {status}
                 </span>
               </p>
-              <PillButton href={cta.href} size="lg">
+              <SessionNavButton href={cta.href} size="lg">
                 {cta.label}
-              </PillButton>
+              </SessionNavButton>
             </animated.div>
           </animated.div>,
           document.body,
