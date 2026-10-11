@@ -1,0 +1,32 @@
+name: razryad-ops
+services:
+  operations:
+    build:
+      context: .
+      dockerfile: ops/Dockerfile
+    restart: unless-stopped
+    env_file: .local/ops.env
+    environment:
+      OPS_TARGETS: '{"legacy_web":"http://razryad-web-1:3000/api/v1/ready","domain_web":"http://razryad-domain-domain-web-1:3000/api/v1/ready"}'
+    volumes: ["./.local/operations:/state"]
+    networks: [database, domain]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+    healthcheck:
+      test: [CMD, python3, -c, "import json,time; s=json.load(open('/state/status.json')); assert time.time()-s['checked_at']<180 and s['backup_ok'] and all(x['ok'] for x in s['services'].values())"]
+      interval: 60s
+      timeout: 5s
+      start_period: 120s
+      retries: 3
+networks:
+  database:
+    external: true
+    name: razryad_default
+  domain:
+    external: true
+    name: razryad-domain_entry

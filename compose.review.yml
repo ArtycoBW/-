@@ -1,0 +1,44 @@
+# Isolated release validation. Does not join or modify running production networks.
+name: razryad-review
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: razryad
+      POSTGRES_DB: razryad
+      POSTGRES_PASSWORD: review-only-password
+      PGCTLTIMEOUT: "600"
+    volumes: [review-database:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U razryad]
+      interval: 3s
+      retries: 20
+      start_period: 180s
+  api:
+    image: razryad-api:1.3-review
+    build: {context: ., dockerfile: backend/Dockerfile}
+    environment:
+      DATABASE_URL: postgresql+psycopg://razryad:review-only-password@db:5432/razryad
+      DEMO_MODE: "true"
+      PUBLIC_ORIGIN: http://localhost:3102
+      COOKIE_SECURE: "false"
+      EMAIL_VERIFICATION_REQUIRED: "false"
+      PASSWORD_RECOVERY_ENABLED: "false"
+    depends_on:
+      db: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/ready')"]
+      interval: 5s
+      retries: 20
+    logging:
+      options: {max-size: "10m", max-file: "3"}
+  web:
+    image: razryad-web:1.3-review
+    build: {context: ., dockerfile: frontend/Dockerfile}
+    ports: ["127.0.0.1:3102:3000"]
+    depends_on:
+      api: {condition: service_healthy}
+    logging:
+      options: {max-size: "10m", max-file: "3"}
+volumes:
+  review-database: {}

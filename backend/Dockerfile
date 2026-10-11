@@ -9,4 +9,4 @@ COPY ml /app/ml
 RUN useradd --create-home --uid 10001 app && mkdir -p /app/.local && chown -R app:app /app
 USER app
 EXPOSE 8000
-CMD ["python", "-m", "uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "-m", "uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000", "--no-access-log"]

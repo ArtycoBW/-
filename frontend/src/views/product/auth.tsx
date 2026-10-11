@@ -20,7 +20,7 @@ export function AuthView() {
   const [name, setName] = useState("");
   const [consent, setConsent] = useState(false);
   const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(params.get("deleted") === "1" ? "Аккаунт и связанные данные удалены" : "");
   const [demoLink, setDemoLink] = useState("");
   const [busy, setBusy] = useState(false);
   const [isDemo, setIsDemo] = useState(false);

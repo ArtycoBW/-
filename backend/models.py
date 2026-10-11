@@ -1,6 +1,6 @@
 import time
 import uuid
-from sqlalchemy import Boolean, Float, ForeignKey, Integer, JSON, String, Text, UniqueConstraint
+from sqlalchemy import Index, Boolean, Float, ForeignKey, Integer, JSON, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 from backend.db import Base
 
@@ -179,3 +179,13 @@ class Audit(Base):
     resource_id: Mapped[str] = mapped_column(String(80))
     details: Mapped[dict] = mapped_column(JSON, default=dict)
     created_at: Mapped[float] = mapped_column(Float, default=time.time)
+
+
+class RateLimit(Base):
+    __tablename__ = "rate_limits"
+    key: Mapped[str] = mapped_column(String(64), primary_key=True)
+    count: Mapped[int] = mapped_column(Integer)
+    expires_at: Mapped[float] = mapped_column(Float, index=True)
+
+
+Index("ix_candidates_category_visible", Candidate.specialization, Candidate.grade, Candidate.published, Candidate.consent)

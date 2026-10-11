@@ -47,6 +47,8 @@ test("регистрация → подтверждение грейда → п�
           "docker",
           [
             "compose",
+            "-f",
+            process.env.E2E_COMPOSE_FILE || "compose.yml",
             "exec",
             "-T",
             "api",

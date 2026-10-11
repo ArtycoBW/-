@@ -18,3 +18,11 @@ PASSWORD_RECOVERY_ENABLED = os.getenv("PASSWORD_RECOVERY_ENABLED", "false").lowe
 # Only local automated tests may expose mail links; never enable on a public demo.
 EXPOSE_DEMO_MAIL = os.getenv("EXPOSE_DEMO_MAIL", "false").lower() == "true"
 TRUST_CLOUDFLARE = os.getenv("TRUST_CLOUDFLARE", "false").lower() == "true"
+# disabled / local / external. External configuration alone is not proof of official FSP access.
+FSP_MODE = os.getenv("FSP_MODE", "disabled")
+FSP_ISSUER = os.getenv("FSP_ISSUER", "").rstrip("/")
+FSP_BACKCHANNEL_ORIGIN = os.getenv("FSP_BACKCHANNEL_ORIGIN", "").rstrip("/")
+FSP_CLIENT_ID = os.getenv("FSP_CLIENT_ID", "razryad")
+FSP_CLIENT_SECRET = os.getenv("FSP_CLIENT_SECRET", "")
+FSP_FLOW_SECRET = os.getenv("FSP_FLOW_SECRET", "")
+FSP_ACHIEVEMENTS_URL = os.getenv("FSP_ACHIEVEMENTS_URL", "")

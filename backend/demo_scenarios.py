@@ -3,7 +3,7 @@ import time
 from sqlalchemy import select
 from backend import config
 from backend.db import SessionLocal
-from backend.models import User, Candidate, Company, Achievement, Need, Invitation
+from backend.models import User, Candidate, Company, Achievement
 from backend.security import password_hasher
 from backend.seed import seed
 

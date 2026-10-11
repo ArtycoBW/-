@@ -1,0 +1,317 @@
+{
+  "source": "https://github.com/NataliaVanetik/vacancy-resume-matching-dataset",
+  "citation": "Vanetik N., Kogan G. (2023). Job Vacancy Ranking with Sentence Embeddings, Keywords, and Named Entities. Information 14(8),468. doi:10.3390/info14080468",
+  "license": "GPL-3.0 (repository LICENSE)",
+  "dataset_commit": "7ee8f043c6e31ee94cb67f5e60b069901b533adf",
+  "seed": 20261011,
+  "python": "3.12.13",
+  "feature_specification": [
+    "word_tfidf_cosine",
+    "char_tfidf_cosine",
+    "production_skill_coverage",
+    "skill_jaccard"
+  ],
+  "valid_resumes": 28,
+  "excluded": [
+    {
+      "resume_id": 9,
+      "reason": "invalid_permutation",
+      "original_orders": [
+        [
+          1,
+          5,
+          2,
+          1,
+          4
+        ],
+        [
+          3,
+          4,
+          2,
+          1,
+          5
+        ]
+      ]
+    },
+    {
+      "resume_id": 28,
+      "reason": "invalid_permutation",
+      "original_orders": [
+        [
+          2,
+          4,
+          3,
+          2,
+          5
+        ],
+        [
+          1,
+          4,
+          2,
+          3,
+          5
+        ]
+      ]
+    }
+  ],
+  "train_resume_ids": [
+    2,
+    3,
+    4,
+    5,
+    8,
+    10,
+    11,
+    12,
+    13,
+    18,
+    19,
+    20,
+    22,
+    24,
+    25,
+    27,
+    29,
+    30
+  ],
+  "test_resume_ids": [
+    1,
+    6,
+    7,
+    14,
+    15,
+    16,
+    17,
+    21,
+    23,
+    26
+  ],
+  "known_jobs": 5,
+  "training_pairwise_examples": 288,
+  "test_cv_job_pairs": 50,
+  "annotators": 2,
+  "annotator_mean_kendall_tau": 0.1357142857142857,
+  "metrics": {
+    "production_skills_only": {
+      "ndcg_at_3": 0.6511257296290358,
+      "kendall_tau": -0.139420015605511
+    },
+    "tfidf_mean": {
+      "ndcg_at_3": 0.7633726454278368,
+      "kendall_tau": 0.052704627669472995
+    },
+    "pairwise_text_model": {
+      "ndcg_at_3": 0.80311474158419,
+      "kendall_tau": 0.22155641385120606
+    }
+  },
+  "random_permutation_expected_ndcg3": 0.7053457459433478,
+  "model_minus_tfidf_bootstrap95": [
+    -0.014969351818216967,
+    0.09438676811881345
+  ],
+  "per_resume": {
+    "production_skills_only": [
+      {
+        "resume_id": 1,
+        "ndcg_at_3": 0.6179297442852983,
+        "kendall_tau": -0.4714045207910316
+      },
+      {
+        "resume_id": 6,
+        "ndcg_at_3": 0.5564521897778332,
+        "kendall_tau": -0.10540925533894598
+      },
+      {
+        "resume_id": 7,
+        "ndcg_at_3": 0.5313154119466849,
+        "kendall_tau": -0.4444444444444444
+      },
+      {
+        "resume_id": 14,
+        "ndcg_at_3": 0.5337023679167112,
+        "kendall_tau": -0.1178511301977579
+      },
+      {
+        "resume_id": 15,
+        "ndcg_at_3": 0.8080824371047749,
+        "kendall_tau": 0.0
+      },
+      {
+        "resume_id": 16,
+        "ndcg_at_3": 0.49772807652379053,
+        "kendall_tau": -0.31622776601683794
+      },
+      {
+        "resume_id": 17,
+        "ndcg_at_3": 0.771192875925944,
+        "kendall_tau": -0.2519763153394848
+      },
+      {
+        "resume_id": 21,
+        "ndcg_at_3": 0.6116164874209549,
+        "kendall_tau": -0.2222222222222222
+      },
+      {
+        "resume_id": 23,
+        "ndcg_at_3": 0.9708352042637501,
+        "kendall_tau": 0.8888888888888888
+      },
+      {
+        "resume_id": 26,
+        "ndcg_at_3": 0.6124025011246164,
+        "kendall_tau": -0.35355339059327373
+      }
+    ],
+    "tfidf_mean": [
+      {
+        "resume_id": 1,
+        "ndcg_at_3": 0.7193161507161572,
+        "kendall_tau": 0.10540925533894596
+      },
+      {
+        "resume_id": 6,
+        "ndcg_at_3": 0.6890666261233152,
+        "kendall_tau": 0.0
+      },
+      {
+        "resume_id": 7,
+        "ndcg_at_3": 0.745451613211405,
+        "kendall_tau": -0.10540925533894596
+      },
+      {
+        "resume_id": 14,
+        "ndcg_at_3": 0.8600618700694397,
+        "kendall_tau": -0.10540925533894596
+      },
+      {
+        "resume_id": 15,
+        "ndcg_at_3": 0.8303010754742699,
+        "kendall_tau": 0.0
+      },
+      {
+        "resume_id": 16,
+        "ndcg_at_3": 0.532131273402308,
+        "kendall_tau": 0.0
+      },
+      {
+        "resume_id": 17,
+        "ndcg_at_3": 0.828394656944458,
+        "kendall_tau": -0.31622776601683794
+      },
+      {
+        "resume_id": 21,
+        "ndcg_at_3": 0.8393978490514598,
+        "kendall_tau": 0.10540925533894596
+      },
+      {
+        "resume_id": 23,
+        "ndcg_at_3": 0.8231368934915091,
+        "kendall_tau": 0.5270462766947299
+      },
+      {
+        "resume_id": 26,
+        "ndcg_at_3": 0.7664684457940457,
+        "kendall_tau": 0.31622776601683794
+      }
+    ],
+    "pairwise_text_model": [
+      {
+        "resume_id": 1,
+        "ndcg_at_3": 0.9220889635778747,
+        "kendall_tau": 0.5270462766947299
+      },
+      {
+        "resume_id": 6,
+        "ndcg_at_3": 0.6971363341238139,
+        "kendall_tau": 0.0
+      },
+      {
+        "resume_id": 7,
+        "ndcg_at_3": 0.8505071682362073,
+        "kendall_tau": 0.5270462766947299
+      },
+      {
+        "resume_id": 14,
+        "ndcg_at_3": 0.8600618700694397,
+        "kendall_tau": 0.10540925533894596
+      },
+      {
+        "resume_id": 15,
+        "ndcg_at_3": 0.8929318993676398,
+        "kendall_tau": 0.22360679774997894
+      },
+      {
+        "resume_id": 16,
+        "ndcg_at_3": 0.6760187533431868,
+        "kendall_tau": 0.19999999999999998
+      },
+      {
+        "resume_id": 17,
+        "ndcg_at_3": 0.8712959927083435,
+        "kendall_tau": 0.10540925533894596
+      },
+      {
+        "resume_id": 21,
+        "ndcg_at_3": 0.72323297484191,
+        "kendall_tau": -0.10540925533894596
+      },
+      {
+        "resume_id": 23,
+        "ndcg_at_3": 0.7714050137794394,
+        "kendall_tau": 0.31622776601683794
+      },
+      {
+        "resume_id": 26,
+        "ndcg_at_3": 0.7664684457940457,
+        "kendall_tau": 0.31622776601683794
+      }
+    ]
+  },
+  "source_sha256": {
+    "LICENSE": "230184f60bae2feaf244f10a8bac053c8ff33a183bcc365b4d8b876d2b7f4809",
+    "5_vacancies.csv": "e14d2e5052e8bb4884514b066b17be0bf789f4f0bd79d942e6d7a49e101dbaa4",
+    "annotations-for-the-first-30-vacancies.txt": "938ff4089918807809f8920e16d4433d2267fe8104f9641b477163f4a157293b",
+    "annotation_instructions.docx": "726d9416fbd6eb7c4332f2721343a0853e61ca44e798b3b0ef7e7a74582820f7",
+    "CV/1.docx": "97ea8f68a1980096051cfaf4b67854967720b693a2c7b3ee5e8bea2ca3249db2",
+    "CV/2.docx": "9352f408868361f4c94bc7c7315beefa1a16189ece528b7305e366897e486875",
+    "CV/3.docx": "08b5730f480ec1682d793a6a07d96a31a32fd782ce58164008d2a3fb4fe60e06",
+    "CV/4.docx": "b6629206356e0f1b573b3b3eab5282d20b7cb185f5b392d6d0cac83099176e89",
+    "CV/5.docx": "a8467a72215a723f0832b5ebcba300ed5d713c6f13d3fd109059f69a63562225",
+    "CV/6.docx": "20c211435ce3aa684d98000ddc15c3bd8ff1734b43de393d016e70c8e04bbd2d",
+    "CV/7.docx": "29a1196feb8cfaeb5dc9db35de9738e1b934606a71c65bf0628dd68e4c99ce9a",
+    "CV/8.docx": "f5a98824cedb7e0b67ace2b9e7e20024f74099105b2190cbe021eb95a9193c3c",
+    "CV/9.docx": "7da853eb897134efc123da081a62aa2350376d80c0ee4a21ab7f15ae925a5121",
+    "CV/10.docx": "a1c3877a5da460f8ed51c45e3c8be2b03c7bafeba789649beb1f36161f689654",
+    "CV/11.docx": "6c0f3d43c194ccb0fedb1c42050914107c19172adb4bf3107323760380dadcd8",
+    "CV/12.docx": "160faebb9c8c4106c2977285a9042c5cd7220963b7715e80c53c61f194d4b72f",
+    "CV/13.docx": "ab204a3bb4634112e5cabc29a7368b54cefc76ffbfa6ebaafa89c118fc3f4eab",
+    "CV/14.docx": "7c66ef39d8ba011404ad3bd170de1c0eece089d756da56bf3191fbb1313f47f5",
+    "CV/15.docx": "e9c8c8abecdb44adf388d7367d936b39896daf696bb2bf6e041db4cde807241e",
+    "CV/16.docx": "45aba9525dfbbbeade2243837ed0df20f081b521cc39ec925163f81c6ab9eb30",
+    "CV/17.docx": "7103f72150f4523117a5b217397e37768f92adf12833242d8b1aae9545d762cb",
+    "CV/18.docx": "6dc7618faec028ee9857a05942b229aa4a256a578700cf35984c6683d5fe769a",
+    "CV/19.docx": "90b3713df35065e5babbf95541a07ab237cc98e7ab2744654dd738ceebe4e1dd",
+    "CV/20.docx": "65624dddeb91462b171a40b1ac8406112abb7842a1a437ef08495defa072036e",
+    "CV/21.docx": "19e6592c426739e97aefaf238b050990cc24741d0298a0da6c4e79a3915c780e",
+    "CV/22.docx": "091960aec6a56e340c11941c7edbf6f55df59deec60574b2b830bc63341c0e9c",
+    "CV/23.docx": "619925575c38265e54615ffc55ae9c4eb7e0b694900e2ceb0f0c3a5902747fb7",
+    "CV/24.docx": "db4653bc7f1687321bfd7763f1f5bc51bb0019a690c4220f1d28ca836b9ec3aa",
+    "CV/25.docx": "f5b1081d835bb72462b23dc6422aa56821c9b9a55f32319be8aa137e1bd08d98",
+    "CV/26.docx": "0cfc4d6da4904ed299dfaa3634a5c48e9e2b0b7bc53787840973f3b946796f4c",
+    "CV/27.docx": "1e497159545354a65d0714eda186e9f7a2158033d8d1f5d1a7f94cc2215972f3",
+    "CV/28.docx": "8695b58c2e1e1a17270bc8b8dbf99bf1b905242d2dba07caacc8556c2bde347a",
+    "CV/29.docx": "7e8cd20d4f137af5868beee6f4c8649d88f3bc6716cb74f53ceb6f2de534cf89",
+    "CV/30.docx": "5cf5bf278dd6e8c5e05f325dc70d10f34876eef554da6c1d6af564455ca45134"
+  },
+  "production_model_changed": false,
+  "limitations": [
+    "Small pilot: only ten held-out CVs and five shared jobs; not a cold-job evaluation.",
+    "Direction: rank jobs for a CV, not candidates for an employer need.",
+    "Human ordinal preferences, not outcomes of hiring or job performance.",
+    "Only the production skill component can be measured; verified assessments, FSP, activity and format are missing. Full six-feature model is not externally validated.",
+    "No tuning on test. Experimental text model is not automatically deployed."
+  ],
+  "artifact_sha256": "c9412cced8c09e9a50b0cc9fc964d93beb3b779d0b1b5b6255fc5c2c66d61d0b",
+  "artifact_reload_verified": true
+}

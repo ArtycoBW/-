@@ -24,6 +24,8 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { PageHead, useMessage } from "@/components/product/page";
+import { FspConnection } from "@/views/product/fsp";
+import { AccountSettings } from "@/views/product/account";
 import { Challenges } from "@/views/product/challenges";
 import { ContactAccess } from "@/components/product/contact-access";
 import {
@@ -166,7 +168,7 @@ export function Dashboard() {
     );
   const nav = user.role === "candidate" ? candidateNav : employerNav;
   const label =
-    section === "profile"
+    section === "settings" ? "Настройки аккаунта" : section === "profile"
       ? "Мой профиль"
       : nav.find((x) => x[0] === section)?.[1] || "Обзор";
   const profileHref =
@@ -294,6 +296,7 @@ export function Dashboard() {
                         : "Моя компания"}
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild><Link href="/app/settings"><UserCircle size={18} />Настройки аккаунта</Link></DropdownMenuItem>
                   <DropdownMenuItem onSelect={logout}>
                     <SignOut size={18} />
                     Выйти из аккаунта
@@ -357,7 +360,9 @@ export function Dashboard() {
           <main id="workspace-main" className="rz-main">
             <div key={section} className="rz-route">
               {error && <Notice error>{error}</Notice>}
-              {section === "overview" ? (
+              {section === "settings" ? (
+                <AccountSettings user={user} />
+              ) : section === "overview" ? (
                 <Overview user={user} />
               ) : section === "profile" && user.role === "candidate" ? (
                 <ProfileEditor />
@@ -912,69 +917,7 @@ function ProfileEditor() {
               />
             </label>
           </section>
-          <section className="rz-panel">
-            <div className="rz-section-title">
-              <h2>Профиль ФСП</h2>
-              <Tag>Демо</Tag>
-            </div>
-            {p.achievements.length ? (
-              p.achievements.map((a) => (
-                <div className="rz-achievement" key={a.id}>
-                  <b>♜ {a.place} место</b>
-                  <p>{a.title}</p>
-                  <small>
-                    {a.discipline} · {a.date}
-                  </small>
-                </div>
-              ))
-            ) : (
-              <p className="rz-muted">
-                Нет связанной истории. Это не мешает получать предложения.
-              </p>
-            )}
-            <div className="rz-actions">
-              <Button
-                className="rz-button"
-                onClick={async () => {
-                  try {
-                    setP(
-                      await post<Profile>("/integrations/fsp", {
-                        participant_id: "DEMO-FSP-2026",
-                      }),
-                    );
-                    state.setMessage(
-                      "Подключён демонстрационный реестр. Это не официальная проверка ФСП.",
-                    );
-                  } catch (e) {
-                    setError((e as Error).message);
-                  }
-                }}
-              >
-                Связать демо-ID
-              </Button>
-              {p.fsp_id && (
-                <Button
-                  className="rz-text-link"
-                  onClick={async () => {
-                    try {
-                      setP(
-                        await api<Profile>("/integrations/fsp", {
-                          method: "DELETE",
-                        }),
-                      );
-                    } catch (e) {
-                      setError((e as Error).message);
-                    }
-                  }}
-                >
-                  Отвязать
-                </Button>
-              )}
-            </div>
-            <small className="rz-muted">
-              Официальное подключение ожидает API ФСП.
-            </small>
-          </section>
+          <FspConnection profile={p} onUpdated={setP} />
         </aside>
       </div>
     </>

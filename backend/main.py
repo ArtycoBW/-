@@ -3,19 +3,26 @@ import ipaddress
 import json
 import secrets
 import time
-from collections import defaultdict, deque
+from collections import defaultdict
 from contextlib import asynccontextmanager
 from pathlib import Path
 from types import SimpleNamespace
 from fastapi import Depends, FastAPI, File, HTTPException, Query, Request, Response, UploadFile
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from sqlalchemy import delete, select, text
+from sqlalchemy import delete, select, text, func, exists
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import Session as DBSession
 from backend import config, models as m, schemas as s
 from backend.assessment import BANK_VERSION, evaluate, generate_questions, public_questions
-from backend.db import Base, engine, get_db
+from backend.db import get_db
+from backend.migrate import upgrade
+from backend.rate_limit import take
+from backend.account import router as account_router
+from backend.fsp_oidc import router as fsp_router
+from starlette.concurrency import run_in_threadpool
+import logging
+import uuid
 from backend.matching import rank
 from backend.taxonomy import catalog as specialization_catalog
 from backend.security import (DUMMY_HASH, audit, candidate_user, consume_token, create_session, current_user, digest, employer_user, password_hasher, send_token, user_dto)
@@ -23,12 +30,14 @@ from backend.serializers import candidate_dto, company_name, grant_exists, invit
 
 @asynccontextmanager
 async def lifespan(_):
-    Base.metadata.create_all(engine)
+    upgrade()
     yield
 
-app = FastAPI(title="Разряд API", version="1.0.0", description="Прямой найм по подтверждённым навыкам. Все суммы — рубли до вычета налогов. Авторизация — HttpOnly cookie.", lifespan=lifespan, docs_url="/api/v1/docs", openapi_url="/api/v1/openapi.json", redoc_url=None)
+app = FastAPI(title="Разряд API", version="1.3.0", description="Прямой найм по подтверждённым навыкам. Все суммы — рубли до вычета налогов. Авторизация — HttpOnly cookie.", lifespan=lifespan, docs_url="/api/v1/docs", openapi_url="/api/v1/openapi.json", redoc_url=None)
 P = "/api/v1"
-rate_buckets = defaultdict(deque)
+app.include_router(account_router)
+app.include_router(fsp_router)
+request_log = logging.getLogger("uvicorn.error.operations")
 
 @app.middleware("http")
 async def safeguards(request: Request, call_next):
@@ -42,7 +51,7 @@ async def safeguards(request: Request, call_next):
             return JSONResponse({"detail": "Некорректный размер запроса"}, status_code=400)
         if content_length > 6 * 1024 * 1024:
             return JSONResponse({"detail": "Размер запроса превышает 6 МБ"}, status_code=413)
-        if "/auth/" in request.url.path:
+        if "/auth/" in request.url.path or request.url.path.startswith(P + "/account") or request.url.path.startswith(P + "/integrations/fsp/oidc"):
             address = request.client.host if request.client else "local"
             if config.TRUST_CLOUDFLARE:
                 try:
@@ -51,26 +60,36 @@ async def safeguards(request: Request, call_next):
                     pass
             # Only a bounded set of route keys, including requests to unknown auth paths.
             route = request.url.path.split("/")[4] if len(request.url.path.split("/")) > 4 else "unknown"
-            route = route if route in {"login", "register", "verify", "recover", "reset", "resend", "demo", "logout"} else "unknown"
-            key = (address, route)
-            now = time.time()
-            if key not in rate_buckets and len(rate_buckets) >= 4096:
-                for expired in [k for k, v in rate_buckets.items() if not v or v[-1] < now - 60]:
-                    del rate_buckets[expired]
-                if len(rate_buckets) >= 4096:
-                    return JSONResponse({"detail": "Сервис занят. Повторите через минуту"}, status_code=429, headers={"Retry-After": "60"})
-            bucket = rate_buckets[key]
-            while bucket and bucket[0] < now - 60:
-                bucket.popleft()
-            if len(bucket) >= 30:
+            route = "account" if request.url.path.startswith(P + "/account") else "fsp" if "/integrations/fsp/oidc" in request.url.path else route
+            route = route if route in {"login", "register", "verify", "recover", "reset", "resend", "demo", "logout", "account", "fsp"} else "unknown"
+            try:
+                allowed = await run_in_threadpool(take, address, route)
+            except SQLAlchemyError:
+                return JSONResponse({"detail": "Проверка лимитов временно недоступна"}, status_code=503)
+            if not allowed:
                 return JSONResponse({"detail": "Слишком много попыток. Повторите через минуту"}, status_code=429, headers={"Retry-After": "60"})
-            bucket.append(now)
     response = await call_next(request)
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["Referrer-Policy"] = "same-origin"
     response.headers["Cache-Control"] = "no-store"
     return response
+
+@app.middleware("http")
+async def operation_log(request: Request, call_next):
+    request_id = uuid.uuid4().hex
+    started = time.monotonic()
+    status = 500
+    try:
+        response = await call_next(request)
+        status = response.status_code
+        response.headers["X-Request-ID"] = request_id
+        return response
+    finally:
+        route = request.scope.get("route")
+        request_log.info(json.dumps({"event": "http", "request_id": request_id,
+            "method": request.method, "route": getattr(route, "path", "unmatched"),
+            "status": status, "duration_ms": round((time.monotonic() - started) * 1000, 2)}, ensure_ascii=False))
 
 @app.exception_handler(RequestValidationError)
 async def validation_error(_, exc):
@@ -98,7 +117,7 @@ def grant(db, company_id, candidate_id, reason):
 
 @app.get(P + "/health", tags=["Система"])
 def health():
-    return {"status": "ok", "version": "1.1.0", "demo": config.DEMO_MODE, "email_verification": config.EMAIL_VERIFICATION_REQUIRED, "password_recovery": config.PASSWORD_RECOVERY_ENABLED}
+    return {"status": "ok", "version": "1.3.0", "demo": config.DEMO_MODE, "email_verification": config.EMAIL_VERIFICATION_REQUIRED, "password_recovery": config.PASSWORD_RECOVERY_ENABLED}
 
 @app.get(P + "/catalog", tags=["Справочники"])
 def catalog():
@@ -108,6 +127,7 @@ def catalog():
 def ready(db: DBSession = Depends(get_db)):
     try:
         db.execute(text("SELECT 1"))
+        db.execute(select(m.RateLimit.key).limit(0))
     except SQLAlchemyError:
         raise HTTPException(503, "Хранилище временно недоступно") from None
     return {"status": "ready", "database": "ok"}
@@ -145,7 +165,7 @@ def verify(data: s.TokenInput, response: Response, db: DBSession = Depends(get_d
 
 @app.post(P + "/auth/login", tags=["Авторизация"])
 def login(data: s.Login, response: Response, db: DBSession = Depends(get_db)):
-    user = db.scalar(select(m.User).where(m.User.email == str(data.email).lower()))
+    user = db.scalar(select(m.User).where(m.User.email == str(data.email).lower()).with_for_update())
     valid = password_hasher.verify(data.password, user.password_hash if user else DUMMY_HASH)
     if not user or not valid:
         raise HTTPException(401, "Неверная почта или пароль")
@@ -339,26 +359,33 @@ def candidates(need_id: str | None = None, specialization: s.Spec | None = None,
         query = query.where(m.Candidate.specialization == target_spec)
     if target_grade:
         query = query.where(m.Candidate.grade == target_grade)
-    profiles = [p for p in db.scalars(query) if not skill or any(skill.lower() in sk.lower() for sk in p.skills)]
+    if skill:
+        expand = func.json_array_elements_text if db.bind.dialect.name == "postgresql" else func.json_each
+        values = expand(m.Candidate.skills).table_valued("value").alias("skill_values")
+        query = query.where(exists(select(1).select_from(values).where(func.lower(values.c.value).contains(skill.lower(), autoescape=True))))
+    if fsp:
+        query = query.where(exists(select(m.Achievement.id).where(m.Achievement.candidate_id == m.Candidate.id)))
+    profiles = list(db.scalars(query))
     ids = [p.id for p in profiles]
-    # Связи загружаются пакетно: число SQL-запросов не растёт с размером выдачи.
     by_candidate = defaultdict(list)
     if ids:
         for achievement in db.scalars(select(m.Achievement).where(m.Achievement.candidate_id.in_(ids))):
             by_candidate[achievement.candidate_id].append(achievement)
-    granted_ids = set(db.scalars(select(m.ContactGrant.candidate_id).where(m.ContactGrant.company_id == user.id, m.ContactGrant.candidate_id.in_(ids)))) if ids else set()
+    ranked = []
+    for profile in profiles:
+        reference = need or SimpleNamespace(skills=profile.skills, grade=profile.grade, work_format=profile.work_format)
+        ranked.append((profile, rank(profile, reference, by_candidate[profile.id])))
+    ranked.sort(key=lambda item: (-item[1]["score"], item[0].id))
+    page = ranked[offset:offset + limit]
+    page_ids = [p.id for p, _ in page]
+    granted_ids = set(db.scalars(select(m.ContactGrant.candidate_id).where(m.ContactGrant.company_id == user.id, m.ContactGrant.candidate_id.in_(page_ids)))) if page_ids else set()
     emails = dict(db.execute(select(m.User.id, m.User.email).where(m.User.id.in_(granted_ids))).all()) if granted_ids else {}
     results = []
-    for profile in profiles:
-        achievements = by_candidate[profile.id]
-        if fsp and not achievements:
-            continue
-        reference = need or SimpleNamespace(skills=profile.skills, grade=profile.grade, work_format=profile.work_format)
-        dto = candidate_dto(db, profile, user, achievements=achievements, contact_granted=profile.id in granted_ids, user_email=emails.get(profile.id))
-        dto["match"] = rank(profile, reference, achievements)
+    for profile, match in page:
+        dto = candidate_dto(db, profile, user, achievements=by_candidate[profile.id], contact_granted=profile.id in granted_ids, user_email=emails.get(profile.id))
+        dto["match"] = match
         results.append(dto)
-    results.sort(key=lambda x: (-x["match"]["score"], x["id"]))
-    return {"items": results[offset:offset+limit], "total": len(results), "offset": offset, "limit": limit}
+    return {"items": results, "total": len(ranked), "offset": offset, "limit": limit}
 
 @app.get(P + "/candidates/{candidate_id}", tags=["Подбор"])
 def candidate_detail(candidate_id: str, user=Depends(employer_user), db: DBSession = Depends(get_db)):

@@ -2,12 +2,13 @@
 import random
 import time
 from sqlalchemy import select
-from backend.db import Base, SessionLocal, engine
+from backend.db import SessionLocal
+from backend.migrate import upgrade
 from backend.models import Achievement, Candidate, Challenge, Company, Invitation, Need, User, Vacancy
 from backend.security import password_hasher
 
 def seed():
-    Base.metadata.create_all(engine)
+    upgrade()
     rng = random.Random(20261010)
     with SessionLocal() as db:
         if db.scalar(select(User).where(User.email == "employer@demo.razryad.ru")):

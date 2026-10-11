@@ -4,6 +4,8 @@ from fastapi.openapi.utils import get_openapi
 from sqlalchemy import Boolean, Integer, Float, JSON
 from backend import models as m
 from backend.taxonomy import SPECIALIZATIONS
+from backend.account import router as account_router
+from backend.fsp_oidc import router as fsp_router
 
 def obj(properties, required=None):
     return {"type":"object","properties":properties,"required":list(properties) if required is None else required}
@@ -67,7 +69,7 @@ def install_contract(app):
         }
         schema['components']['securitySchemes']={'SessionCookie':{'type':'apiKey','in':'cookie','name':'razryad_session','description':'HttpOnly cookie после /auth/login. Перед изменением данных браузер передаёт Origin публичного сайта.'}}
         public={'health','ready','catalog','metrics','vacancies','register','verify','login','recover','resend','reset','demo'}
-        for route in app.routes:
+        for route in [*app.routes, *account_router.routes, *fsp_router.routes]:
             if not hasattr(route,'methods') or not route.path.startswith('/api/v1'): continue
             for method in route.methods:
                 operation=schema.get('paths',{}).get(route.path,{}).get(method.lower())
@@ -75,11 +77,12 @@ def install_contract(app):
                 operation['security']=[] if route.name in public else [{'SessionCookie':[]}]
                 code=str(route.status_code or 200)
                 if route.name=='export_profile': operation['responses'][code]={'description':'PDF с русским шрифтом','content':{'application/pdf':{'schema':{'type':'string','format':'binary'}}}}
+                elif route.name == 'finish_fsp': operation['responses'] = {'303': {'description': 'Возврат в профиль после привязки или отмены', 'headers': {'Location': {'schema': S}}}}
                 elif route.name in result_types: operation['responses'][code]={'description':'Успешный ответ; видимость персональных полей определяется ролью и адресным согласием.','content':{'application/json':{'schema':deepcopy(result_types[route.name])}}}
                 errors={422:'Некорректные поля запроса'}
                 if route.name not in public: errors.update({401:'Сессия истекла или отсутствует',403:'Роль не имеет доступа',404:'Ресурс не найден или принадлежит другому пользователю'})
                 if method in {'POST','PUT','PATCH','DELETE'}: errors.update({403:'Недопустимый Origin или роль',409:'Конфликт состояния или дубликат',413:'Слишком большой запрос'})
-                if '/auth/' in route.path: errors[429]='Лимит попыток авторизации'
+                if '/auth/' in route.path or '/account' in route.path: errors[429]='Лимит попыток авторизации и управления аккаунтом'
                 for error,description in errors.items(): operation['responses'][str(error)]={'description':description,'content':{'application/json':{'schema':ref('ErrorResult')}}}
         app.openapi_schema=schema
         return schema

@@ -1,0 +1,70 @@
+{
+  "realm": "razryad-fsp-local",
+  "enabled": true,
+  "registrationAllowed": false,
+  "resetPasswordAllowed": false,
+  "sslRequired": "none",
+  "displayName": "ФСП ID — локальный учебный стенд",
+  "clients": [
+    {
+      "clientId": "razryad",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://localhost:3102/api/v1/integrations/fsp/oidc/callback"
+      ],
+      "webOrigins": [
+        "http://localhost:3102"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
+      "protocolMappers": [
+        {
+          "name": "registry-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.custom.audience": "fsp-registry",
+            "access.token.claim": "true",
+            "id.token.claim": "false"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "fsp-history",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "fsp-history@example.invalid",
+      "firstName": "Локальный",
+      "lastName": "Участник",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "LocalFsp2026!",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "fsp-empty",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "fsp-empty@example.invalid",
+      "firstName": "Локальный",
+      "lastName": "Участник",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "LocalFsp2026!",
+          "temporary": false
+        }
+      ]
+    }
+  ]
+}

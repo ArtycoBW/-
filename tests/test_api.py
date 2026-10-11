@@ -7,17 +7,20 @@ from fastapi.testclient import TestClient
 os.environ["DATABASE_URL"] = "sqlite:///./.local/test.db"
 os.environ["DEMO_MODE"] = "true"
 from backend.db import Base, SessionLocal, engine
-from backend.main import app, rate_buckets
+from backend.main import app
 from backend import models as m
 from backend.assessment import generate_questions, evaluate
 from backend.security import password_hasher
+from backend.migrate import HEAD, alembic_config
+from alembic import command
 
 @pytest.fixture(autouse=True)
 def setup_db():
     assert str(engine.url).replace("\\", "/").endswith("/.local/test.db"), "Tests must never reset an application database"
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
-    rate_buckets.clear()
+    with engine.begin() as connection:
+        command.stamp(alembic_config(connection), HEAD)
     yield
 
 def account(role, suffix="1", grade=None):
