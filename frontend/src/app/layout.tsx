@@ -13,6 +13,7 @@ import { CONSENT_FLAG_SCRIPT } from "@/components/common/Cookie/consent-flag";
 import { ReducedMotion } from "@/components/common/reduced-motion";
 import { ScrollLayout } from "@/layouts/scroll-layout";
 
+import { ToastProvider } from "@/components/product/toasts";
 import "@/app/globals.css";
 
 const inter = Inter({
@@ -79,11 +80,13 @@ export default function RootLayout({
             __html: JSON.stringify(getSiteStructuredData()),
           }}
         />
-        <ScrollLayout>
-          <ReducedMotion />
+        <ToastProvider>
+          <ScrollLayout>
+            <ReducedMotion />
 
-          {children}
-        </ScrollLayout>
+            {children}
+          </ScrollLayout>
+        </ToastProvider>
       </body>
     </html>
   );

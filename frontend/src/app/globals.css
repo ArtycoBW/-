@@ -22,6 +22,7 @@
 @import "../style/app-ui.css";
 @import "../style/workspace-refinements.css";
 @import "../style/practice-workbench.css";
+@import "../style/toasts-filters.css";
 
 /* ---------------------------------------------------------------------------
    TIER 1 — PRIMITIVES  (`--raw-*`)

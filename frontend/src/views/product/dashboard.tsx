@@ -1,4 +1,5 @@
 "use client";
+import { useToast } from "@/components/product/toasts";
 import { specializations } from "@/lib/taxonomy";
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -23,6 +24,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { CollectionFilters, useCollection } from "@/components/product/collection-filters";
 import { PageHead, useMessage } from "@/components/product/page";
 import { FspConnection } from "@/views/product/fsp";
 import { AccountSettings } from "@/views/product/account";
@@ -420,7 +422,7 @@ function Overview({ user }: { user: User }) {
   const [total, setTotal] = useState(0);
   const [error, setError] = useState("");
   const [invitedProfile, setInvitedProfile] = useState<Profile | null>(null);
-  const [message, setMessage] = useState("");
+  const setMessage = useToast();
   useEffect(() => {
     Promise.all([
       api<Invitation[]>("/invitations").then(setInvitations),
@@ -657,7 +659,7 @@ function Overview({ user }: { user: User }) {
           ))}
         </div>
       )}
-      {message && <Notice>{message}</Notice>}
+
       {invitedProfile && (
         <InviteModal
           profile={invitedProfile}
@@ -678,6 +680,7 @@ function Overview({ user }: { user: User }) {
 }
 
 function ProfileEditor() {
+  const [importNotice, setImportNotice] = useState("");
   const [p, setP] = useState<Profile | null>(null);
   const [skills, setSkills] = useState("");
   const state = useMessage();
@@ -752,7 +755,6 @@ function ProfileEditor() {
         }
       />
       {state.error && <Notice error>{state.error}</Notice>}
-      {state.message && <Notice>{state.message}</Notice>}
       <div className="rz-profile-grid">
         <form className="rz-panel rz-form" onSubmit={save}>
           <h2>Основная информация</h2>
@@ -921,7 +923,8 @@ function ProfileEditor() {
                       desired_grade: r.desired_grade || p.desired_grade,
                     });
                     if (r.skills.length) setSkills(r.skills.join(", "));
-                    state.setMessage([r.notice, r.roles.length ? `Роли: ${r.roles.join(", ")}.` : "", r.soft_skills.length ? `Софт-навыки: ${r.soft_skills.join(", ")}.` : ""].filter(Boolean).join(" "));
+                    state.setMessage("Резюме разобрано. Проверьте заполненные поля и сохраните профиль.");
+                    setImportNotice([r.notice, r.roles.length ? `Роли: ${r.roles.join(", ")}.` : "", r.soft_skills.length ? `Софт-навыки: ${r.soft_skills.join(", ")}.` : ""].filter(Boolean).join(" "));
                   } catch (e) {
                     setError((e as Error).message);
                   }
@@ -929,6 +932,7 @@ function ProfileEditor() {
               />
             </label>
           </section>
+          {importNotice && <Notice>{importNotice}</Notice>}
           <FspConnection profile={p} onUpdated={setP} />
         </aside>
       </div>
@@ -1009,7 +1013,6 @@ function Assessment() {
         text="Выберите направление и грейд. В тесте 8 вопросов, на выполнение 30 минут."
       />
       {state.error && <Notice error>{state.error}</Notice>}
-      {state.message && <Notice>{state.message}</Notice>}
       {!attempt ? (
         <div className="rz-two">
           <section className="rz-panel rz-form">
@@ -1510,7 +1513,6 @@ function Talent() {
         }
       />
       {state.error && <Notice error>{state.error}</Notice>}
-      {state.message && <Notice>{state.message}</Notice>}
       {form && (
         <form
           className="rz-panel rz-form rz-margin-bottom"
@@ -1811,6 +1813,7 @@ function InviteModal({
 
 function Invitations({ user }: { user: User }) {
   const [items, setItems] = useState<Invitation[]>([]);
+  const collection = useCollection(items, (i) => `${i.title} ${i.company_name} ${i.candidate_name} ${i.message}`);
   const state = useMessage();
   const { setError, setBusy } = state;
   const load = useCallback(
@@ -1828,11 +1831,12 @@ function Invitations({ user }: { user: User }) {
     setError("");
     try {
       await patch(`/invitations/${id}`, { status });
-      await load();
+      setItems((current) => current.map((item) => item.id === id ? { ...item, status } : item));
+      void load();
       state.setMessage(
         status === "accepted"
           ? "Предложение принято. Только эта компания получила доступ к вашим контактам."
-          : "Статус обновлён",
+          : status === "declined" ? "Приглашение отклонено" : status === "withdrawn" ? "Приглашение отозвано" : "Приглашение отмечено просмотренным",
       );
     } catch (e) {
       setError((e as Error).message);
@@ -1852,10 +1856,10 @@ function Invitations({ user }: { user: User }) {
         text="Зарплата и задачи известны заранее. Решение всегда остаётся за специалистом."
       />
       {state.error && <Notice error>{state.error}</Notice>}
-      {state.message && <Notice>{state.message}</Notice>}
-      {items.length ? (
+      <CollectionFilters collection={collection} items={items} statuses={["sent", "viewed", "accepted", "declined", "withdrawn"]} label="Поиск приглашений" salary />
+      {collection.filtered.length ? (
         <div className="rz-stack">
-          {items.map((i) => (
+          {collection.filtered.map((i) => (
             <article className="rz-panel" key={i.id}>
               <div className="rz-card-top">
                 <p className="rz-eyebrow">
@@ -1924,7 +1928,7 @@ function Invitations({ user }: { user: User }) {
           ))}
         </div>
       ) : (
-        <Empty title="Здесь появятся приглашения">
+        items.length ? <Empty title="Ничего не найдено">Измените запрос или сбросьте фильтры.</Empty> : <Empty title="Здесь появятся приглашения">
           {user.role === "candidate"
             ? "Подтвердите уровень и включите публикацию профиля."
             : "Откройте банк специалистов и отправьте первое предложение."}
@@ -2049,7 +2053,6 @@ function Vacancies({ user }: { user: User }) {
         }
       />
       {state.error && <Notice error>{state.error}</Notice>}
-      {state.message && <Notice>{state.message}</Notice>}
       {form && (
         <form
           className="rz-panel rz-form rz-margin-bottom"
@@ -2418,6 +2421,7 @@ function Vacancies({ user }: { user: User }) {
 
 function Applications({ user }: { user: User }) {
   const [items, setItems] = useState<Application[]>([]);
+  const collection = useCollection(items, (a) => `${a.vacancy_title} ${a.company_name} ${a.candidate_name} ${a.letter}`);
   const state = useMessage();
   const { setError, setBusy } = state;
   const load = useCallback(
@@ -2438,9 +2442,10 @@ function Applications({ user }: { user: User }) {
         text="Следите за статусами откликов и продолжайте общение с подходящей командой."
       />
       {state.error && <Notice error>{state.error}</Notice>}
-      {items.length ? (
+      <CollectionFilters collection={collection} items={items} statuses={["sent", "reviewing", "interview", "rejected", "withdrawn"]} label="Поиск откликов" />
+      {collection.filtered.length ? (
         <div className="rz-stack">
-          {items.map((a) => (
+          {collection.filtered.map((a) => (
             <section className="rz-panel" key={a.id}>
               <div className="rz-card-top">
                 <h2>{a.vacancy_title}</h2>
@@ -2460,16 +2465,19 @@ function Applications({ user }: { user: User }) {
                   {(user.role === "candidate"
                     ? ["withdrawn"]
                     : ["reviewing", "interview", "rejected"]
-                  ).map((status) => (
+                  ).filter((status) => status !== a.status).map((status) => (
                     <Button
                       className="rz-button"
                       disabled={state.busy}
                       key={status}
                       onClick={async () => {
                         setBusy(true);
+                        setError("");
                         try {
                           await patch(`/applications/${a.id}`, { status });
-                          load();
+                          setItems((current) => current.map((item) => item.id === a.id ? { ...item, status } : item));
+                          state.setMessage(status === "withdrawn" ? "Отклик отозван" : `Статус отклика: ${statusName(status)}`);
+                          void load();
                         } catch (e) {
                           setError((e as Error).message);
                         } finally {
@@ -2486,7 +2494,7 @@ function Applications({ user }: { user: User }) {
           ))}
         </div>
       ) : (
-        <Empty title="Пока нет откликов">
+        items.length ? <Empty title="Ничего не найдено">Измените запрос или сбросьте фильтры.</Empty> : <Empty title="Пока нет откликов">
           {user.role === "candidate"
             ? "Найдите интересную вакансию и расскажите о себе."
             : "Опубликуйте вакансию с понятными задачами и зарплатой."}
@@ -2513,7 +2521,6 @@ function CompanyEditor() {
         text="Понятное описание компании помогает специалисту принять решение."
       />
       {state.error && <Notice error>{state.error}</Notice>}
-      {state.message && <Notice>{state.message}</Notice>}
       {value && (
         <form
           className="rz-panel rz-form rz-form-narrow"

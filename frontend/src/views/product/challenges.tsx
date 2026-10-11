@@ -106,7 +106,6 @@ export function Challenges({ user }: { user: User }) {
         <PracticeScene />
       </section>
       {state.error && <Notice error>{state.error}</Notice>}
-      {state.message && <Notice>{state.message}</Notice>}
       {form && (
         <form
           className="rz-panel rz-form rz-margin-bottom"
@@ -120,6 +119,7 @@ export function Challenges({ user }: { user: User }) {
                 rubric,
               });
               setForm(false);
+              state.setMessage("Задание опубликовано");
               load();
             } catch (e) {
               setError((e as Error).message);

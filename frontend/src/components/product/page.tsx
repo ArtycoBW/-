@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useToast } from "./toasts";
 export function PageHead({
   eyebrow,
   title,
@@ -24,7 +25,7 @@ export function PageHead({
 }
 export function useMessage() {
   const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
+  const setMessage = useToast();
   const [busy, setBusy] = useState(false);
-  return { error, setError, message, setMessage, busy, setBusy };
+  return { error, setError, setMessage, busy, setBusy };
 }

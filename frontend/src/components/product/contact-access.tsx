@@ -1,4 +1,5 @@
 "use client";
+import { useToast } from "@/components/product/toasts";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { LockKey } from "@phosphor-icons/react";
@@ -14,7 +15,7 @@ export function ContactAccess() {
   const [grants, setGrants] = useState<Grant[]>([]);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState("");
-  const [message, setMessage] = useState("");
+  const setMessage = useToast();
   useEffect(() => {
     api<Grant[]>("/profile/contact-grants")
       .then(setGrants)
@@ -43,7 +44,7 @@ export function ContactAccess() {
         Вы решаете, каким компаниям доступен ваш контакт.
       </p>
       {error && <Notice error>{error}</Notice>}
-      {message && <Notice>{message}</Notice>}
+
       {grants.length ? (
         grants.map((grant) => (
           <div className="rz-access-row" key={grant.company_id}>

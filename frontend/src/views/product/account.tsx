@@ -1,4 +1,5 @@
 "use client";
+import { useToast } from "@/components/product/toasts";
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,7 @@ export function AccountSettings({ user }: { user: User }) {
   const [deleting, setDeleting] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
+  const setMessage = useToast();
   useEffect(() => {
     api<Sessions>("/account/sessions").then(setSessions).catch((e) => setError(e.message));
   }, []);
@@ -51,7 +52,7 @@ export function AccountSettings({ user }: { user: User }) {
   function changePassword(e: FormEvent) { e.preventDefault(); void run("password"); }
   return <>
     <PageHead eyebrow="ДОСТУП И ДАННЫЕ" title="Настройки аккаунта" text={user.email} />
-    <div aria-live="polite">{error && <Notice error>{error}</Notice>}{message && <Notice>{message}</Notice>}</div>
+    <div aria-live="polite">{error && <Notice error>{error}</Notice>}</div>
     <div className="rz-profile-grid">
       <form className="rz-panel rz-form" onSubmit={changePassword}>
         <h2>Пароль и сеансы</h2>

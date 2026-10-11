@@ -94,6 +94,7 @@ export type Attempt = {
   outcomes?: { id: string; skill: string; correct: boolean }[];
 };
 export type Application = {
+  created_at: number;
   id: string;
   vacancy_title: string;
   company_name: string;
